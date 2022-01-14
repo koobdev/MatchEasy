@@ -5,12 +5,10 @@ import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.web.common.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -62,5 +60,13 @@ public class LoginController {
 
         return "redirect:/";
     }
+
+
+    // Token Login TODO
+//    @PostMapping("/token/login")
+//    public ResponseEntity<TokenResponse> tokenLogin(@ModelAttribute("loginForm") LoginForm loginForm){
+//        String token = userService.createToken(loginForm);
+//        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
+//    }
 
 }
