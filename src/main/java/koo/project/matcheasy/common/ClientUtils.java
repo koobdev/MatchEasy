@@ -1,7 +1,6 @@
-package koo.project.matcheasy.web.common;
+package koo.project.matcheasy.common;
 
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;

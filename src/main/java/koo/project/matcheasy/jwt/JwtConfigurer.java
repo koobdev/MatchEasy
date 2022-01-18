@@ -1,4 +1,4 @@
-package koo.project.matcheasy.web.jwt;
+package koo.project.matcheasy.jwt;
 
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;

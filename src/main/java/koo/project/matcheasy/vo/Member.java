@@ -1,4 +1,4 @@
-package koo.project.matcheasy.domain.member;
+package koo.project.matcheasy.vo;
 
 import lombok.Data;
 

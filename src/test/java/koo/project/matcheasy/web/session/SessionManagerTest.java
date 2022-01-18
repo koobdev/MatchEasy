@@ -1,10 +1,8 @@
 package koo.project.matcheasy.web.session;
 
-import koo.project.matcheasy.domain.member.Member;
-import org.assertj.core.api.Assert;
+import koo.project.matcheasy.vo.Member;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 

@@ -1,4 +1,4 @@
-package koo.project.matcheasy.web.login;
+package koo.project.matcheasy.dto;
 
 import lombok.Data;
 

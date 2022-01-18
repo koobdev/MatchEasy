@@ -1,7 +1,7 @@
-package koo.project.matcheasy.web.filter;
+package koo.project.matcheasy.filter;
 
-import koo.project.matcheasy.web.common.SessionConst;
-import koo.project.matcheasy.web.common.ClientUtils;
+import koo.project.matcheasy.common.SessionConst;
+import koo.project.matcheasy.common.ClientUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.PatternMatchUtils;
 import javax.servlet.*;

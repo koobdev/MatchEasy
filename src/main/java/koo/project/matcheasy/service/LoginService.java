@@ -1,17 +1,20 @@
-package koo.project.matcheasy.domain.login;
+package koo.project.matcheasy.service;
 
-import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.member.MemberRepository;
+import koo.project.matcheasy.jwt.JwtTokenProvider;
+import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.repository.MemberRepository;
+import koo.project.matcheasy.dto.LoginForm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginService {
 
     private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     /**
@@ -30,5 +33,15 @@ public class LoginService {
         return memberRepository.findByLoginId(loginId)
                 .filter(m -> m.getPassword().equals(password))
                 .orElse(null);
+    }
+
+
+    public String createToken(LoginForm loginForm) {
+
+        Member findMember = memberRepository.findByLoginId(loginForm.getLoginId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        //비밀번호 확인 등의 유효성 검사 진행
+        return jwtTokenProvider.createToken(findMember.getName());
     }
 }

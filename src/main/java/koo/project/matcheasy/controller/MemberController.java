@@ -1,18 +1,15 @@
-package koo.project.matcheasy.web.member;
+package koo.project.matcheasy.controller;
 
-import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.member.MemberRepository;
+import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {

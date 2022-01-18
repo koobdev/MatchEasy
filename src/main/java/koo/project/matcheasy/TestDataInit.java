@@ -1,7 +1,7 @@
 package koo.project.matcheasy;
 
-import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.member.MemberRepository;
+import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

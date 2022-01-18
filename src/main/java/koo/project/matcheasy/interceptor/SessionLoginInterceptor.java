@@ -1,7 +1,7 @@
-package koo.project.matcheasy.web.interceptor;
+package koo.project.matcheasy.interceptor;
 
-import koo.project.matcheasy.web.common.ClientUtils;
-import koo.project.matcheasy.web.common.SessionConst;
+import koo.project.matcheasy.common.ClientUtils;
+import koo.project.matcheasy.common.SessionConst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
-public class LoginInterceptor implements HandlerInterceptor {
+public class SessionLoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

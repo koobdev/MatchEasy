@@ -1,15 +1,14 @@
-package koo.project.matcheasy.web;
+package koo.project.matcheasy.controller;
 
-import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.member.MemberRepository;
-import koo.project.matcheasy.web.common.SessionConst;
-import koo.project.matcheasy.web.session.SessionManager;
+import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.repository.MemberRepository;
+import koo.project.matcheasy.common.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class HomeController {
 

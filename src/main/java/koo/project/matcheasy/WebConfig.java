@@ -1,20 +1,29 @@
 package koo.project.matcheasy;
 
-import koo.project.matcheasy.web.filter.LoginFilter;
-import koo.project.matcheasy.web.interceptor.LoginInterceptor;
+import koo.project.matcheasy.filter.LoginFilter;
+import koo.project.matcheasy.interceptor.BearerAuthInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final BearerAuthInterceptor bearerAuthInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor())
-                .order(1)
+        // Session로그인 Interceptor
+//        registry.addInterceptor(new LoginInterceptor())
+//                .order(1)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/", "/login", "/logout", "/members/add", "/css/**");
+
+        System.out.println("인터셉터 시작");
+        registry.addInterceptor(bearerAuthInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/login", "/logout", "/members/add", "/css/**");
     }

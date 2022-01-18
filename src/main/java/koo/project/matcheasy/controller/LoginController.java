@@ -1,21 +1,23 @@
-package koo.project.matcheasy.web.login;
+package koo.project.matcheasy.controller;
 
-import koo.project.matcheasy.domain.login.LoginService;
-import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.web.common.SessionConst;
+import koo.project.matcheasy.service.LoginService;
+import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.common.SessionConst;
+import koo.project.matcheasy.jwt.TokenResponse;
+import koo.project.matcheasy.dto.LoginForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -27,7 +29,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request,
+    public String sessionLogin(@Valid @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletRequest request,
                         @RequestParam(defaultValue = "/") String redirectURI){
 
         if(bindingResult.hasErrors()){
@@ -62,11 +64,14 @@ public class LoginController {
     }
 
 
-    // Token Login TODO
-//    @PostMapping("/token/login")
-//    public ResponseEntity<TokenResponse> tokenLogin(@ModelAttribute("loginForm") LoginForm loginForm){
-//        String token = userService.createToken(loginForm);
-//        return ResponseEntity.ok().body(new TokenResponse(token, "bearer"));
-//    }
+    // Token Login
+    @PostMapping("/token/login")
+    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginForm form){
 
+        String token = loginService.createToken(form);
+
+        return ResponseEntity
+                .ok()
+                .body(new TokenResponse(token, "bearer"));
+    }
 }
