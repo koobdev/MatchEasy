@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class Member {
+public class MemberVo {
 
     private Long id;
 

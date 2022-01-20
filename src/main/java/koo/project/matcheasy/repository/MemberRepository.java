@@ -1,25 +1,26 @@
 package koo.project.matcheasy.repository;
 
-import koo.project.matcheasy.domain.member.MemberEntity;
-import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.dto.MemberDto;
+import koo.project.matcheasy.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Slf4j
-@RequiredArgsConstructor
 @Repository
+@Transactional(readOnly = true)
 public class MemberRepository {
 
-    private static Map<Long, Member> store = new HashMap<>();
-    private static long sequence = 0L;
+    @PersistenceContext
+    private EntityManager em;
 
-    private final EntityManager em;
-
+    @Transactional
     public void save(Member member){
         log.info("save: member={}", member);
         em.persist(member);
@@ -29,7 +30,7 @@ public class MemberRepository {
         return em.find(Member.class, id);
     }
 
-    public Optional<MemberEntity> findByLoginId(String longinId){
+    public Optional<Member> findByLoginId(String longinId){
 //        List<Member> all = findAll();
 //        for (Member m : all){
 //            if(m.getLoginId().equals(longinId)){
@@ -43,8 +44,8 @@ public class MemberRepository {
                 .findFirst();
     }
 
-    public List<MemberEntity> findAll(){
-        return em.createQuery("select m from MemberEntity m", MemberEntity.class)
+    public List<Member> findAll(){
+        return em.createQuery("select m from Member m", Member.class)
                 .getResultList();
     }
 

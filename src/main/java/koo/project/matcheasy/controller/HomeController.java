@@ -1,10 +1,9 @@
 package koo.project.matcheasy.controller;
 
-import koo.project.matcheasy.vo.Member;
+import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
 import koo.project.matcheasy.common.SessionConst;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String homeLogin(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member, Model model){
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberVo member, Model model){
 
         /*
         // 세션을 생성할 의도가 없기 때문에 false로 받아줌
