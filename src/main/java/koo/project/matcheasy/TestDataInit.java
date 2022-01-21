@@ -6,9 +6,14 @@ import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+@Component
+@Slf4j
 @RequiredArgsConstructor
 public class TestDataInit {
 
@@ -16,6 +21,7 @@ public class TestDataInit {
 
     @PostConstruct
     public void init(){
+        log.info("init method start >>>>>>>>>>>>>>>>");
         MemberDto memberDto = MemberDto.builder()
                 .loginId("test")
                 .password("test!")
@@ -26,5 +32,7 @@ public class TestDataInit {
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
         memberRepository.save(memberEntity);
+
+        log.info("init method end >>>>>>>>>>>>>>>>");
     }
 }

@@ -22,7 +22,6 @@ public class MemberRepository {
 
     @Transactional
     public void save(Member member){
-        log.info("save: member={}", member);
         em.persist(member);
     }
 

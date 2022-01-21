@@ -7,11 +7,11 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface MemberMapper {
+public interface MemberMapper extends EntityDtoMapper<MemberDto, Member>{
 
     MemberMapper MEMBER_MAPPER = Mappers.getMapper(MemberMapper.class);
 
-    @Mapping(target = "id", constant = "0L")
+//    @Mapping(target = "id", constant = "0L")
     Member toEntity(MemberDto dto);
 
     MemberDto toDto(Member entity);

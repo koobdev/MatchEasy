@@ -1,6 +1,8 @@
 package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.dto.LoginDto;
+import koo.project.matcheasy.exception.BadCredentialException;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.repository.MemberRepository;
 import koo.project.matcheasy.dto.MemberDto;
@@ -36,10 +38,15 @@ public class LoginService {
     }
 
 
-    public String createToken(MemberDto loginForm) {
+    public String createToken(LoginDto loginDto) throws BadCredentialException {
 
-        Member findMember = memberRepository.findByLoginId(loginForm.getLoginId())
+        Member findMember = memberRepository.findByLoginId(loginDto.getLoginId())
                 .orElseThrow(IllegalArgumentException::new);
+
+        // 예외처리 Handler TODO
+        if(!loginDto.getPassword().equals(findMember.getPassword())){
+            throw new BadCredentialException();
+        }
 
         //비밀번호 확인 등의 유효성 검사 진행
         return jwtTokenProvider.createToken(findMember.getLoginId());

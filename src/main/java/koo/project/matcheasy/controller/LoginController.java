@@ -1,5 +1,7 @@
 package koo.project.matcheasy.controller;
 
+import koo.project.matcheasy.dto.LoginDto;
+import koo.project.matcheasy.exception.BadCredentialException;
 import koo.project.matcheasy.service.LoginService;
 import koo.project.matcheasy.jwt.TokenResponse;
 import koo.project.matcheasy.dto.MemberDto;
@@ -65,9 +67,9 @@ public class LoginController {
 
     // Token Login
     @PostMapping("/token/login")
-    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute MemberDto form){
+    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) throws BadCredentialException {
 
-        String token = loginService.createToken(form);
+        String token = loginService.createToken(loginDto);
 
         return ResponseEntity
                 .ok()

@@ -8,17 +8,26 @@ import net.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.DiscriminatorColumn;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
+@Transactional
+//@Rollback(value = false)
+@SpringBootTest
 class MemberServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("MapStruct Dto<->Entity 변환 테스트")
@@ -62,7 +71,23 @@ class MemberServiceTest {
     }
 
     @Test
-    void findMember(){
+    public void joinTest2(){
+        // given
+        final MemberDto memberDto = MemberDto.builder()
+                .loginId("test")
+                .password("test!")
+                .name("테스트")
+                .age(20)
+                .email("aa@aa.com")
+                .build();
+
+        // when
+        memberService.join(memberDto);
+
+        //then
+        Optional<Member> findMember = memberRepository.findByLoginId("test");
+        assertThat(memberDto.getLoginId()).isEqualTo(findMember.get().getLoginId());
 
     }
+
 }
