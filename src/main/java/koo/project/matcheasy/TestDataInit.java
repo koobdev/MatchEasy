@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -22,12 +24,18 @@ public class TestDataInit {
     @PostConstruct
     public void init(){
         log.info("init method start >>>>>>>>>>>>>>>>");
+        List<String> skills = new ArrayList<>();
+        skills.add("Java");
+        skills.add("Spring");
+        skills.add("JPA");
         MemberDto memberDto = MemberDto.builder()
                 .loginId("test")
                 .password("test!")
                 .name("테스트")
                 .age(20)
                 .email("aa@aa.com")
+                .position("Back-End")
+                .skills(skills)
                 .build();
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
