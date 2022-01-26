@@ -1,6 +1,7 @@
 package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.MemberDto;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.MemberRepository;
@@ -87,7 +88,20 @@ class MemberServiceTest {
         //then
         Optional<Member> findMember = memberRepository.findByLoginId("test");
         assertThat(memberDto.getLoginId()).isEqualTo(findMember.get().getLoginId());
+    }
 
+    @Test
+    @DisplayName("")
+    void teamAddTest(){
+        // given
+        Optional<Member> optionalMember = memberRepository.findByLoginId("test");
+        Member member = optionalMember.get();
+        Team team = new Team();
+        team.addMember(member);
+
+        // when
+        // then
+        assertThat(member.getTeam()).isEqualTo(team.getId());
     }
 
 }

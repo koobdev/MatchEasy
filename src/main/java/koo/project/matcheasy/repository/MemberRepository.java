@@ -14,11 +14,12 @@ import java.util.*;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberRepository {
 
-    @PersistenceContext
-    private EntityManager em;
+    @PersistenceContext // 생략가능
+    private final EntityManager em;
 
     @Transactional
     public void save(Member member){

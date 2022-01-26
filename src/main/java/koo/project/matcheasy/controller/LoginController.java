@@ -1,7 +1,11 @@
 package koo.project.matcheasy.controller;
 
+import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.LoginDto;
 import koo.project.matcheasy.exception.BadCredentialException;
+import koo.project.matcheasy.repository.MemberRepository;
+import koo.project.matcheasy.repository.TeamRepository;
 import koo.project.matcheasy.service.LoginService;
 import koo.project.matcheasy.jwt.TokenResponse;
 import koo.project.matcheasy.dto.MemberDto;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -20,6 +25,8 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final LoginService loginService;
+    private final TeamRepository teamRepository;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") MemberDto form){
@@ -70,6 +77,17 @@ public class LoginController {
     public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) throws BadCredentialException {
 
         String token = loginService.createToken(loginDto);
+
+        Optional<Member> fm = memberRepository.findByLoginId("test");
+        Team team = new Team();
+        team.setName("testTeam");
+        team.addMember(fm.get());
+
+        // when
+        teamRepository.findByMember(fm.get())
+                .ifPresentOrElse(null ,() -> {
+                    teamRepository.save(team);
+                });
 
         return ResponseEntity
                 .ok()

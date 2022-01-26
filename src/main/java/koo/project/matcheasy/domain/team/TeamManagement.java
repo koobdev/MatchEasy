@@ -14,11 +14,18 @@ public class TeamManagement {
     private Long id;
     private String carryOver;
 
-    @OneToMany(mappedBy = "teamManagementWeekly")
+    @OneToOne(mappedBy = "teamManagement")
+    private Team team;
+
+    @OneToMany(mappedBy = "teamManagementWeekly", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Weekly> weeklyList = new ArrayList<>();
-    @OneToMany(mappedBy = "teamManagementDayly")
+    @OneToMany(mappedBy = "teamManagementDayly", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Dayly> daylyList = new ArrayList<>();
-    @OneToMany(mappedBy = "teamManagementPositionly")
+    @OneToMany(mappedBy = "teamManagementPositionly", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Positionly> positionlyList = new ArrayList<>();
 
+    // 연관관계 편의 메서드
+    public void addTeam(Team team){
+        this.id = team.getId();
+    }
 }
