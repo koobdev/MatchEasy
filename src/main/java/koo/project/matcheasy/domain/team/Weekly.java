@@ -16,6 +16,6 @@ public class Weekly {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEAM_MANAGEMENT_ID")
-    private TeamManagement teamManagementWeekly;
+    @JoinColumn(name = "TEAM_ID")
+    private Team teamWeekly;
 }

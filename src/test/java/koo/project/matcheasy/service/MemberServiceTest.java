@@ -8,12 +8,15 @@ import koo.project.matcheasy.repository.MemberRepository;
 import net.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.EntityManager;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +28,14 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class MemberServiceTest {
 
+    Logger log = (Logger) LoggerFactory.getLogger(MemberService.class);
+
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private EntityManager em;
 
     @Test
     @DisplayName("MapStruct Dto<->Entity 변환 테스트")
@@ -104,4 +111,22 @@ class MemberServiceTest {
         assertThat(member.getTeam()).isEqualTo(team.getId());
     }
 
+
+    @Test
+    @DisplayName("")
+    void findMemberSkills(){
+        // given
+        Member findMember = em.find(Member.class, 1L);
+        log.info("findMember >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info("memberName : {}, memberLoginId : {}", findMember.getName(), findMember.getLoginId());
+
+        // when, then
+//        List<String> getSkills = findMember.getSkills();
+//        log.info("getSkiils >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//
+//        for (String s : getSkills) {
+//            log.info("skill : {} / ", s);
+//        }
+
+    }
 }

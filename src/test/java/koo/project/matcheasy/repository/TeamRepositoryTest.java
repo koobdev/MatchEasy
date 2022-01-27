@@ -33,7 +33,7 @@ class TeamRepositoryTest {
         Optional<Member> findMember = memberRepository.findByLoginId("test");
         Member member = findMember.get();
         Team team = new Team();
-        team.setName("testTeam");
+//        team.setName("testTeam");
         team.addMember(member);
 
         // when

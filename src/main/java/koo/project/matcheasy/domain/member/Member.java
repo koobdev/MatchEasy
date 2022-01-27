@@ -2,7 +2,6 @@ package koo.project.matcheasy.domain.member;
 
 import koo.project.matcheasy.domain.team.Team;
 import lombok.*;
-import org.apache.ibatis.annotations.Many;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,12 +25,18 @@ public class Member {
     private String email;
     private String position;
 
-    @ElementCollection
-    @CollectionTable(
-            name = "MEMBER_SKILLS",
-            joinColumns = @JoinColumn(name = "MEMBER_ID")
-    )
-    private List<String> skills;
+    // 조회할 때 쿼리를 2번 날림. 프록시를 사용할 수 있도록 일대다 관계로 바꿀 것.
+//    @ElementCollection
+//    @CollectionTable(
+//            name = "MEMBER_SKILLS",
+//            joinColumns = @JoinColumn(name = "MEMBER_ID")
+//    )
+//    private List<String> skills;
+
+
+    @OneToMany(mappedBy = "memberSkill")
+    private List<MemberSkills> memberSkills;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
@@ -50,4 +55,10 @@ public class Member {
     )
     private LocalDateTime moddate;
 
+
+    // 연관관계 편의 메서드
+    public void addSkills(MemberSkills skills){
+        memberSkills.add(skills);
+        skills.builder().memberSkill(this);
+    }
 }

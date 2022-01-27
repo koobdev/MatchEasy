@@ -78,17 +78,6 @@ public class LoginController {
 
         String token = loginService.createToken(loginDto);
 
-        Optional<Member> fm = memberRepository.findByLoginId("test");
-        Team team = new Team();
-        team.setName("testTeam");
-        team.addMember(fm.get());
-
-        // when
-        teamRepository.findByMember(fm.get())
-                .ifPresentOrElse(null ,() -> {
-                    teamRepository.save(team);
-                });
-
         return ResponseEntity
                 .ok()
                 .body(new TokenResponse(token, "bearer"));

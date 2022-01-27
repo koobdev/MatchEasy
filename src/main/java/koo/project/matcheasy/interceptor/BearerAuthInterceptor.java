@@ -30,6 +30,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         String name = jwtTokenProvider.getSubject(token);
+        System.out.println(">>> access token : " + name);
         request.setAttribute("name", name);
         return true;
     }

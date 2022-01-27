@@ -1,6 +1,11 @@
 package koo.project.matcheasy.domain.board;
 
+import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.member.Member;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BoardContent {
 
     @Id @GeneratedValue
@@ -22,6 +31,10 @@ public class BoardContent {
     @OneToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
+
+    @OneToOne
+    @JoinColumn(name = "CHAT_ID")
+    private Chat chat;
 
     private LocalDateTime startdate;
     private LocalDateTime enddate;

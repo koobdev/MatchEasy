@@ -14,6 +14,6 @@ public class Positionly {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TEAM_MANAGEMENT_ID")
-    private TeamManagement teamManagementPositionly;
+    @JoinColumn(name = "TEAM_ID")
+    private Team teamPositionly;
 }
