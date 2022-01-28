@@ -1,16 +1,16 @@
 package koo.project.matcheasy.domain.board;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RecruitPosition {
 
     @Id @GeneratedValue
@@ -18,8 +18,4 @@ public class RecruitPosition {
     private Long id;
     private String position;
     private String content;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONTENT_ID")
-    private BoardContent boardContent;
 }

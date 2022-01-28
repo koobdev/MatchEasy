@@ -5,15 +5,16 @@ import koo.project.matcheasy.domain.member.Member;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
+import org.hibernate.validator.internal.engine.PredefinedScopeValidatorContextImpl;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Builder
-@ToString
 public class BoardDto {
 
     @NotEmpty
@@ -21,11 +22,18 @@ public class BoardDto {
     @NotEmpty
     private String content;
     @NotEmpty
-    private List<RecruitPosition> positions;
+    private List<RecruitPositionDto> positions;
     @NotNull
     private LocalDateTime startdate;
     @NotNull
     private LocalDateTime enddate;
+    private LocalDateTime regdate;
+    private LocalDateTime moddate;
     @NotNull
-    private Member writer;
+    private Long writerId;
+
+
+    public void addPosition(RecruitPositionDto recruitPositionDto){
+        positions.add(recruitPositionDto);
+    }
 }

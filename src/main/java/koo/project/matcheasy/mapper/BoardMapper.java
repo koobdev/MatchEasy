@@ -5,7 +5,7 @@ import koo.project.matcheasy.dto.BoardDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(uses = { RecruitPositionMapper.class })
 public interface BoardMapper extends EntityDtoMapper<BoardDto, BoardContent>{
 
     BoardMapper BOARD_MAPPER = Mappers.getMapper(BoardMapper.class);
