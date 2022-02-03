@@ -1,5 +1,6 @@
 package koo.project.matcheasy.dto;
 
+import koo.project.matcheasy.domain.board.BoardContent;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,5 +15,7 @@ public class RecruitPositionDto {
     private String position;
     @NotEmpty
     private String content;
+
+    private BoardContent boardContent;
 
 }

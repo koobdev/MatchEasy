@@ -1,6 +1,7 @@
 package koo.project.matcheasy.dto;
 
 import koo.project.matcheasy.domain.board.RecruitPosition;
+import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.Builder;
 import lombok.Data;
@@ -17,12 +18,14 @@ import java.util.List;
 @Builder
 public class BoardDto {
 
+    private Long id;
     @NotEmpty
     private String title;
     @NotEmpty
     private String content;
     @NotEmpty
     private List<RecruitPositionDto> positions;
+    private Chat chat;
     @NotNull
     private LocalDateTime startdate;
     @NotNull

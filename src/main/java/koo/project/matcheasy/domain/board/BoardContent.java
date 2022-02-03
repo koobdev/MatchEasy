@@ -11,22 +11,24 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @ToString
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardContent {
 
-    @Builder
-    public BoardContent(Long id, String title, String content, Chat chat, Long writerId, LocalDateTime startdate, LocalDateTime enddate, LocalDateTime regdate, LocalDateTime moddate) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.chat = chat;
-        this.writerId = writerId;
-        this.startdate = startdate;
-        this.enddate = enddate;
-        this.regdate = regdate;
-        this.moddate = moddate;
-    }
+//    @Builder
+//    public BoardContent(Long id, String title, String content, Chat chat, Long writerId, LocalDateTime startdate, LocalDateTime enddate, LocalDateTime regdate, LocalDateTime moddate) {
+//        this.id = id;
+//        this.title = title;
+//        this.content = content;
+//        this.chat = chat;
+//        this.writerId = writerId;
+//        this.startdate = startdate;
+//        this.enddate = enddate;
+//        this.regdate = regdate;
+//        this.moddate = moddate;
+//    }
 
     @Id @GeneratedValue
     @Column(name = "CONTENT_ID")
@@ -34,9 +36,8 @@ public class BoardContent {
     private String title;
     private String content;
 
-    @OneToMany
-    @JoinColumn(name = "CONTENT_ID")
-    private List<RecruitPosition> positionList = new ArrayList<>();
+    @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
+    private List<RecruitPosition> positions;
 
     @OneToOne
     @JoinColumn(name = "CHAT_ID")
@@ -62,6 +63,7 @@ public class BoardContent {
 
     // 연관관계 편의 메서드
     public void addRecruitPosition(RecruitPosition position){
-        positionList.add(position);
+        positions.add(position);
+        position.builder().boardContent(this);
     }
 }

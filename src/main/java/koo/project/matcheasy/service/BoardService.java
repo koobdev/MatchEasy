@@ -7,10 +7,12 @@ import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.RecruitPositionDto;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
+import koo.project.matcheasy.mapper.BoardContext;
 import koo.project.matcheasy.mapper.BoardMapper;
 import koo.project.matcheasy.mapper.RecruitPositionMapper;
 import koo.project.matcheasy.repository.BoardRepository;
 import koo.project.matcheasy.repository.MemberRepository;
+import koo.project.matcheasy.repository.RecruitPositionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,10 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final RecruitPositionRepository recruitPositionRepository;
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BoardContext boardContext;
 
 
     /**
@@ -52,15 +56,13 @@ public class BoardService {
         // TODO
         // MapStruct에서 Collection물고오는 객체들 처리에 대한 연구 필요
 
-        @NotEmpty List<RecruitPositionDto> positions = boardDto.getPositions();
-
-        BoardContent content = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
+        BoardContent content = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         log.info("toEntity : {}", content.toString());
 
-        for (RecruitPositionDto position : positions) {
-            RecruitPosition positionEntity = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
-            content.addRecruitPosition(positionEntity);
-        }
+//        for (RecruitPositionDto position : positions) {
+//            RecruitPosition positionEntity = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
+//            content.addRecruitPosition(positionEntity);
+//        }
 
 
 
@@ -99,7 +101,7 @@ public class BoardService {
 
         duplicatedWriterWithRequest(boardDto, name);
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
+        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         boardRepository.save(boardEntity);
     }
 
@@ -114,7 +116,7 @@ public class BoardService {
 
         duplicatedWriterWithRequest(boardDto, name);
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
+        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         boardRepository.delete(boardEntity);
     }
 

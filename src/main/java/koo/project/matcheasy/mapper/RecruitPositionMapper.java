@@ -1,6 +1,5 @@
 package koo.project.matcheasy.mapper;
 
-
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.dto.RecruitPositionDto;
 import org.mapstruct.Mapper;
