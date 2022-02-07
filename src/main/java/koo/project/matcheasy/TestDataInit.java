@@ -1,7 +1,9 @@
 package koo.project.matcheasy;
 
 import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.domain.member.MemberSkills;
 import koo.project.matcheasy.dto.MemberDto;
+import koo.project.matcheasy.dto.MemberSkillsDto;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
@@ -22,7 +24,6 @@ public class TestDataInit {
 
     private final MemberRepository memberRepository;
 
-
     @PostConstruct
     public void init(){
         log.info("init method start >>>>>>>>>>>>>>>>");
@@ -30,6 +31,7 @@ public class TestDataInit {
         skills.add("Java");
         skills.add("Spring");
         skills.add("JPA");
+
         MemberDto memberDto = MemberDto.builder()
                 .loginId("test")
                 .password("test!")
@@ -40,7 +42,13 @@ public class TestDataInit {
                 .skills(skills)
                 .build();
 
+        log.info("memberDto toString : {}", memberDto.toString());
+
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
+
+
+
+        log.info("memberEntity toString : {}", memberEntity.toString());
         memberRepository.save(memberEntity);
 
         log.info("init method end >>>>>>>>>>>>>>>>");

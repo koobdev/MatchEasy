@@ -16,6 +16,6 @@ public class RecruitPositionDto {
     @NotEmpty
     private String content;
 
-    private BoardContent boardContent;
+    private Long positionId;
 
 }

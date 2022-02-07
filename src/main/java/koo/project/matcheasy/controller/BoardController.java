@@ -21,13 +21,22 @@ public class BoardController {
     public ResponseEntity<BoardDto> register(@Valid @RequestBody BoardDto boardDto){
         BoardDto response = boardService.registerContent(boardDto);
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .body(response);
     }
 
-    @PostMapping("/test/board/update")
-    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request) throws Exception {
-        boardService.updateContent(boardDto, request);
-
-        return ResponseEntity.ok().body(boardDto);
-    }
+//    @PostMapping("/test/board/update")
+//    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request){
+//        boardService.editContent(boardDto, request);
+//
+//        return ResponseEntity.ok()
+//                .build();
+//    }
+//
+//    @PostMapping("/test/board/update")
+//    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request) throws Exception {
+//        boardService.updateContent(boardDto, request);
+//
+//        return ResponseEntity.ok().body(boardDto);
+//    }
 }

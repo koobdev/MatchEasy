@@ -5,6 +5,7 @@ import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.MemberDto;
+import koo.project.matcheasy.dto.RecruitPositionDto;
 import koo.project.matcheasy.mapper.BoardMapper;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.BoardRepository;
@@ -46,11 +47,11 @@ class BoardServiceTest {
         // given
 
         // position
-        RecruitPosition recruitPosition = RecruitPosition.builder()
+        RecruitPositionDto recruitPosition = RecruitPositionDto.builder()
                 .position("BE")
                 .content("I WANT BE")
                 .build();
-        List<RecruitPosition> list = new ArrayList<>();
+        List<RecruitPositionDto> list = new ArrayList<>();
         list.add(recruitPosition);
 
         // member entity
@@ -70,6 +71,7 @@ class BoardServiceTest {
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
 
+        Member member = em.find(Member.class, memberEntity.getId());
 
         BoardDto boardDto = BoardDto.builder()
                 .title("TestTitle")
@@ -77,7 +79,7 @@ class BoardServiceTest {
                 .positions(list)
                 .startdate(LocalDateTime.now())
                 .enddate(LocalDateTime.now())
-                .writer(memberEntity)
+                .writerId(member.getId())
                 .build();
 
         // when

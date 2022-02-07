@@ -2,6 +2,7 @@ package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
+import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.RecruitPositionDto;
@@ -37,6 +38,7 @@ public class BoardService {
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
     private final BoardContext boardContext;
+    private final ChatService chatService;
 
 
     /**
@@ -59,6 +61,15 @@ public class BoardService {
         BoardContent content = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         log.info("toEntity : {}", content.toString());
 
+//        List<RecruitPositionDto> positionList = boardDto.getPositionList();
+//
+//        for (RecruitPositionDto position : positionList) {
+//            log.info("position : {}, content : {}", position.getPosition(), position.getContent());
+////            content.addRecruitPosition(position);
+//            RecruitPosition p = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
+//            p.builder().boardContent(content);
+//        }
+
 //        for (RecruitPositionDto position : positions) {
 //            RecruitPosition positionEntity = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
 //            content.addRecruitPosition(positionEntity);
@@ -74,18 +85,16 @@ public class BoardService {
 //            content.addRecruitPosition(position);
 //        }
 
-//        @NotEmpty List<RecruitPosition> pList = boardDto.getPositions();
-//
-//        for (RecruitPosition position : pList) {
-//            log.info("position : {}, content : {}", position.getPosition(), position.getContent());
-//            content.addRecruitPosition(position);
-//        }
-
 //        log.info("AFTER CONVERT >>>>>>>>>>>>>>>>>>>>>>>");
 //        log.info("board title : {}, board content : {}", content.getTitle(), content.getContent());
 
-        boardRepository.save(content);
 
+
+        // 채팅방 자동생성
+        Chat chatRoom = chatService.createChatRoom(boardDto);
+        content.addChat(chatRoom);
+
+        boardRepository.save(content);
         return boardDto;
     }
 

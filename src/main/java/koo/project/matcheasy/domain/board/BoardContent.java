@@ -37,9 +37,9 @@ public class BoardContent {
     private String content;
 
     @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
-    private List<RecruitPosition> positions;
+    private List<RecruitPosition> positions = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "CHAT_ID")
     private Chat chat;
 
@@ -65,5 +65,9 @@ public class BoardContent {
     public void addRecruitPosition(RecruitPosition position){
         positions.add(position);
         position.builder().boardContent(this);
+    }
+
+    public void addChat(Chat chat){
+        this.chat = chat;
     }
 }
