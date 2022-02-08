@@ -12,6 +12,7 @@ import koo.project.matcheasy.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class LoginController {
 
@@ -29,7 +30,7 @@ public class LoginController {
     private final MemberRepository memberRepository;
 
     @GetMapping("/login")
-    public String loginForm(@ModelAttribute("loginForm") MemberDto form){
+    public String loginForm(){
         return "login/loginForm";
     }
 

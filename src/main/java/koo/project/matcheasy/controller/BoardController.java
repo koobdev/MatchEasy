@@ -5,13 +5,15 @@ import koo.project.matcheasy.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class BoardController {
 

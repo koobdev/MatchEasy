@@ -13,12 +13,12 @@ public class HomeController {
 
     private final MemberRepository memberRepository;
 
-//    @GetMapping("/")
+    @GetMapping("/")
     public String home(){
         return "home";
     }
 
-    @GetMapping("/")
+//    @GetMapping("/")
     public String homeLogin(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) MemberVo member, Model model){
 
