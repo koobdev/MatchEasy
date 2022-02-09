@@ -1,22 +1,39 @@
 package koo.project.matcheasy.controller;
 
+import com.sun.tools.jconsole.JConsoleContext;
+import koo.project.matcheasy.interceptor.AuthorizationExtractor;
+import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
 import koo.project.matcheasy.common.SessionConst;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import javax.servlet.http.HttpServletRequest;
+
+@Slf4j
+@Controller
 @RequiredArgsConstructor
 public class HomeController {
 
     private final MemberRepository memberRepository;
+    private final AuthorizationExtractor authExtractor;
 
     @GetMapping("/")
-    public String home(){
+    public String home(HttpServletRequest request){
+        String token = authExtractor.extract(request, "Bearer");
+        log.info("token : {}", token);
+
+        if(token.isEmpty()){
+            log.info("로그인으로 안가?");
+            return "login/loginForm";
+        }
         return "home";
     }
+
 
 //    @GetMapping("/")
     public String homeLogin(

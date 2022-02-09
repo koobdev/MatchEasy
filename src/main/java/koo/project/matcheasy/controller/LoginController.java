@@ -4,6 +4,7 @@ import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.LoginDto;
 import koo.project.matcheasy.exception.BadCredentialException;
+import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.repository.MemberRepository;
 import koo.project.matcheasy.repository.TeamRepository;
 import koo.project.matcheasy.service.LoginService;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
+
+import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
 
 @Slf4j
 @Controller
@@ -77,6 +80,10 @@ public class LoginController {
     @PostMapping("/token/login")
     public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) throws BadCredentialException {
 
+        Member findMember = loginService.login(loginDto.getLoginId(), loginDto.getPassword());
+        if(findMember == null){
+            throw new CustomException(MEMBER_NOT_FOUND);
+        }
         String token = loginService.createToken(loginDto);
 
         return ResponseEntity

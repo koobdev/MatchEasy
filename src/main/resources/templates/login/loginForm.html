@@ -23,6 +23,7 @@
     </div>
 
     <form>
+
         <div>
             <label for="loginId">로그인 ID</label>
             <input type="text" id="loginId" class="form-control">
@@ -47,11 +48,13 @@
         </div>
     </form>
 </div> <!-- /container -->
+<script type="text/javascript" th:src="@{/js/storage.js}"></script>
+<script type="text/javascript" th:src="@{/js/loginCheck.js}"></script>
 <script>
     function login() {
         let id = document.getElementById('loginId').value;
         let pw = document.getElementById('password').value;
-        let params = 'id='+id+'&password='+pw;
+        let params = 'loginId='+id+'&password='+pw;
         let url = "http://localhost:8080/token/login";
 
         let xhr = new XMLHttpRequest();
@@ -64,8 +67,12 @@
             if(xhr.readyState == 4 && xhr.status == 200) {
                 data = xhr.response.accessToken;
                 console.log(data);
-            }else if(xhr.readyState == 4 && xhr.status == 401){
-                document.getElementById("idPasswordError").hidden = false;
+                storage.set("token", data)
+
+                window.alert("로그인 성공. 환영합니다.");
+                window.location.reload();
+            }else if(xhr.readyState == 4 && xhr.status == 400){
+                window.alert(xhr.response.message);
                 // window.location.reload();
             }
         };

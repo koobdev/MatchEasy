@@ -1,5 +1,6 @@
 package koo.project.matcheasy.interceptor;
 
+import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static koo.project.matcheasy.exception.ErrorCode.INVALID_AUTH_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         }
 
         if (!jwtTokenProvider.validateToken(token)) {
-            throw new IllegalArgumentException("유효하지 않은 토큰");
+            throw new CustomException(INVALID_AUTH_TOKEN);
         }
 
         String name = jwtTokenProvider.getSubject(token);

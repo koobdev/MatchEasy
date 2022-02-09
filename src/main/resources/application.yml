@@ -12,6 +12,12 @@ spring:
         show_sql: true
         format_sql: true
 
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
 #  mvc:
 #    static-path-pattern: /static/**
 #  web:
