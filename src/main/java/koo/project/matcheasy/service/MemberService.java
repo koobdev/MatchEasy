@@ -2,7 +2,6 @@ package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.MemberDto;
-import koo.project.matcheasy.exception.UserDuplicatedException;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

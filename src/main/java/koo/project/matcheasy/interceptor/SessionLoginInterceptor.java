@@ -12,25 +12,25 @@ import java.io.IOException;
 @Slf4j
 public class SessionLoginInterceptor implements HandlerInterceptor {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        String requestURI = request.getRequestURI();
-        HttpSession session = request.getSession();
-
-        log.info("인증 체크 인터셉터 시작 : [{}]", requestURI);
-
-        if(session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null){
-            log.info("미인증 사용자 요청");
-            log.info("미인증 요청 클라이언트 IP : [{}]", ClientUtils.getClientIpAddress(request));
-            try {
-                response.sendRedirect("/login?redirectURI=" + requestURI);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        return true;
-    }
+//    @Override
+//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+//
+//        String requestURI = request.getRequestURI();
+//        HttpSession session = request.getSession();
+//
+//        log.info("인증 체크 인터셉터 시작 : [{}]", requestURI);
+//
+//        if(session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null){
+//            log.info("미인증 사용자 요청");
+//            log.info("미인증 요청 클라이언트 IP : [{}]", ClientUtils.getClientIpAddress(request));
+//            try {
+//                response.sendRedirect("/login?redirectURI=" + requestURI);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return false;
+//        }
+//
+//        return true;
+//    }
 }

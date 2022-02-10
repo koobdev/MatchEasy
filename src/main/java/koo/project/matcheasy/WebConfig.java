@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
         System.out.println("인터셉터 시작");
         registry.addInterceptor(bearerAuthInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/login", "/logout", "/members/add", "/css/**");
+                .excludePathPatterns("/", "/login", "/token/login", "/logout", "/members/add", "/css/**");
     }
 
 //    @Bean

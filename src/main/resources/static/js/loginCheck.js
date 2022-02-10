@@ -10,8 +10,6 @@ function userInfo(){
     let token = storage.get("token");
     let url = "http://localhost:8080/";
 
-    console.log("hhhhhhheee");
-
     // me함수를 사용한 로그인 사용자 정보(name, id) 찍어주기
     xhr.open('GET', url, true);
     xhr.setRequestHeader('Authorization', 'Bearer ' + token);

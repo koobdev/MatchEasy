@@ -1,15 +1,12 @@
 package koo.project.matcheasy.controller;
 
 import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.LoginDto;
-import koo.project.matcheasy.exception.BadCredentialException;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.repository.MemberRepository;
 import koo.project.matcheasy.repository.TeamRepository;
 import koo.project.matcheasy.service.LoginService;
 import koo.project.matcheasy.jwt.TokenResponse;
-import koo.project.matcheasy.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.Optional;
 
 import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
 
@@ -78,16 +74,28 @@ public class LoginController {
 
     // Token Login
     @PostMapping("/token/login")
-    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) throws BadCredentialException {
+    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) {
 
         Member findMember = loginService.login(loginDto.getLoginId(), loginDto.getPassword());
         if(findMember == null){
             throw new CustomException(MEMBER_NOT_FOUND);
         }
-        String token = loginService.createToken(loginDto);
+        TokenResponse tokenResponse = loginService.tokenIssued(loginDto);
 
         return ResponseEntity
                 .ok()
-                .body(new TokenResponse(token, "bearer"));
+                .body(tokenResponse);
+    }
+
+
+
+    @PostMapping("/token/reIssue")
+    public ResponseEntity<TokenResponse> tokenReIssued(TokenResponse response){
+
+        TokenResponse tokenResponse = loginService.tokenReIssued(response);
+
+        return ResponseEntity
+                .ok()
+                .body(tokenResponse);
     }
 }

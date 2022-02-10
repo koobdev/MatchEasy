@@ -16,9 +16,11 @@ public enum ErrorCode {
     NotBlank(BAD_REQUEST, "띄어쓰기를 허용하지 않습니다."),
     NotEmpty(BAD_REQUEST, "필수 입력칸을 모두 입력해주세요."),
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+//    BadCredentialException
 
 
     MEMBER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
+    REFRESH_TOKEN_EXPIRED(UNAUTHORIZED, "토큰이 만료되었습니다. 다시 로그인하세요."),
 
     ;
 

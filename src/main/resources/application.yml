@@ -45,6 +45,9 @@ server:
 
 security:
   jwt:
-    token:
+    accessToken:
       secret-key: accesskeybymatcheasy
-      expire-length: 3600000
+      expire-length: 60000
+
+    refreshToken:
+      expire-length: 360000

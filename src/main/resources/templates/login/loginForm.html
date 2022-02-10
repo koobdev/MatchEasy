@@ -71,7 +71,8 @@
 
                 window.alert("로그인 성공. 환영합니다.");
                 window.location.reload();
-            }else if(xhr.readyState == 4 && xhr.status == 400){
+            }else if(xhr.readyState == 4 && xhr.status == 400 ||
+                xhr.readyState == 4 && xhr.status == 404){
                 window.alert(xhr.response.message);
                 // window.location.reload();
             }

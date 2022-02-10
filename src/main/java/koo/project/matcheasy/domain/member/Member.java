@@ -25,6 +25,9 @@ public class Member {
     private String email;
     private String position;
 
+    // 로그인 시 저장되는 refreshToken
+    private String refreshToken;
+
     // 조회할 때 쿼리를 2번 날림. 프록시를 사용할 수 있도록 일대다 관계로 바꿀 것.
 //    @ElementCollection
 //    @CollectionTable(
@@ -60,5 +63,12 @@ public class Member {
     public void addSkills(MemberSkills skills){
         memberSkills.add(skills);
         skills.builder().memberSkill(this);
+    }
+
+    /**
+     * refreshToken 추가 메서드
+     */
+    public void addRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
     }
 }
