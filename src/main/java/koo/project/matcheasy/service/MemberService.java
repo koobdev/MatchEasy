@@ -2,6 +2,7 @@ package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.MemberDto;
+import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static koo.project.matcheasy.exception.ErrorCode.MEMBER_DUPLICATED;
 
 @Slf4j
 @Service
@@ -41,15 +44,8 @@ public class MemberService {
 
         log.info("service optional check : [{}]", findMember.toString());
 
-        /**
-         * Exception TODO
-         */
         findMember.ifPresent(m -> {
-            try {
-                throw new Exception("중복된 회원입니다.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            throw new CustomException(MEMBER_DUPLICATED);
         });
     }
 }

@@ -11,6 +11,7 @@ import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,6 +20,7 @@ import static koo.project.matcheasy.exception.ErrorCode.REFRESH_TOKEN_EXPIRED;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class LoginService {
 
@@ -52,13 +54,13 @@ public class LoginService {
     public TokenResponse tokenIssued(LoginDto loginDto) {
 
         String accessToken = jwtTokenProvider.createToken(loginDto.getLoginId());
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+        String refreshToken = jwtTokenProvider.createRefreshToken(loginDto.getLoginId());
 
         log.info("refresh Token ::::::::: {}", refreshToken);
 
         // refreshToken DB 저장 (추후 Redis 적용)
         Member member = memberRepository.findByLoginId(loginDto.getLoginId()).get();
-        member.addRefreshToken(refreshToken);
+        memberRepository.addRefreshToken(member, refreshToken);
 
         return new TokenResponse(accessToken, refreshToken, "Bearer");
     }
@@ -70,7 +72,11 @@ public class LoginService {
      * 2. RefreshToken 만료시 :::  RefreshToken 비교 시, Exception 발생 -> 재로그인
      */
     public TokenResponse tokenReIssued(TokenResponse response){
-        LoginDto loginDto = jwtTokenProvider.parseTokenToLoginId(response.getAccessToken());
+        log.info("refreshToken >>> {}", response.getRefreshToken());
+        LoginDto loginDto = jwtTokenProvider.parseTokenToLoginId(response.getRefreshToken());
+
+        log.info("id >>> {}, password >>> {}", loginDto.getLoginId(), loginDto.getPassword());
+
 
         memberRepository.findByLoginId(loginDto.getLoginId())
                 .filter(member -> member.getRefreshToken().equals(response.getRefreshToken()))

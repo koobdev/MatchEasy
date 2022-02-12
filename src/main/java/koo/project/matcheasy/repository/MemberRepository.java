@@ -49,6 +49,11 @@ public class MemberRepository {
                 .getResultList();
     }
 
+    public void addRefreshToken(Member member, String refreshToken){
+        member.addRefreshToken(refreshToken);
+        em.persist(member);
+    }
+
 //    public void clearStore(){
 //        store.clear();
 //    }

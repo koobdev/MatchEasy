@@ -33,6 +33,37 @@ public class LoginController {
         return "login/loginForm";
     }
 
+    // Token Login 요청
+    @PostMapping("/token/login")
+    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) {
+
+        Member findMember = loginService.login(loginDto.getLoginId(), loginDto.getPassword());
+        if(findMember == null){
+            throw new CustomException(MEMBER_NOT_FOUND);
+        }
+        TokenResponse tokenResponse = loginService.tokenIssued(loginDto);
+
+        return ResponseEntity
+                .ok()
+                .body(tokenResponse);
+    }
+
+
+
+    // 토큰 재발급 요청
+    @PostMapping("/token/reIssue")
+    public ResponseEntity<TokenResponse> tokenReIssued(@ModelAttribute TokenResponse response){
+
+        TokenResponse tokenResponse = loginService.tokenReIssued(response);
+
+        return ResponseEntity
+                .ok()
+                .body(tokenResponse);
+    }
+
+
+
+
     /**
      * @return 세션 로그인
      */
@@ -60,42 +91,14 @@ public class LoginController {
 //        return "redirect:" + redirectURI;
 //    }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request){
-
-        HttpSession session = request.getSession(false);
-        if(session != null){
-            session.invalidate();
-        }
-
-        return "redirect:/";
-    }
-
-
-    // Token Login
-    @PostMapping("/token/login")
-    public ResponseEntity<TokenResponse> tokenLogin(@Valid @ModelAttribute LoginDto loginDto) {
-
-        Member findMember = loginService.login(loginDto.getLoginId(), loginDto.getPassword());
-        if(findMember == null){
-            throw new CustomException(MEMBER_NOT_FOUND);
-        }
-        TokenResponse tokenResponse = loginService.tokenIssued(loginDto);
-
-        return ResponseEntity
-                .ok()
-                .body(tokenResponse);
-    }
-
-
-
-    @PostMapping("/token/reIssue")
-    public ResponseEntity<TokenResponse> tokenReIssued(TokenResponse response){
-
-        TokenResponse tokenResponse = loginService.tokenReIssued(response);
-
-        return ResponseEntity
-                .ok()
-                .body(tokenResponse);
-    }
+//    @PostMapping("/logout")
+//    public String logout(HttpServletRequest request){
+//
+//        HttpSession session = request.getSession(false);
+//        if(session != null){
+//            session.invalidate();
+//        }
+//
+//        return "redirect:/";
+//    }
 }

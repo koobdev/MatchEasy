@@ -27,6 +27,11 @@ public class BoardController {
                 .body(response);
     }
 
+    @GetMapping("/board/{idx}")
+    public void content(@PathVariable("idx") int idx){
+
+    }
+
 //    @PostMapping("/test/board/update")
 //    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request){
 //        boardService.editContent(boardDto, request);

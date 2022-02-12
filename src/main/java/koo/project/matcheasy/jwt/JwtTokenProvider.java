@@ -12,16 +12,13 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
     private String secretKey;
-    private long accessTokenValidityInMilliseconds;
-    private long refreshTokenValidityInMilliseconds;
+
+    private long accessTokenValidityInMilliseconds = 1000L * 60 * 30; // 30분;
+    private long refreshTokenValidityInMilliseconds = 1000L * 60 * 60 * 24 * 7; // 7일;
 
     public JwtTokenProvider(
-            @Value("${security.jwt.accessToken.secret-key}") String secretKey,
-            @Value("${security.jwt.accessToken.expire-length}") long accessTokenValidityInMilliseconds,
-            @Value("${security.jwt.refreshToken.expire-length}") long refreshTokenValidityInMilliseconds) {
+            @Value("${security.jwt.accessToken.secret-key}") String secretKey) {
         this.secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.accessTokenValidityInMilliseconds = accessTokenValidityInMilliseconds;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInMilliseconds;
     }
 
     // access Token 생성
@@ -41,12 +38,14 @@ public class JwtTokenProvider {
 
 
     // refresh Token 생성
-    public String createRefreshToken() {
+    public String createRefreshToken(String subject) {
+        Claims claims = Jwts.claims().setSubject(subject);
         Date now = new Date();
         Date validity = new Date(now.getTime()
                 + refreshTokenValidityInMilliseconds);
 
         return Jwts.builder()
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secretKey)

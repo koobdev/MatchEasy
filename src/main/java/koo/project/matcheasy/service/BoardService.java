@@ -6,6 +6,8 @@ import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.RecruitPositionDto;
+import koo.project.matcheasy.exception.CustomException;
+import koo.project.matcheasy.exception.ErrorCode;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.mapper.BoardContext;
@@ -25,6 +27,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
+
+import static koo.project.matcheasy.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -100,6 +104,15 @@ public class BoardService {
 
 
     /**
+     * 글 열기
+     */
+    public void openContent(){
+
+    }
+
+
+
+    /**
      * 글 수정
      */
     public void updateContent(BoardDto boardDto, HttpServletRequest request) throws Exception {
@@ -139,7 +152,7 @@ public class BoardService {
         Member writer = memberRepository.findById(boardDto.getWriterId());
 
         if(!boardDto.getWriterId().equals(writer.getId())){
-            throw new Exception("글 작성자만 수정 가능합니다.");
+            throw new CustomException(FAIL_MEMBER_AUTHORIZED);
         }
     }
 
@@ -156,11 +169,7 @@ public class BoardService {
 
         findDuplicatedWriter
                 .ifPresent(b -> {
-                    try {
-                        throw new Exception("이미 작성된 게시글이 존재합니다.");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    throw new CustomException(CONTENT_DUPLICATED);
                 });
     }
 }

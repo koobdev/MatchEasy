@@ -33,4 +33,6 @@ public interface BoardMapper  {
 
 //    @Override
     BoardDto toDto(final BoardContent entity);
+
+    BoardContent toEntity(BoardDto boardDto);
 }
