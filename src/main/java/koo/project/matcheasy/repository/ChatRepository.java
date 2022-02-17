@@ -1,6 +1,7 @@
 package koo.project.matcheasy.repository;
 
 import koo.project.matcheasy.domain.chat.Chat;
+import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

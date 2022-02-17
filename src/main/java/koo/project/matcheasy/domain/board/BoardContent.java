@@ -1,6 +1,7 @@
 package koo.project.matcheasy.domain.board;
 
 import koo.project.matcheasy.domain.chat.Chat;
+import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.*;
 
@@ -39,9 +40,9 @@ public class BoardContent {
     @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
     private List<RecruitPosition> positions = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CHAT_ID")
-    private Chat chat;
+    private ChatRoom chatRoom;
 
     private Long writerId;
 
@@ -67,7 +68,8 @@ public class BoardContent {
         position.builder().boardContent(this);
     }
 
-    public void addChat(Chat chat){
-        this.chat = chat;
+    public void addChatRoom(ChatRoom chatRoom){
+        this.chatRoom = chatRoom;
+        chatRoom.builder().boardContent(this);
     }
 }

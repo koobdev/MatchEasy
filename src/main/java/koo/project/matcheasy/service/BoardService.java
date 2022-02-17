@@ -1,31 +1,23 @@
 package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.board.BoardContent;
-import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.chat.Chat;
+import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
-import koo.project.matcheasy.dto.RecruitPositionDto;
 import koo.project.matcheasy.exception.CustomException;
-import koo.project.matcheasy.exception.ErrorCode;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.mapper.BoardContext;
 import koo.project.matcheasy.mapper.BoardMapper;
-import koo.project.matcheasy.mapper.RecruitPositionMapper;
-import koo.project.matcheasy.repository.BoardRepository;
-import koo.project.matcheasy.repository.MemberRepository;
-import koo.project.matcheasy.repository.RecruitPositionRepository;
+import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static koo.project.matcheasy.exception.ErrorCode.*;
@@ -42,7 +34,8 @@ public class BoardService {
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
     private final BoardContext boardContext;
-    private final ChatService chatService;
+    private final ChatRoomService chatRoomService;
+    private final ChatRoomRepository chatRoomRepository;
 
 
     /**
@@ -95,13 +88,12 @@ public class BoardService {
 
 
         // 채팅방 자동생성
-        Chat chatRoom = chatService.createChatRoom(boardDto);
-        content.addChat(chatRoom);
+        chatRoomService.createChatRoom(content);
 
+        // 게시글 저장
         boardRepository.save(content);
         return boardDto;
     }
-
 
     /**
      * 글 열기
