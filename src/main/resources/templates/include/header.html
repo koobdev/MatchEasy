@@ -1,10 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<layout>
+    <header id="top-head" class="uk-position-fixed">
+        <div class="uk-container uk-container-expand">
+            <nav class="uk-navbar" data-uk-navbar="mode:click; duration: 250">
+                <div class="uk-navbar-left">
+                    <div class="uk-navbar-item uk-padding-remove-left uk-light">
+                        <a class="uk-navbar-toggle uk-padding-remove-left uk-hidden@m"
+                           data-uk-toggle="target:#offcanvas-nav" data-uk-navbar-toggle-icon
+                           href="#">
+                        </a>
+                        <i class="mdi mdi-file-table menu-icon uk-margin-small-right"></i>
+                        <span class="uk-text-white uk-text-1_1">TITLE</span>
+                    </div>
+                    <ul class="uk-navbar-nav uk-visible@m">
+                    </ul>
+                </div>
+                <div class="uk-navbar-right uk-visible@m">
+                    <ul class="uk-iconnav">
+                        <li class="uk-margin-small-right"><a href=""
+                                                             uk-tooltip="title: 알림; pos:bottom;"
+                                                             uk-icon="icon: bell; ratio: 1.5"></a></li>
+                        <li><a href="#" uk-tooltip="title: 로그아웃; pos:bottom;"
+                               uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+</layout>
+<script>
+    window.onload = function(){
+        userInfoAndTokenCheck();
+    }
 
-</body>
-</html>
+    function userInfoAndTokenCheck(){
+        let xhr = new XMLHttpRequest();
+        let token = storage.get("accessToken");
+        let userInfos = ['loginId', 'name'];
+        let url = "http://localhost:8080/members/me";
+
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.responseType = 'json';
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                data = xhr.response;
+                storage.set('userId', data[userInfos[0]]);
+                storage.set('userName', data[userInfos[1]]);
+
+                // token이 refresh 되면 storage에 set해줌
+                if(data.token != null){
+                    storage.set("token", data.token);
+                }else if(data.id == null || data.password == null){
+                    UIkit.modal.alert('연결 시간이 초과되었습니다. 다시 로그인해주세요').then(function () {
+                        logout();
+                    });
+                }
+
+                for(key in userInfos){
+                    userDataInput(userInfos[key], data[userInfos[key]]);
+                }
+            }else if(xhr.readyState == 4 && xhr.status == 401){
+                // 토큰이 유효하지 않을 때
+                reIssueToken();
+            }
+        };
+    }
+
+    // 토큰 재발행 요청
+    function reIssueToken() {
+        let xhr = new XMLHttpRequest();
+        let accessToken = storage.get("accessToken");
+        let refreshToken = storage.get("refreshToken");
+        let url = "http://localhost:8080/token/reIssue";
+        let param = "accessToken="+accessToken+"&refreshToken="+refreshToken+"&tokenType=Bearer";
+
+        xhr.open('POST', url);
+        xhr.responseType = 'json';
+        xhr.send(param);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                accessToken = xhr.response.accessToken;
+                refreshToken = xhr.response.refreshToken;
+
+                storage.set("accessToken", accessToken);
+                storage.set("refreshToken", refreshToken);
+
+            }else if(xhr.readyState == 4 && xhr.status == 401){
+                // 토큰이 유효하지 않을 때
+                window.alert(xhr.response.message);
+                window.location.href = "/login/loginForm.html";
+            }
+        };
+    }
+
+    // user정보 출력
+    function userDataInput(key, value){
+        var elements = document.querySelectorAll('[data-ibsnt-user="' + key + '"]');
+
+        elements.forEach(function (domObj){
+            domObj.innerHTML = value;
+        });
+    }
+
+    // 로그아웃
+    function logout(){
+        storage.removeAll();
+        window.location.href = "/login/loginForm.html";
+    }
+</script>

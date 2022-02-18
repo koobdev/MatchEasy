@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         .container {
             max-width: 560px;
@@ -14,9 +13,11 @@
             color: #dc3545;
         }
     </style>
+    <script type="text/javascript" th:src="@{/js/storage.js}"></script>
 </head>
-<body>
 
+
+<body>
 <div class="container">
     <div class="py-5 text-center">
         <h2>로그인</h2>
@@ -47,9 +48,8 @@
             </div>
         </div>
     </form>
-</div> <!-- /container -->
-<script type="text/javascript" th:src="@{/js/storage.js}"></script>
-<script type="text/javascript" th:src="@{/js/loginCheck.js}"></script>
+</div>
+
 <script>
     function login() {
         let id = document.getElementById('loginId').value;
@@ -65,16 +65,17 @@
 
         xhr.onreadystatechange = function () {
             if(xhr.readyState == 4 && xhr.status == 200) {
-                data = xhr.response.accessToken;
-                console.log(data);
-                storage.set("token", data)
+                accessToken = xhr.response.accessToken;
+                refreshToken = xhr.response.refreshToken;
+                storage.set("accessToken", accessToken);
+                storage.set("refreshToken", refreshToken);
 
                 window.alert("로그인 성공. 환영합니다.");
-                window.location.reload();
+                location.replace("/home");
             }else if(xhr.readyState == 4 && xhr.status == 400 ||
                 xhr.readyState == 4 && xhr.status == 404){
+
                 window.alert(xhr.response.message);
-                // window.location.reload();
             }
         };
     }

@@ -32,8 +32,7 @@ public enum ErrorCode {
     FAIL_MEMBER_AUTHORIZED(FORBIDDEN, "게시글은 작성자만 수정이 가능합니다."),
 
 
-
-
+    NOT_EXIST_TOKEN(NOT_FOUND, "토큰이 존재하지 않습니다."),
     REFRESH_TOKEN_EXPIRED(UNAUTHORIZED, "토큰이 만료되었습니다. 다시 로그인하세요."),
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "유효하지 않은 토큰입니다."),
 

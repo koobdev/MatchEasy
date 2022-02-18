@@ -23,20 +23,13 @@ public class HomeController {
     private final AuthorizationExtractor authExtractor;
 
     @GetMapping("/")
-    public String home(HttpServletRequest request){
-        String token = authExtractor.extract(request, "Bearer");
-        log.info("token : {}", token);
-
-        if(token.isEmpty()){
-            log.info("로그인으로 안가?");
-            return "login/loginForm";
-        }
-        return "home";
+    public String home(){
+        return "login/loginForm";
     }
 
-    @GetMapping("/test")
+    @GetMapping("/home")
     public String test(){
-        return "test";
+        return "home";
     }
 
 

@@ -1,15 +1,18 @@
 package koo.project.matcheasy.controller;
 
 import koo.project.matcheasy.dto.MemberDto;
+import koo.project.matcheasy.dto.MemberMeDto;
 import koo.project.matcheasy.service.MemberService;
 import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Slf4j
@@ -35,6 +38,17 @@ public class MemberController {
         return ResponseEntity
                 .ok()
                 .body(joinMember);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberMeDto> me(HttpServletRequest request){
+
+        log.info("token >>>>>>>> {}", request.getHeader("Authorization"));
+        MemberMeDto memberMeDto = memberService.me(request);
+
+        return ResponseEntity
+                .ok()
+                .body(memberMeDto);
     }
 
 }
