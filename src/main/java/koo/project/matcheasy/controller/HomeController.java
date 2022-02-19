@@ -27,9 +27,9 @@ public class HomeController {
         return "login/loginForm";
     }
 
-    @GetMapping("/home")
-    public String test(){
-        return "home";
+    @GetMapping("/main")
+    public String main(){
+        return "board/list";
     }
 
 

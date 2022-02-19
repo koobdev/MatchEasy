@@ -1,5 +1,6 @@
 package koo.project.matcheasy.domain.chat;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.board.BoardContent;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class ChatRoom {
     private Long writerId;
     private String writerName;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "chatRoom")
     private BoardContent boardContent;
 

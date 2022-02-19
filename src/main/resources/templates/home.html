@@ -4,8 +4,34 @@
         <meta charset="utf-8">
         <link th:href="@{/css/bootstrap.min.css}"
               href="css/bootstrap.min.css" rel="stylesheet">
+        <script type="text/javascript" th:src="@{/js/storage.js}"></script>
     </head>
     <body>
         홈화면입니다.
+
+        <button id="board" onclick="openList()">
+            게시글목록
+        </button>
     </body>
+
+<script type="text/javascript">
+
+    function openList(){
+        let accessToken = storage.get("accessToken");
+        let url = "http://localhost:8080/board/listForm";
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url, false);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                window.alert("게시글 리스트로 이동합니다.");
+                window.location.href = "board/list";
+            }
+        };
+    }
+
+</script>
 </html>

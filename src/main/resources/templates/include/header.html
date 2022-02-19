@@ -48,18 +48,9 @@
                 storage.set('userId', data[userInfos[0]]);
                 storage.set('userName', data[userInfos[1]]);
 
-                // token이 refresh 되면 storage에 set해줌
-                if(data.token != null){
-                    storage.set("token", data.token);
-                }else if(data.id == null || data.password == null){
-                    UIkit.modal.alert('연결 시간이 초과되었습니다. 다시 로그인해주세요').then(function () {
-                        logout();
-                    });
-                }
-
-                for(key in userInfos){
-                    userDataInput(userInfos[key], data[userInfos[key]]);
-                }
+                // for(key in userInfos){
+                //     userDataInput(userInfos[key], data[userInfos[key]]);
+                // }
             }else if(xhr.readyState == 4 && xhr.status == 401){
                 // 토큰이 유효하지 않을 때
                 reIssueToken();

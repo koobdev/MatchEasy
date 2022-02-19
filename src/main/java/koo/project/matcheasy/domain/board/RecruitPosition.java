@@ -25,5 +25,6 @@ public class RecruitPosition {
 
     public void setBoardContent(BoardContent boardContent) {
         this.boardContent = boardContent;
+        boardContent.getPositions().add(this);
     }
 }

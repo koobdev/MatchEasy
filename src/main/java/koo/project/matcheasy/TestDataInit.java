@@ -26,7 +26,7 @@ public class TestDataInit {
 
     @PostConstruct
     public void init(){
-        log.info("init method start >>>>>>>>>>>>>>>>");
+        log.info("init method start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         List<String> skills = new ArrayList<>();
         skills.add("Java");
         skills.add("Spring");
@@ -42,15 +42,29 @@ public class TestDataInit {
                 .skills(skills)
                 .build();
 
+        MemberDto memberDto2 = MemberDto.builder()
+                .loginId("test2")
+                .password("test!")
+                .name("테스트2")
+                .age(22)
+                .email("bb@bb.com")
+                .position("Front-End")
+                .skills(skills)
+                .build();
+
         log.info("memberDto toString : {}", memberDto.toString());
+        log.info("memberDto2 toString : {}", memberDto2.toString());
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
-
+        Member memberEntity2 = MemberMapper.MEMBER_MAPPER.toEntity(memberDto2);
 
 
         log.info("memberEntity toString : {}", memberEntity.toString());
-        memberRepository.save(memberEntity);
+        log.info("memberEntity2 toString : {}", memberEntity2.toString());
 
-        log.info("init method end >>>>>>>>>>>>>>>>");
+        memberRepository.save(memberEntity);
+        memberRepository.save(memberEntity2);
+
+        log.info("init method end >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 }

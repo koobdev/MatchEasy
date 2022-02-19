@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 
+<head th:include="/include/head.html">
+    <title>TITLE</title>
+</head>
+<body>
+<div th:include="/include/header.html"></div>
 
 <div class="container">
     <div class="col-6">
         <h1>test chat room here</h1>
     </div>
     <div>
-        <div id="msgArea" class="col"></div>
+        <div id="msgArea" class="col">
+
+        </div>
         <div class="col-6">
             <div class="input-group mb-3">
                 <input type="text" id="msg" class="form-control">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
+                    <button class="btn btn-outline-secondary" type="button" id="button-send" onclick="send()">전송</button>
                 </div>
             </div>
         </div>
@@ -20,6 +27,7 @@
     <div class="col-6"></div>
 </div>
 
+</body>
 
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -27,29 +35,28 @@
 
 <script type="text/javascript">
 
-    let detail = storage.get("boardDetail");
+    let accessToken = storage.get("accessToken");
+    let detail = storage.get("contentDetail");
     let url = "http://localhost:8080/board/" + detail;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
     xhr.responseType = 'json';
     xhr.send();
 
     xhr.onreadystatechange = function () {
         if(xhr.readyState == 4 && xhr.status == 200) {
-            let data = xhr.response;
-            let chatRoomInfo = xhr.response.chatRoom;
+            let data = xhr.response.chatRoom;
             console.log(data);
-
-            connectSock(chatRoomInfo);
+            connectSock(data);
         }
     };
 
-
     function connectSock(data){
-        let roomName = [[${room.name}]];
+
         let roomId = data.id;
-        let username = [[${#authentication.principal.username}]];
+        let username = storage.get("userId");
 
         let sockJs = new SockJS("/stomp/chat");
         //1. SockJS를 내부에 들고있는 stomp를 내어줌
@@ -64,6 +71,7 @@
                 let content = JSON.parse(chat.body);
 
                 let writer = content.writer;
+                let message = content.message;
                 let str = '';
 
                 if(writer === username){
@@ -71,31 +79,41 @@
                     str += "<div class='alert alert-secondary'>";
                     str += "<b>" + writer + " : " + message + "</b>";
                     str += "</div></div>";
-                    $("#msgArea").append(str);
+
+                    let msgArea = document.querySelector("#msgArea");
+                    msgArea.innerHTML = msgArea.innerHTML + str;
                 }
                 else{
                     str = "<div class='col-6'>";
                     str += "<div class='alert alert-warning'>";
                     str += "<b>" + writer + " : " + message + "</b>";
                     str += "</div></div>";
-                    $("#msgArea").append(str);
+
+                    let msgArea = document.querySelector("#msgArea");
+                    msgArea.innerHTML = msgArea.innerHTML + str;
                 }
 
-                $("#msgArea").append(str);
+                let msgArea = document.querySelector("#msgArea");
+                msgArea.innerHTML = msgArea.innerHTML + str;
             });
 
             //3. send(path, header, message)로 메세지를 보낼 수 있음
             stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
         });
 
+        function send(){
+
+        }
+
         $("#button-send").on("click", function(e){
-            var msg = document.getElementById("msg");
+            let msg = document.getElementById("msg");
 
             console.log(username + ":" + msg.value);
             stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
             msg.value = '';
         });
     }
+
 </script>
 
 </html>

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,6 +41,27 @@ public class BoardService {
 
 
     /**
+     * 글 목록
+     */
+    public List<BoardDto> boardList(){
+
+        List<BoardDto> returnList = new ArrayList<>();
+
+        // Entity -> dto
+        boardRepository.findAll()
+                .forEach(content -> {
+                    BoardDto toDto = BoardMapper.BOARD_MAPPER.toDto(content);
+                    log.info("toDto toString ::: {}", toDto.toString());
+                    returnList.add(toDto);
+                });
+
+        log.info("returnLIst ::: {}", returnList);
+
+        return returnList;
+    }
+
+
+    /**
      * 글 작성
      */
     public BoardDto registerContent(BoardDto boardDto){
@@ -48,8 +71,8 @@ public class BoardService {
 //        log.info("BEFORE CONVERT >>>>>>>>>>>>>>>>>>>>>>>");
 //        log.info("boardDto title : {}, boardDto content : {}", boardDto.getTitle(), boardDto.getContent());
 
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        log.info("{}", boardDto.toString());
+//        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//        log.info("{}", boardDto.toString());
 
 
         // TODO
@@ -98,8 +121,14 @@ public class BoardService {
     /**
      * 글 열기
      */
-    public void openContent(){
+    public BoardDto openContent(Long boardDetail){
+        BoardContent findContent = boardRepository.findById(boardDetail);
+        log.info(">>>>>>> getContent :: {}", findContent.toString());
 
+        BoardDto boardDto = BoardMapper.BOARD_MAPPER.toDto(findContent);
+        log.info(">>>>>>> contentToDto :: {}", boardDto);
+
+        return boardDto;
     }
 
 

@@ -2,10 +2,9 @@ package koo.project.matcheasy.dto;
 
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.chat.Chat;
+import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.internal.engine.PredefinedScopeValidatorContextImpl;
 
 import javax.validation.constraints.NotEmpty;
@@ -16,6 +15,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardDto {
 
     private Long id;
@@ -25,7 +26,7 @@ public class BoardDto {
     private String content;
     @NotEmpty
     private List<RecruitPositionDto> positions;
-    private Chat chat;
+    private ChatRoom chatRoom;
     @NotNull
     private LocalDateTime startdate;
     @NotNull

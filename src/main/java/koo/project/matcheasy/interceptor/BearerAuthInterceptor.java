@@ -29,6 +29,7 @@ public class BearerAuthInterceptor implements HandlerInterceptor {
         log.info(">>> interceptor.preHandle 호출");
         log.info(">>>>>>>>> getUrl() :  {}", request.getRequestURI());
         String token = authExtractor.extract(request, "Bearer");
+        log.info(">>>>>>>>> token :  {}", token);
 
         // 요청 헤더에 토큰이 존재 하지 않거나,
         if (token.isEmpty()) {

@@ -46,6 +46,7 @@ public class MemberController {
         log.info("token >>>>>>>> {}", request.getHeader("Authorization"));
         MemberMeDto memberMeDto = memberService.me(request);
 
+        log.info("memberMeDto ::::: {} ", memberMeDto.toString());
         return ResponseEntity
                 .ok()
                 .body(memberMeDto);

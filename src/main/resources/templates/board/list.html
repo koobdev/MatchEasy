@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="/include/head.html">
+    <title>TITLE</title>
+</head>
+<body>
+    <div th:include="/include/header.html"></div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>내용</th>
+            <th>날짜</th>
+        </tr>
+        </thead>
+        <tbody id="boardTable">
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+
+<script>
+
+    let accessToken = storage.get("accessToken");
+    let url = "http://localhost:8080/board/list";
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response;
+            console.log(data);
+            let boardTable = document.getElementById("boardTable");
+            let append = "";
+            for(i in data){
+                append = "<tr onclick='openDetail(" + data[i].id + ")'>";
+                append += "<td>" + data[i].title + "</td>";
+                append += "<td>" + data[i].writerId + "</td>";
+                append += "<td>" + data[i].content + "</td>";
+                append += "<td>" + data[i].regdate + "</td>";
+                append += "</tr>";
+            }
+            boardTable.innerHTML = append;
+        }
+    };
+
+    function openDetail(id) {
+        storage.set("contentDetail", id);
+        window.location.href = "/form/chatRoom";
+    }
+</script>

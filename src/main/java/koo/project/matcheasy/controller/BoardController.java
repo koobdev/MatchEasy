@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -19,6 +20,9 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    /**
+     * 글 등록
+     */
     @PostMapping("/test/board/register")
     public ResponseEntity<BoardDto> register(@Valid @RequestBody BoardDto boardDto){
         BoardDto response = boardService.registerContent(boardDto);
@@ -27,9 +31,37 @@ public class BoardController {
                 .body(response);
     }
 
-    @GetMapping("/board/{idx}")
-    public void content(@PathVariable("idx") int idx){
 
+    /**
+     * 글 목록 폼
+     */
+    @GetMapping("/board/listForm")
+    public String boardListForm(){
+        return "/board/list";
+    }
+
+    /**
+     * 글 목록 get
+     */
+    @GetMapping("/board/list")
+    public ResponseEntity<List<BoardDto>> boardList(){
+        List<BoardDto> boardLists = boardService.boardList();
+
+        return ResponseEntity.ok()
+                .body(boardLists);
+    }
+
+
+    /**
+     * 글 열기
+     */
+    @GetMapping("/board/{idx}")
+    public ResponseEntity<BoardDto> content(@PathVariable("idx") Long idx){
+        // 게시글
+        BoardDto boardDto = boardService.openContent(idx);
+
+        return ResponseEntity.ok()
+                .body(boardDto);
     }
 
 //    @PostMapping("/test/board/update")

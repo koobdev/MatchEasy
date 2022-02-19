@@ -1,5 +1,7 @@
 package koo.project.matcheasy.domain.board;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
@@ -40,7 +42,8 @@ public class BoardContent {
     @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
     private List<RecruitPosition> positions = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "CHAT_ID")
     private ChatRoom chatRoom;
 
