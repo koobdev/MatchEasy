@@ -4,6 +4,7 @@ import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/board")
 public class BoardController {
 
     private final BoardService boardService;
@@ -23,7 +25,7 @@ public class BoardController {
     /**
      * 글 등록
      */
-    @PostMapping("/test/board/register")
+    @PostMapping("/register")
     public ResponseEntity<BoardDto> register(@Valid @RequestBody BoardDto boardDto){
         BoardDto response = boardService.registerContent(boardDto);
 
@@ -35,7 +37,7 @@ public class BoardController {
     /**
      * 글 목록 폼
      */
-    @GetMapping("/board/listForm")
+    @GetMapping("/listForm")
     public String boardListForm(){
         return "/board/list";
     }
@@ -43,7 +45,7 @@ public class BoardController {
     /**
      * 글 목록 get
      */
-    @GetMapping("/board/list")
+    @GetMapping("/list")
     public ResponseEntity<List<BoardDto>> boardList(){
         List<BoardDto> boardLists = boardService.boardList();
 
@@ -55,13 +57,23 @@ public class BoardController {
     /**
      * 글 열기
      */
-    @GetMapping("/board/{idx}")
+    @GetMapping("/{idx}")
     public ResponseEntity<BoardDto> content(@PathVariable("idx") Long idx){
         // 게시글
         BoardDto boardDto = boardService.openContent(idx);
 
         return ResponseEntity.ok()
                 .body(boardDto);
+    }
+
+    /**
+     * 선택한 포지션에 지원하기
+     */
+    @PostMapping("/recruit")
+    public String recruitPosition(@RequestParam("positionId") Long positionId, HttpServletRequest request){
+        boardService.recruit(positionId, request);
+
+        return null;
     }
 
 //    @PostMapping("/test/board/update")

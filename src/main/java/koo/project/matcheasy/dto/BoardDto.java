@@ -35,6 +35,7 @@ public class BoardDto {
     private LocalDateTime moddate;
     @NotNull
     private Long writerId;
+    private int status;
 
 
     public void addPosition(RecruitPositionDto recruitPositionDto){

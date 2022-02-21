@@ -29,7 +29,9 @@ public enum ErrorCode {
     MEMBER_DUPLICATED(CONFLICT, "이미 가입된 회원입니다."),
     CONTENT_DUPLICATED(CONFLICT, "이미 작성된 게시글이 존재합니다."),
     CHATROOM_DUPLICATED(CONFLICT, "이미 생성된 채팅방이 존재합니다."),
+    TEAM_DUPLICATED(CONFLICT, "이미 팀이 존재합니다."),
     FAIL_MEMBER_AUTHORIZED(FORBIDDEN, "게시글은 작성자만 수정이 가능합니다."),
+    FAIL_WRITER_AUTHORIZED(FORBIDDEN, "게시글은 작성자는 지원할 수 없습니다."),
 
 
     NOT_EXIST_TOKEN(NOT_FOUND, "토큰이 존재하지 않습니다."),

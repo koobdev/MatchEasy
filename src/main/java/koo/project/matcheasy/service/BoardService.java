@@ -1,6 +1,7 @@
 package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.board.BoardContent;
+import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
@@ -67,6 +68,10 @@ public class BoardService {
     public BoardDto registerContent(BoardDto boardDto){
 
         duplicatedWriter(boardDto);
+
+        // 게시글 상태의 Default는 0
+        // status 0 : 모집 중 , status 1 : 모집 완료
+        boardDto.setStatus(0);
 
 //        log.info("BEFORE CONVERT >>>>>>>>>>>>>>>>>>>>>>>");
 //        log.info("boardDto title : {}, boardDto content : {}", boardDto.getTitle(), boardDto.getContent());
@@ -138,11 +143,11 @@ public class BoardService {
      */
     public void updateContent(BoardDto boardDto, HttpServletRequest request) throws Exception {
         String token = authExtractor.extract(request, "Bearer");
-        String name = jwtTokenProvider.getSubject(token);
+        String loginId = jwtTokenProvider.getSubject(token);
 
-        log.info("RequestToken UserName ::::::: {}", name);
+        log.info("RequestToken LoginId ::::::: {}", loginId);
 
-        duplicatedWriterWithRequest(boardDto, name);
+        duplicatedWriterWithRequest(boardDto, loginId);
 
         BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         boardRepository.save(boardEntity);
@@ -153,16 +158,59 @@ public class BoardService {
      */
     public void deleteContent(BoardDto boardDto, HttpServletRequest request) throws Exception {
         String token = authExtractor.extract(request, "Bearer");
-        String name = jwtTokenProvider.getSubject(token);
+        String loginId = jwtTokenProvider.getSubject(token);
 
-        log.info("RequestToken UserName ::::::: {}", name);
+        log.info("RequestToken LoginId ::::::: {}", loginId);
 
-        duplicatedWriterWithRequest(boardDto, name);
+        duplicatedWriterWithRequest(boardDto, loginId);
 
         BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
         boardRepository.delete(boardEntity);
     }
 
+
+    /**
+     * 지원하기
+     * 1. 지원자가 팀을 가지고 있는지 체크
+     * 2. 지원자가 해당 게시글의 작성자인지 체크 && 저장(지원)
+     */
+    public void recruit(Long positionId, HttpServletRequest request){
+        String token = authExtractor.extract(request, "Bearer");
+        String loginId = jwtTokenProvider.getSubject(token);
+
+
+        // TODO CHECK FOR NULLPOINTER ERROR!!!!!!!!!!!!
+
+        // 1
+        memberRepository.findByLoginId(loginId)
+                .ifPresent(m-> {
+                    if(!Objects.isNull(m.getTeam())){
+                        throw new CustomException(TEAM_DUPLICATED);
+                    }
+                });
+
+        // 2
+        recruitPositionRepository.findById(positionId)
+                .ifPresent(r -> {
+                    recruitWriterCheck(r.getBoardContent().getWriterId(), loginId);
+
+                    // 1차 캐시에서 가져옴
+                    // position에 member저장
+                    memberRepository.findByLoginId(loginId)
+                            .ifPresent(r::addRecruitMember);
+                });
+    }
+
+
+    /**
+     * 지원자 - 게시글 작성자 체크
+     * 지원자가 해당 게시글의 작성자인지 체크
+     */
+    private void recruitWriterCheck(Long writerId, String loginId) {
+        if(memberRepository.findById(writerId).getLoginId().equals(loginId)){
+            throw new CustomException(FAIL_WRITER_AUTHORIZED);
+        }
+    }
 
 
     /**
@@ -172,7 +220,7 @@ public class BoardService {
     private void duplicatedWriterWithRequest(BoardDto boardDto, String name) throws Exception {
         Member writer = memberRepository.findById(boardDto.getWriterId());
 
-        if(!boardDto.getWriterId().equals(writer.getId())){
+        if(!name.equals(writer.getLoginId())){
             throw new CustomException(FAIL_MEMBER_AUTHORIZED);
         }
     }

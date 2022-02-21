@@ -19,7 +19,7 @@
             <div class="input-group mb-3">
                 <input type="text" id="msg" class="form-control">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="button-send" onclick="send()">전송</button>
+                    <button class="btn btn-outline-secondary" type="button" id="button-send">전송</button>
                 </div>
             </div>
         </div>
@@ -53,23 +53,29 @@
         }
     };
 
+
+
+
     function connectSock(data){
 
         let roomId = data.id;
         let username = storage.get("userId");
-
+        let stomp;
         let sockJs = new SockJS("/stomp/chat");
+
         //1. SockJS를 내부에 들고있는 stomp를 내어줌
-        let stomp = Stomp.over(sockJs);
+        stomp = Stomp.over(sockJs);
 
         //2. connection이 맺어지면 실행
         stomp.connect({}, function (){
             console.log("STOMP Connection")
 
+            //3. send(path, header, message)로 메세지를 보낼 수 있음
+            stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
+
             //4. subscribe(path, callback)으로 메세지를 받을 수 있음
             stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
                 let content = JSON.parse(chat.body);
-
                 let writer = content.writer;
                 let message = content.message;
                 let str = '';
@@ -92,27 +98,20 @@
                     let msgArea = document.querySelector("#msgArea");
                     msgArea.innerHTML = msgArea.innerHTML + str;
                 }
-
-                let msgArea = document.querySelector("#msgArea");
-                msgArea.innerHTML = msgArea.innerHTML + str;
             });
-
-            //3. send(path, header, message)로 메세지를 보낼 수 있음
-            stomp.send('/pub/chat/enter', {}, JSON.stringify({roomId: roomId, writer: username}))
         });
 
-        function send(){
-
-        }
-
-        $("#button-send").on("click", function(e){
+        document.getElementById("button-send").addEventListener("click", sendMsg);
+        function sendMsg() {
             let msg = document.getElementById("msg");
 
             console.log(username + ":" + msg.value);
             stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
             msg.value = '';
-        });
+        }
     }
+
+
 
 </script>
 

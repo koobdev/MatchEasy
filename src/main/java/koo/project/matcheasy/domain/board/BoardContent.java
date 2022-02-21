@@ -48,6 +48,7 @@ public class BoardContent {
     private ChatRoom chatRoom;
 
     private Long writerId;
+    private int status;
 
     private LocalDateTime startdate;
     private LocalDateTime enddate;
