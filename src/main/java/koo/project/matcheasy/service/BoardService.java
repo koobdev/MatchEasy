@@ -184,7 +184,9 @@ public class BoardService {
         // 1
         memberRepository.findByLoginId(loginId)
                 .ifPresent(m-> {
+                    log.info("Check 1 :::: {}", m.getLoginId());
                     if(!Objects.isNull(m.getTeam())){
+                        log.info("m.getTeam() is not Null !!!! -> Throw Custom Exception");
                         throw new CustomException(TEAM_DUPLICATED);
                     }
                 });
@@ -192,6 +194,8 @@ public class BoardService {
         // 2
         recruitPositionRepository.findById(positionId)
                 .ifPresent(r -> {
+
+                    log.info("Check 2 :::: id : {}, position L {}", r.getId(), r.getPosition());
                     recruitWriterCheck(r.getBoardContent().getWriterId(), loginId);
 
                     // 1차 캐시에서 가져옴

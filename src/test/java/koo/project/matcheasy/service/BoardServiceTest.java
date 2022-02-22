@@ -6,6 +6,7 @@ import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.MemberDto;
 import koo.project.matcheasy.dto.RecruitPositionDto;
+import koo.project.matcheasy.mapper.BoardContext;
 import koo.project.matcheasy.mapper.BoardMapper;
 import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.BoardRepository;
@@ -40,6 +41,8 @@ class BoardServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private EntityManager em;
+    @Autowired
+    private BoardContext boardContext;
 
     @Test
     @DisplayName("")
@@ -66,7 +69,7 @@ class BoardServiceTest {
                 .age(20)
                 .email("aa@aa.com")
                 .position("Back-End")
-                .skills(skills)
+//                .skills(skills)
                 .build();
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto);
@@ -83,7 +86,7 @@ class BoardServiceTest {
                 .build();
 
         // when
-        final BoardContent afterConvert = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
+        final BoardContent afterConvert = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
 
         // then
         log.info("boardDTO : {}", boardDto.toString());

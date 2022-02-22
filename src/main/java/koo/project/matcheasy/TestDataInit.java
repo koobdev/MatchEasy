@@ -27,10 +27,20 @@ public class TestDataInit {
     @PostConstruct
     public void init(){
         log.info("init method start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        List<String> skills = new ArrayList<>();
-        skills.add("Java");
-        skills.add("Spring");
-        skills.add("JPA");
+        List<MemberSkillsDto> skills = new ArrayList<>();
+        MemberSkillsDto dto1 = MemberSkillsDto.builder()
+                .skill("Java")
+                .build();
+        MemberSkillsDto dto2 = MemberSkillsDto.builder()
+                .skill("Spring")
+                .build();
+        MemberSkillsDto dto3 = MemberSkillsDto.builder()
+                .skill("JPA")
+                .build();
+        skills.add(dto1);
+        skills.add(dto2);
+        skills.add(dto3);
+
 
         MemberDto memberDto = MemberDto.builder()
                 .loginId("test")
@@ -39,7 +49,7 @@ public class TestDataInit {
                 .age(20)
                 .email("aa@aa.com")
                 .position("Back-End")
-                .skills(skills)
+                .memberSkills(skills)
                 .build();
 
         MemberDto memberDto2 = MemberDto.builder()
@@ -49,7 +59,7 @@ public class TestDataInit {
                 .age(22)
                 .email("bb@bb.com")
                 .position("Front-End")
-                .skills(skills)
+                .memberSkills(skills)
                 .build();
 
         log.info("memberDto toString : {}", memberDto.toString());
@@ -60,7 +70,15 @@ public class TestDataInit {
 
 
         log.info("memberEntity toString : {}", memberEntity.toString());
+        memberEntity.getMemberSkills().stream()
+                .forEach(s -> {
+                    log.info("Detail >>> getSkill : {}", s.getSkill());
+                    s.addMember(memberEntity);
+                });
         log.info("memberEntity2 toString : {}", memberEntity2.toString());
+
+
+
 
         memberRepository.save(memberEntity);
         memberRepository.save(memberEntity2);

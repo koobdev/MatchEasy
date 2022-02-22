@@ -1,5 +1,6 @@
 package koo.project.matcheasy.dto;
 
+import koo.project.matcheasy.domain.member.MemberSkills;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -25,6 +26,11 @@ public class MemberDto {
     @NotEmpty
     private String position;
     @NotEmpty
-    private List<String> skills;
+    private List<MemberSkillsDto> memberSkills;
+
+    // 연관관계 편의 메서드
+    public void addSkills(MemberSkillsDto skills){
+        memberSkills.add(skills);
+    }
 
 }

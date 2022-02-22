@@ -37,7 +37,7 @@ public class Member {
 //    private List<String> skills;
 
 
-    @OneToMany(mappedBy = "memberSkill")
+    @OneToMany(mappedBy = "member")
     private List<MemberSkills> memberSkills;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,9 +59,9 @@ public class Member {
 
 
     // 연관관계 편의 메서드
-    public void addSkills(MemberSkills skills){
+    public void addMemberSkills(MemberSkills skills){
         memberSkills.add(skills);
-        skills.builder().memberSkill(this);
+        skills.builder().member(this);
     }
 
     /**

@@ -1,0 +1,18 @@
+{
+  "loginId": "test",
+  "password": "test!",
+  "name": "테스트",
+  "age": "20",
+  "email": "aa@aa.com",
+  "position": "Back-End",
+  "skills": [
+    {
+      "skill" : "Java"
+    },
+    {
+      "skill" : "Spring"
+    },{
+      "skill" : "JPA"
+    }
+  ]
+}
