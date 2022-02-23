@@ -29,7 +29,7 @@ public class MemberController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<MemberDto> save(@Valid @ModelAttribute MemberDto member){
+    public ResponseEntity<MemberDto> save(@Valid @RequestBody MemberDto member){
 
 //        memberRepository.save(member);
 //        return "redirect:/";

@@ -15,6 +15,6 @@ import javax.validation.constraints.NotEmpty;
 public class MemberSkillsDto {
 
     private Long id;
-    @NotEmpty
+//    @NotEmpty
     private String skill;
 }

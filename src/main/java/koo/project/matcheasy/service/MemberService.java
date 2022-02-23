@@ -1,20 +1,28 @@
 package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.domain.member.MemberSkills;
 import koo.project.matcheasy.dto.LoginDto;
 import koo.project.matcheasy.dto.MemberDto;
 import koo.project.matcheasy.dto.MemberMeDto;
+import koo.project.matcheasy.dto.MemberSkillsDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
+import koo.project.matcheasy.mapper.MemberContext;
 import koo.project.matcheasy.mapper.MemberMapper;
+import koo.project.matcheasy.mapper.MemberSkillsMapper;
 import koo.project.matcheasy.repository.MemberRepository;
+import koo.project.matcheasy.repository.MemberSkillsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import static koo.project.matcheasy.exception.ErrorCode.MEMBER_DUPLICATED;
@@ -26,9 +34,13 @@ import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
 @Transactional
 public class MemberService {
 
+    private final EntityManager em;
     private final MemberRepository memberRepository;
+    private final MemberSkillsRepository memberSkillsRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authExtractor;
+
+    private final MemberContext memberContext;
 
     /**
      * 회원 가입
@@ -38,8 +50,23 @@ public class MemberService {
         validateDuplicateMember(member);
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(member);
-
+        log.info("memberEntity toString : {}", memberEntity.toString());
         memberRepository.save(memberEntity);
+
+        for (MemberSkillsDto memberSkillsDto : member.getMemberSkills()) {
+
+            MemberSkills memberSkillsEntity = MemberSkillsMapper.MEMBER_SKILLS_MAPPER.toEntity(memberSkillsDto);
+
+            log.info("memberSkillsEntity toString : {}", memberSkillsEntity.toString());
+            memberSkillsEntity.addMember(memberEntity);
+        }
+
+//        for(Iterator<MemberSkills> iter = memberSkillsEntity.iterator(); iter.hasNext();){
+//            MemberSkills skills = iter.next();
+//            skills.addMember(memberEntity);
+//        }
+
+//        memberRepository.save(memberEntity);
         return member;
     }
 

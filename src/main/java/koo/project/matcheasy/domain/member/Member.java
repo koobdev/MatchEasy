@@ -9,9 +9,9 @@ import java.util.*;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @ToString
 public class Member {
 
@@ -37,8 +37,8 @@ public class Member {
 //    private List<String> skills;
 
 
-    @OneToMany(mappedBy = "member")
-    private List<MemberSkills> memberSkills;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberSkills> memberSkills = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
@@ -57,12 +57,6 @@ public class Member {
     )
     private LocalDateTime moddate;
 
-
-    // 연관관계 편의 메서드
-    public void addMemberSkills(MemberSkills skills){
-        memberSkills.add(skills);
-        skills.builder().member(this);
-    }
 
     /**
      * refreshToken 추가 메서드

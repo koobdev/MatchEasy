@@ -10,6 +10,7 @@ import koo.project.matcheasy.mapper.MemberMapper;
 import koo.project.matcheasy.repository.MemberRepository;
 import net.bytebuddy.utility.dispatcher.JavaDispatcher;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.thymeleaf.util.ObjectUtils;
 
 import javax.persistence.DiscriminatorColumn;
@@ -57,7 +62,6 @@ class MemberServiceTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @Test
     @DisplayName("MapStruct Dto<->Entity 변환 테스트")
@@ -175,7 +179,7 @@ class MemberServiceTest {
         member.put("age", 20);
         member.put("email", "aa@aa.com");
         member.put("position", "Back-End");
-        member.put("skills", skill);
+        member.put("memberSkills", skill);
 
         mockMvc.perform(
                     post("/members/add")

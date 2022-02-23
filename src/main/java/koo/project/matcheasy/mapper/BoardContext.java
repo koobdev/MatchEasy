@@ -25,7 +25,9 @@ public class BoardContext {
 
     @AfterMapping
     public void establishRelation(@MappingTarget RecruitPosition recruitPosition){
-        recruitPosition.setBoardContent(boardContent);
+//        recruitPosition.setBoardContent(boardContent);
+
+
 //        recruitPosition.builder().boardContent(boardContent);
 //        recruitPosition.addBoardContent(boardContent);
     }

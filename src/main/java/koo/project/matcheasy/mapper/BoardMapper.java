@@ -1,13 +1,15 @@
 package koo.project.matcheasy.mapper;
 
 import koo.project.matcheasy.domain.board.BoardContent;
+import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
+import koo.project.matcheasy.dto.MemberDto;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 //@Mapper(uses = {RecruitPositionMapper.class})
 @Mapper
-public interface BoardMapper  {
+public interface BoardMapper extends EntityDtoMapper<BoardDto, BoardContent>{
 
     BoardMapper BOARD_MAPPER = Mappers.getMapper(BoardMapper.class);
 

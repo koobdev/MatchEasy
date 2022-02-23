@@ -45,6 +45,8 @@ server:
     session:
       tracking-modes: cookie
       timeout: 1800
+    encoding:
+      force-response: true
 
 security:
   jwt:
