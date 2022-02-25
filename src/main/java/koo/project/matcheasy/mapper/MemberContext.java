@@ -20,8 +20,6 @@ public class MemberContext {
     @BeforeMapping
     public void setEntity(@MappingTarget Member member){
         this.member = member;
-
-        log.info("HERE:::: MEMBNER : {}", member.getLoginId());
     }
 
     @AfterMapping

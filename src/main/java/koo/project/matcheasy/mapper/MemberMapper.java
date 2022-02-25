@@ -16,13 +16,14 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Mapper
-//        (uses = MemberSkillsMapper.class)
+        (collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
+                uses = MemberSkillsMapper.class)
 public interface MemberMapper{
 
     Logger log = (Logger) LoggerFactory.getLogger(MemberMapper.class);
 
     MemberMapper MEMBER_MAPPER = Mappers.getMapper(MemberMapper.class);
-//    MemberSkillsMapper memberSkillsMapper = Mappers.getMapper(MemberSkillsMapper.class);
+    MemberSkillsMapper memberSkillsMapper = Mappers.getMapper(MemberSkillsMapper.class);
 
 //    @Mapping(target = "memberSkills", ignore = true)
     Member toEntity(MemberDto dto);
@@ -33,11 +34,12 @@ public interface MemberMapper{
 //
 //        Member member = new Member();
 //
-//        log.info("dto.getMemberSkills :::::::::: {}", dto.getMemberSkills());
-//
 //        if(dto.getMemberSkills() != null){
 //            for(MemberSkillsDto memberSkillsDto : dto.getMemberSkills()){
-//                member.addMemberSkills(memberSkillsMapper.toEntity(memberSkillsDto));
+//                log.info("memberSkillsDto.toString() :: {}", memberSkillsDto.toString());
+////                member.addMemberSkills(memberSkillsMapper.toEntity(memberSkillsDto));
+//                MemberSkills memberSkillsEntity = memberSkillsMapper.toEntity(memberSkillsDto);
+//                memberSkillsEntity.addMember(member);
 //            }
 //        }
 //

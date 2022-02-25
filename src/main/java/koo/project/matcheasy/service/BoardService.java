@@ -2,18 +2,20 @@ package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
-import koo.project.matcheasy.domain.chat.Chat;
-import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
+import koo.project.matcheasy.dto.OkResponse;
+import koo.project.matcheasy.dto.RecruitPositionDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.mapper.BoardContext;
 import koo.project.matcheasy.mapper.BoardMapper;
+import koo.project.matcheasy.mapper.RecruitPositionMapper;
 import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,46 +75,13 @@ public class BoardService {
         // status 0 : 모집 중 , status 1 : 모집 완료
         boardDto.setStatus(0);
 
-//        log.info("BEFORE CONVERT >>>>>>>>>>>>>>>>>>>>>>>");
-//        log.info("boardDto title : {}, boardDto content : {}", boardDto.getTitle(), boardDto.getContent());
-
-//        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//        log.info("{}", boardDto.toString());
-
-
-        // TODO
-        // MapStruct에서 Collection물고오는 객체들 처리에 대한 연구 필요
-
-        BoardContent content = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
+        BoardContent content = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
         log.info("toEntity : {}", content.toString());
 
-//        List<RecruitPositionDto> positionList = boardDto.getPositionList();
-//
-//        for (RecruitPositionDto position : positionList) {
-//            log.info("position : {}, content : {}", position.getPosition(), position.getContent());
-////            content.addRecruitPosition(position);
-//            RecruitPosition p = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
-//            p.builder().boardContent(content);
-//        }
-
-//        for (RecruitPositionDto position : positions) {
-//            RecruitPosition positionEntity = RecruitPositionMapper.POSITION_MAPPER.toEntity(position);
-//            content.addRecruitPosition(positionEntity);
-//        }
-
-
-
-
-//        List<RecruitPosition> positionList = content.getPositionList();
-//
-//        for (RecruitPosition position : positionList) {
-//            log.info("position : {}, content : {}", position.getPosition(), position.getContent());
-//            content.addRecruitPosition(position);
-//        }
-
-//        log.info("AFTER CONVERT >>>>>>>>>>>>>>>>>>>>>>>");
-//        log.info("board title : {}, board content : {}", content.getTitle(), content.getContent());
-
+        for (RecruitPositionDto recruitPosition : boardDto.getPositions()) {
+            RecruitPosition position = RecruitPositionMapper.POSITION_MAPPER.toEntity(recruitPosition);
+            position.addBoardContent(content);
+        }
 
 
         // 채팅방 자동생성
@@ -149,7 +118,7 @@ public class BoardService {
 
         duplicatedWriterWithRequest(boardDto, loginId);
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
+        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
         boardRepository.save(boardEntity);
     }
 
@@ -164,7 +133,7 @@ public class BoardService {
 
         duplicatedWriterWithRequest(boardDto, loginId);
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
+        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
         boardRepository.delete(boardEntity);
     }
 
@@ -173,13 +142,11 @@ public class BoardService {
      * 지원하기
      * 1. 지원자가 팀을 가지고 있는지 체크
      * 2. 지원자가 해당 게시글의 작성자인지 체크 && 저장(지원)
+     * @return
      */
-    public void recruit(Long positionId, HttpServletRequest request){
+    public ResponseEntity<OkResponse> recruit(Long positionId, HttpServletRequest request){
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
-
-
-        // TODO CHECK FOR NULLPOINTER ERROR!!!!!!!!!!!!
 
         // 1
         memberRepository.findByLoginId(loginId)
@@ -199,10 +166,64 @@ public class BoardService {
                     recruitWriterCheck(r.getBoardContent().getWriterId(), loginId);
 
                     // 1차 캐시에서 가져옴
-                    // position에 member저장
+                    // position에 member저장 && status 1로 update(지원 상태)
                     memberRepository.findByLoginId(loginId)
-                            .ifPresent(r::addRecruitMember);
+                            .ifPresent(member -> {
+                                r.addRecruitMember(member);
+                                r.updateStatus(1);
+                            });
                 });
+
+        return OkResponse.toResponse("ok","포지션 지원을 완료하였습니다.");
+    }
+
+    /**
+     * 지원자 목록
+     * 내가 작성한 글과 포지션 지원자를 join해서 물고옴
+     */
+    public List<RecruitPosition> recruitList(HttpServletRequest request){
+        List<RecruitPosition> recruitPositionList = new ArrayList<>();
+        String token = authExtractor.extract(request, "Bearer");
+        String loginId = jwtTokenProvider.getSubject(token);
+
+        Member findMember = memberRepository.findByLoginId(loginId)
+                .orElseGet(() -> {
+                    throw new CustomException(MEMBER_NOT_FOUND);
+                });
+
+        log.info("FIND MEMBER :::::::::: {} , {}", findMember.getLoginId(), findMember.getId());
+
+        boardRepository.findByWriterId(findMember.getId())
+                .ifPresentOrElse(content -> {
+                    for (RecruitPosition position : content.getPositions()) {
+                        if(position.getBoardContent().getId().equals(content.getId())
+                                && position.getStatus() == 1){
+                            recruitPositionList.add(position);
+                        }
+                    }
+                }, () -> {
+                    throw new CustomException(CONTENT_NOT_FOUND);
+                });
+
+        return recruitPositionList;
+    }
+
+
+    public ResponseEntity<OkResponse> acceptOrReject(Long idx, int status, String message) {
+
+        recruitPositionRepository.findById(idx)
+                .ifPresent(r -> {
+                    if(status == 2){
+                        // 수락
+                        r.updateStatus(2);
+                    }else {
+                        // 거절
+                        r.updateStatus(3);
+                        r.updateRejectMessage(message);
+                    }
+                });
+
+        return OkResponse.toResponse("ok","완료하였습니다.");
     }
 
 
@@ -210,10 +231,11 @@ public class BoardService {
      * 지원자 - 게시글 작성자 체크
      * 지원자가 해당 게시글의 작성자인지 체크
      */
-    private void recruitWriterCheck(Long writerId, String loginId) {
+    private boolean recruitWriterCheck(Long writerId, String loginId) {
         if(memberRepository.findById(writerId).getLoginId().equals(loginId)){
             throw new CustomException(FAIL_WRITER_AUTHORIZED);
         }
+        return true;
     }
 
 
@@ -245,4 +267,6 @@ public class BoardService {
                     throw new CustomException(CONTENT_DUPLICATED);
                 });
     }
+
+
 }

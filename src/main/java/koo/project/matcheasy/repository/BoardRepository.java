@@ -1,13 +1,16 @@
 package koo.project.matcheasy.repository;
 
 import koo.project.matcheasy.domain.board.BoardContent;
+import koo.project.matcheasy.mapper.BoardContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -41,5 +44,17 @@ public class BoardRepository {
                 .setFirstResult(start)
                 .setMaxResults(end)
                 .getResultList();
+    }
+
+    public Optional<BoardContent> findByWriterId(Long id){
+//        return Optional.of(
+//                em.createQuery("select b from BoardContent b where b.writerId=:id", BoardContent.class)
+//                .setParameter("id", id)
+//                .getSingleResult()
+//        );
+
+        return findAll().stream()
+                .filter(c -> c.getWriterId().equals(id))
+                .findAny();
     }
 }

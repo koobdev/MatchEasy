@@ -1,6 +1,8 @@
 package koo.project.matcheasy.controller;
 
 import koo.project.matcheasy.dto.BoardDto;
+import koo.project.matcheasy.dto.OkResponse;
+import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,11 +72,13 @@ public class BoardController {
      * 선택한 포지션에 지원하기
      */
     @PostMapping("/recruit")
-    public String recruitPosition(@RequestParam("positionId") Long positionId, HttpServletRequest request){
-        boardService.recruit(positionId, request);
+    public ResponseEntity<OkResponse> recruitPosition(@RequestParam("positionId") Long positionId, HttpServletRequest request){
 
-        return null;
+        return boardService.recruit(positionId, request);
     }
+
+
+
 
 //    @PostMapping("/test/board/update")
 //    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request){

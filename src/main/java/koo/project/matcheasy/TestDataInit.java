@@ -59,16 +59,16 @@ public class TestDataInit {
                 .position("Back-End")
                 .memberSkills(skills)
                 .build();
-//
-//        MemberDto memberDto2 = MemberDto.builder()
-//                .loginId("test2")
-//                .password("test!")
-//                .name("테스트2")
-//                .age(22)
-//                .email("bb@bb.com")
-//                .position("Front-End")
-//                .memberSkills(skills)
-//                .build();
+
+        MemberDto memberDto2 = MemberDto.builder()
+                .loginId("test2")
+                .password("test!")
+                .name("테스트2")
+                .age(22)
+                .email("bb@bb.com")
+                .position("Front-End")
+                .memberSkills(skills)
+                .build();
 
 //        List<Map<String, Object>> skill = new ArrayList<>();
 //        Map<String, Object> skill1 = new HashMap<>();
@@ -95,7 +95,7 @@ public class TestDataInit {
 
 
         memberService.join(memberDto);
-//        memberService.join(memberDto2);
+        memberService.join(memberDto2);
 
 //        Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(memberDto, memberContext);
 //        Member memberEntity2 = MemberMapper.MEMBER_MAPPER.toEntity(memberDto2, memberContext);

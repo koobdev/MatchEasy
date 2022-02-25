@@ -15,7 +15,7 @@ public interface BoardMapper extends EntityDtoMapper<BoardDto, BoardContent>{
 
 //    @Override
 //    @Mapping(source = "positions", target = "positionList")
-    BoardContent toEntity(BoardDto dto, @Context BoardContext boardContext);
+    BoardContent toEntity(BoardDto dto);
 
     default BoardContent formId(Long id){
         if(id == null){
@@ -33,8 +33,6 @@ public interface BoardMapper extends EntityDtoMapper<BoardDto, BoardContent>{
 //        });
 //    }
 
-//    @Override
     BoardDto toDto(final BoardContent entity);
 
-//    BoardContent toEntity(BoardDto boardDto);
 }

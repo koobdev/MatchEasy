@@ -40,16 +40,4 @@ public class MemberController {
                 .body(joinMember);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<MemberMeDto> me(HttpServletRequest request){
-
-        log.info("token >>>>>>>> {}", request.getHeader("Authorization"));
-        MemberMeDto memberMeDto = memberService.me(request);
-
-        log.info("memberMeDto ::::: {} ", memberMeDto.toString());
-        return ResponseEntity
-                .ok()
-                .body(memberMeDto);
-    }
-
 }

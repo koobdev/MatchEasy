@@ -1,5 +1,6 @@
 package koo.project.matcheasy.domain.member;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import koo.project.matcheasy.service.MemberService;
 import lombok.*;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class MemberSkills {
     private Long id;
     private String skill;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -31,8 +33,8 @@ public class MemberSkills {
 
         this.member = member;
 
-        log.info("addMember member ???????????????????? {}", member.getLoginId());
-        log.info("addMember getSkills ???????????????????? {}", member.getMemberSkills());
+//        log.info("addMember member ???????????????????? {}", member.getLoginId());
+//        log.info("addMember getSkills ???????????????????? {}", member.getMemberSkills());
         member.getMemberSkills().add(this);
     }
 }

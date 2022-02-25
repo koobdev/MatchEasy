@@ -34,13 +34,10 @@ import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
 @Transactional
 public class MemberService {
 
-    private final EntityManager em;
     private final MemberRepository memberRepository;
     private final MemberSkillsRepository memberSkillsRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationExtractor authExtractor;
-
-    private final MemberContext memberContext;
 
     /**
      * 회원 가입
@@ -50,24 +47,15 @@ public class MemberService {
         validateDuplicateMember(member);
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(member);
-        log.info("memberEntity toString : {}", memberEntity.toString());
-        memberRepository.save(memberEntity);
 
+        // TODO : memberEntity에 getMemberSKills가 null로 이미 저장되어서 넘어와서 중복 저장됨
         for (MemberSkillsDto memberSkillsDto : member.getMemberSkills()) {
-
             MemberSkills memberSkillsEntity = MemberSkillsMapper.MEMBER_SKILLS_MAPPER.toEntity(memberSkillsDto);
-
-            log.info("memberSkillsEntity toString : {}", memberSkillsEntity.toString());
             memberSkillsEntity.addMember(memberEntity);
         }
 
-//        for(Iterator<MemberSkills> iter = memberSkillsEntity.iterator(); iter.hasNext();){
-//            MemberSkills skills = iter.next();
-//            skills.addMember(memberEntity);
-//        }
-
-//        memberRepository.save(memberEntity);
-        return member;
+        memberRepository.save(memberEntity);
+        return MemberMapper.MEMBER_MAPPER.toDto(memberEntity);
     }
 
 

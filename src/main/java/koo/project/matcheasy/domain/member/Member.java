@@ -1,5 +1,7 @@
 package koo.project.matcheasy.domain.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.team.Team;
 import lombok.*;
 
@@ -37,6 +39,7 @@ public class Member {
 //    private List<String> skills;
 
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberSkills> memberSkills = new ArrayList<>();
 

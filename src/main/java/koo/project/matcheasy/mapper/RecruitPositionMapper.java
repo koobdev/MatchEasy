@@ -5,7 +5,7 @@ import koo.project.matcheasy.dto.RecruitPositionDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {BoardMapper.class}, componentModel = "spring")
+@Mapper
 public interface RecruitPositionMapper extends EntityDtoMapper<RecruitPositionDto, RecruitPosition>{
 
     RecruitPositionMapper POSITION_MAPPER = Mappers.getMapper(RecruitPositionMapper.class);
