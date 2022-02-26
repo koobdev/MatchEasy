@@ -1,27 +1,22 @@
 package koo.project.matcheasy.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.dto.MemberMeDto;
 import koo.project.matcheasy.dto.OkResponse;
+import koo.project.matcheasy.dto.TeamDto;
 import koo.project.matcheasy.service.BoardService;
 import koo.project.matcheasy.service.MemberService;
+import koo.project.matcheasy.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -32,6 +27,7 @@ public class MyPageController {
 
     private final MemberService memberService;
     private final BoardService boardService;
+    private final TeamService teamService;
 
     /**
      * 개인 정보
@@ -93,5 +89,17 @@ public class MyPageController {
             @RequestParam("message") String message){
 
         return boardService.acceptOrReject(idx, status, message);
+    }
+
+
+    /**
+     * 팀 구성하기
+     * @return
+     */
+    @PostMapping("/createTeam")
+    public ResponseEntity<OkResponse> createTeam(@Valid @RequestBody TeamDto teamDto, HttpServletRequest request){
+
+        log.info("Controller TeamDTO : {} ", teamDto.toString());
+        return teamService.createTeam(teamDto, request);
     }
 }

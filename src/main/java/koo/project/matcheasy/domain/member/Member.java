@@ -1,5 +1,6 @@
 package koo.project.matcheasy.domain.member;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.team.Team;
@@ -43,7 +44,8 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberSkills> memberSkills = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
@@ -60,6 +62,12 @@ public class Member {
     )
     private LocalDateTime moddate;
 
+
+    // 연관관계 편의 메서드
+    public void addTeam(Team team){
+        this.team = team;
+        team.getMembers().add(this);
+    }
 
     /**
      * refreshToken 추가 메서드

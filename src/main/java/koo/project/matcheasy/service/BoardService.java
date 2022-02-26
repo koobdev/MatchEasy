@@ -213,14 +213,8 @@ public class BoardService {
 
         recruitPositionRepository.findById(idx)
                 .ifPresent(r -> {
-                    if(status == 2){
-                        // 수락
-                        r.updateStatus(2);
-                    }else {
-                        // 거절
-                        r.updateStatus(3);
-                        r.updateRejectMessage(message);
-                    }
+                    r.updateStatus(status);
+                    r.updateRejectMessage(message);
                 });
 
         return OkResponse.toResponse("ok","완료하였습니다.");

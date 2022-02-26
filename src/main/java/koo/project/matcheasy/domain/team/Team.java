@@ -1,29 +1,47 @@
 package koo.project.matcheasy.domain.team;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.member.Member;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Team {
 
     @Id @GeneratedValue
     @Column(name = "TEAM_ID")
     private Long id;
 
-    @OneToMany(mappedBy = "team")
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
     private String name;
-    private LocalDate startdate;
-    private LocalDate enddate;
+    private LocalDateTime startdate;
+    private LocalDateTime enddate;
+
+    @Column(
+            updatable = false, insertable = false, nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime regdate;
+
+    @Column(
+            updatable = false, insertable = false, nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
+    )
+    private LocalDateTime moddate;
 
     @OneToMany(mappedBy = "teamWeekly", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Weekly> weeklyList = new ArrayList<>();
@@ -33,13 +51,8 @@ public class Team {
     private List<Positionly> positionlyList = new ArrayList<>();
 
 
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-
-    // 연관관계 편의 메서드
     public void addMember(Member member){
-        members.add(member);
+        this.getMembers().add(member);
         member.builder().team(this);
     }
 }

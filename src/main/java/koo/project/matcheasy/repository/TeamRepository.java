@@ -15,14 +15,13 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class TeamRepository {
 
     @PersistenceContext // 생략가능
     private final EntityManager em;
 
-    // crud
 
-    @Transactional
     public void save(Team team){
         em.persist(team);
     }

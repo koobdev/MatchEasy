@@ -17,7 +17,7 @@ import java.util.List;
 
 @Mapper
         (collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-                uses = MemberSkillsMapper.class)
+                uses = {MemberSkillsMapper.class, TeamMapper.class})
 public interface MemberMapper{
 
     Logger log = (Logger) LoggerFactory.getLogger(MemberMapper.class);

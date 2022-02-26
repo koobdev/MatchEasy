@@ -29,12 +29,7 @@ public class MemberSkills {
 
     // 연관관계 편의 메서드
     public void addMember(Member member){
-        Logger log = (Logger) LoggerFactory.getLogger(MemberService.class);
-
         this.member = member;
-
-//        log.info("addMember member ???????????????????? {}", member.getLoginId());
-//        log.info("addMember getSkills ???????????????????? {}", member.getMemberSkills());
         member.getMemberSkills().add(this);
     }
 }
