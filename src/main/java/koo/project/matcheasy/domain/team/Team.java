@@ -27,6 +27,10 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "team")
+    private List<TeamPosition> positions = new ArrayList<>();
+
     private String name;
     private LocalDateTime startdate;
     private LocalDateTime enddate;
@@ -45,14 +49,6 @@ public class Team {
 
     @OneToMany(mappedBy = "teamWeekly", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Weekly> weeklyList = new ArrayList<>();
-    @OneToMany(mappedBy = "teamDayly", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Dayly> daylyList = new ArrayList<>();
-    @OneToMany(mappedBy = "teamPositionly", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Positionly> positionlyList = new ArrayList<>();
 
 
-    public void addMember(Member member){
-        this.getMembers().add(member);
-        member.builder().team(this);
-    }
 }

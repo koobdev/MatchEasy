@@ -34,7 +34,7 @@ class TeamRepositoryTest {
         Member member = findMember.get();
         Team team = new Team();
 //        team.setName("testTeam");
-        team.addMember(member);
+//        team.addMember(member);
 
         // when
         teamRepository.findByMember(member)

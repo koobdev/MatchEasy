@@ -32,8 +32,8 @@ public class TeamRepository {
                 .getResultList();
     }
 
-    public Team findById(Team team){
-        return em.find(Team.class, team.getId());
+    public Team findById(Long id){
+        return em.find(Team.class, id);
     }
 
 

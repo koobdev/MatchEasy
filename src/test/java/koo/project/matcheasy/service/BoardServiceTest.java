@@ -86,7 +86,7 @@ class BoardServiceTest {
                 .build();
 
         // when
-        final BoardContent afterConvert = BoardMapper.BOARD_MAPPER.toEntity(boardDto, boardContext);
+        final BoardContent afterConvert = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
 
         // then
         log.info("boardDTO : {}", boardDto.toString());

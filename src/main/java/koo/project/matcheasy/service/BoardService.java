@@ -15,6 +15,8 @@ import koo.project.matcheasy.mapper.RecruitPositionMapper;
 import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -181,7 +183,7 @@ public class BoardService {
      * 지원자 목록
      * 내가 작성한 글과 포지션 지원자를 join해서 물고옴
      */
-    public List<RecruitPosition> recruitList(HttpServletRequest request){
+    public JSONArray recruitList(HttpServletRequest request){
         List<RecruitPosition> recruitPositionList = new ArrayList<>();
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
@@ -205,7 +207,29 @@ public class BoardService {
                     throw new CustomException(CONTENT_NOT_FOUND);
                 });
 
-        return recruitPositionList;
+
+        // 지원자 리스트 뽑아서 json 형식으로 리턴
+        JSONArray jsonArray = new JSONArray();
+        for (RecruitPosition position : recruitPositionList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("positionId" ,position.getId());
+            jsonObject.put("content" ,position.getContent());
+            jsonObject.put("position" ,position.getPosition());
+            jsonObject.put("status" ,position.getStatus());
+
+            JSONObject member = new JSONObject();
+            member.put("id", position.getRecruitMember().getId());
+            member.put("loginId", position.getRecruitMember().getLoginId());
+            member.put("email", position.getRecruitMember().getEmail());
+            member.put("age", position.getRecruitMember().getAge());
+            member.put("name", position.getRecruitMember().getName());
+            member.put("position", position.getRecruitMember().getPosition());
+
+            jsonObject.put("recuritMember" ,member);
+            jsonArray.add(jsonObject);
+        }
+
+        return jsonArray;
     }
 
 

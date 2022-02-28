@@ -130,7 +130,7 @@ class MemberServiceTest {
         Optional<Member> optionalMember = memberRepository.findByLoginId("test");
         Member member = optionalMember.get();
         Team team = new Team();
-        team.addMember(member);
+//        team.addMember(member);
 
         // when
         // then

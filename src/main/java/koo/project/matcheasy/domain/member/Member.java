@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.team.Team;
 import lombok.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,7 +47,7 @@ public class Member {
     private List<MemberSkills> memberSkills = new ArrayList<>();
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
 
@@ -66,7 +68,6 @@ public class Member {
     // 연관관계 편의 메서드
     public void addTeam(Team team){
         this.team = team;
-        team.getMembers().add(this);
     }
 
     /**

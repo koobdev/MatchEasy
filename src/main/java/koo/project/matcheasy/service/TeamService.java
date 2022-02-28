@@ -1,22 +1,20 @@
 package koo.project.matcheasy.service;
 
+import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.member.Member;
+import koo.project.matcheasy.domain.team.Dayly;
 import koo.project.matcheasy.domain.team.Team;
-import koo.project.matcheasy.dto.MemberDto;
-import koo.project.matcheasy.dto.MemberMeDto;
+import koo.project.matcheasy.domain.team.TeamPosition;
+import koo.project.matcheasy.dto.DaylyDto;
 import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.dto.TeamDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
-import koo.project.matcheasy.mapper.MemberMapper;
+import koo.project.matcheasy.mapper.DaylyMapper;
 import koo.project.matcheasy.mapper.TeamMapper;
-import koo.project.matcheasy.mapper.TeamMemberMapper;
-import koo.project.matcheasy.repository.BoardRepository;
-import koo.project.matcheasy.repository.MemberRepository;
-import koo.project.matcheasy.repository.RecruitPositionRepository;
-import koo.project.matcheasy.repository.TeamRepository;
+import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static koo.project.matcheasy.exception.ErrorCode.CONTENT_NOT_FOUND;
-import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static koo.project.matcheasy.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -36,85 +32,142 @@ import static koo.project.matcheasy.exception.ErrorCode.MEMBER_NOT_FOUND;
 @RequiredArgsConstructor
 public class TeamService {
 
+    private final AuthorizationExtractor authExtractor;
+    private final JwtTokenProvider jwtTokenProvider;
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-    private final RecruitPositionRepository recruitPositionRepository;
-    private final AuthorizationExtractor authExtractor;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final DaylyRepository daylyRepository;
+
 
 
     /**
      * 팀 생성하기
+     *  1. 수락된 지원자들로 구성된 팀 생성하기
+     *  2. 게시물 상태를 모집 완료(status : 1)로 변경 하기
+     *  3. 팀원 포지션 테이블 생성 및 데이터 삽입
      */
     public ResponseEntity<OkResponse> createTeam(TeamDto teamDto, HttpServletRequest request){
+
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
 
-
-        validateDuplicateTeam(teamDto);
-
-        teamDto.setMembers(getAcceptedList(loginId));
-        for (MemberDto member : teamDto.getMembers()) {
-            log.info("teamDto ::::: {}", member.getLoginId());
-        }
-
-        // 변환 확인
-        // addTeam에러
+        // 1.
         Team team = TeamMapper.TEAM_MAPPER.toEntity(teamDto);
-        for (Member member : team.getMembers()) {
-            member.addTeam(team);
-        }
+        Member findMe = memberRepository.findByLoginId(loginId)
+                .orElseGet(() -> {
+                    throw new CustomException(MEMBER_NOT_FOUND);
+                });
 
-//        team.addMember(memberEntity);
+        Map<String, Object> acceptedList = getAcceptedList(findMe);
+        convertObjectToMemberList(acceptedList.get("members"))
+                .forEach(member -> member.addTeam(team));
 
-//        teamRepository.save(team);
-//        getAcceptedListAndSaveTeam(loginId, team);
-
-
-//        log.info("AFTER::::::::::: {} ", team.toString());
-
-//        teamRepository.save(team);
-//        memberRepository.findByLoginId(loginId)
-//                .ifPresent(member -> member.addTeam(team));
+        // 2.
+        BoardContent findContent = (BoardContent) acceptedList.get("findContent");
+        findContent.updateStatus(1);
 
         teamRepository.save(team);
 
+
+        // 3. TeamPosition Entity TODO
+        convertObjectToTeamPositionList(acceptedList.get("positions"))
+                .forEach(position -> {
+                    TeamPosition.builder()
+                            .position(position.getPosition())
+                            .build();
+                });
+
+
         return OkResponse.toResponse("ok","팀 생성을 완료했습니다.");
-    }
-
-    private void validateDuplicateTeam(TeamDto teamDto) {
-
     }
 
 
     /**
      * 수락 처리된 지원자 리스트
      */
-    public List<MemberDto> getAcceptedList(String loginId){
-        List<MemberDto> memberDtos = new ArrayList<>();
+    public Map<String, Object> getAcceptedList(Member findMe){
+        Map<String, Object> returnMap = new HashMap<>();
+        List<Member> members = new ArrayList<>();
+        List<String> positions = new ArrayList<>();
 
-        Member findMember = memberRepository.findByLoginId(loginId)
-                .orElseGet(() -> {
-                    throw new CustomException(MEMBER_NOT_FOUND);
-                });
-
-        boardRepository.findByWriterId(findMember.getId())
+        boardRepository.findByWriterId(findMe.getId())
                 .ifPresentOrElse(content -> {
                     for (RecruitPosition position : content.getPositions()) {
                         if(position.getBoardContent().getId().equals(content.getId())
                                 && position.getStatus() == 2){
-                            MemberDto memberDto = MemberMapper.MEMBER_MAPPER.toDto(position.getRecruitMember());
-                            memberDtos.add(memberDto);
+                            Long id = position.getRecruitMember().getId();
+
+                            Member findRecruitMember = memberRepository.findById(id);
+                            members.add(findRecruitMember);
+
+                            positions.add(position.getPosition());
                         }
                     }
+                    returnMap.put("findContent", content);
                 }, () -> {
                     throw new CustomException(CONTENT_NOT_FOUND);
                 });
 
         // 글 작성자도 팀에 추가
-//        findMember.addTeam(team);
-
-        return memberDtos;
+        members.add(findMe);
+        returnMap.put("members", members);
+        returnMap.put("positions", positions);
+        return returnMap;
     }
+
+
+    /**
+     * 일일 일정 추가
+     */
+    public void registerDayly(DaylyDto daylyDto){
+        Team findTeam = teamRepository.findById(daylyDto.getTeamId());
+
+        Dayly daylyEntity = DaylyMapper.DAYLY_MAPPER.toEntity(daylyDto);
+//        daylyEntity.addTeam(findTeam);
+
+        daylyRepository.save(daylyEntity);
+    }
+
+
+
+
+
+
+    // object to list
+    public List<Member> convertObjectToMemberList(Object obj) {
+        List<Member> list = new ArrayList<>();
+        if (obj.getClass().isArray()) {
+            list = Arrays.asList((Member)obj);
+        }else if (obj instanceof Collection) {
+            list = new ArrayList<>((Collection<Member>)obj);
+        }
+        return list;
+    }
+
+    public List<TeamPosition> convertObjectToTeamPositionList(Object obj) {
+        List<TeamPosition> list = new ArrayList<>();
+        if (obj.getClass().isArray()) {
+            list = Arrays.asList((TeamPosition)obj);
+        }else if (obj instanceof Collection) {
+            list = new ArrayList<>((Collection<TeamPosition>)obj);
+        }
+        return list;
+    }
+
+
+    /**
+     * 팀 검색 (리스트)
+     */
+    public void searchTeam(Long idx) {
+        Team findTeam = teamRepository.findById(idx);
+
+        log.info("findTeam :::: {} ", findTeam.getId());
+        for (Member member : findTeam.getMembers()) {
+            log.info("findTeam's Member :::: {} ", member.getLoginId());
+        }
+    }
+
+
+
 }

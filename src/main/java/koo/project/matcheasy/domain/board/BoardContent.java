@@ -76,4 +76,9 @@ public class BoardContent {
         this.chatRoom = chatRoom;
         chatRoom.builder().boardContent(this);
     }
+
+    // Update status
+    public void updateStatus(int status){
+        this.status = status;
+    }
 }

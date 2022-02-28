@@ -53,28 +53,7 @@ public class MyPageController {
     @GetMapping("/recruitList")
     public ResponseEntity<OkResponse> recruitList(HttpServletRequest request){
 
-        List<RecruitPosition> recruitPositionList = boardService.recruitList(request);
-        JSONArray jsonArray = new JSONArray();
-
-        for (RecruitPosition position : recruitPositionList) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("positionId" ,position.getId());
-            jsonObject.put("content" ,position.getContent());
-            jsonObject.put("position" ,position.getPosition());
-            jsonObject.put("status" ,position.getStatus());
-
-            JSONObject member = new JSONObject();
-            member.put("id", position.getRecruitMember().getId());
-            member.put("loginId", position.getRecruitMember().getLoginId());
-            member.put("email", position.getRecruitMember().getEmail());
-            member.put("age", position.getRecruitMember().getAge());
-            member.put("name", position.getRecruitMember().getName());
-            member.put("position", position.getRecruitMember().getPosition());
-
-            jsonObject.put("recuritMember" ,member);
-            jsonArray.add(jsonObject);
-        }
-
+        JSONArray jsonArray = boardService.recruitList(request);
         return OkResponse.toJSonResponse(jsonArray, "지원자 목록");
     }
 
@@ -94,7 +73,6 @@ public class MyPageController {
 
     /**
      * 팀 구성하기
-     * @return
      */
     @PostMapping("/createTeam")
     public ResponseEntity<OkResponse> createTeam(@Valid @RequestBody TeamDto teamDto, HttpServletRequest request){

@@ -4,6 +4,7 @@ import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.TeamDto;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 
@@ -16,6 +17,7 @@ public interface TeamMapper{
     MemberMapper membersMapper = Mappers.getMapper(MemberMapper.class);
 //    TeamMemberMapper membersMapper = Mappers.getMapper(TeamMemberMapper.class);
 
+    @Mapping(target = "members", ignore = true)
     Team toEntity(TeamDto dto);
     TeamDto toDto(Team entity);
 }
