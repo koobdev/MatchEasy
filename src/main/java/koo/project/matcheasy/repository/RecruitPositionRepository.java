@@ -38,15 +38,18 @@ public class RecruitPositionRepository {
 
     public List<RecruitPosition> findByContentId(Long id){
 
-        List<RecruitPosition> collect = findAll().stream()
-                .filter(r -> r.getBoardContent().getId().equals(id))
-                .collect(Collectors.toList());
+//        List<RecruitPosition> collect = findAll().stream()
+//                .filter(r -> r.getBoardContent().getId().equals(id))
+//                .collect(Collectors.toList());
+//
+//        for (RecruitPosition position : collect) {
+//            log.info("findByContentId OF positionId : {}", position.getId());
+//        }
+//        return collect;
 
-        for (RecruitPosition position : collect) {
-            log.info("findByContentId OF positionId : {}", position.getId());
-        }
-
-        return collect;
+        return em.createQuery("select r from RecruitPosition r where r.content=:id", RecruitPosition.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 
 //    public RecruitPosition findById(Long id){

@@ -17,7 +17,6 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Member {
 
     @Id @GeneratedValue
@@ -68,6 +67,7 @@ public class Member {
     // 연관관계 편의 메서드
     public void addTeam(Team team){
         this.team = team;
+        team.getMembers().add(this);
     }
 
     /**

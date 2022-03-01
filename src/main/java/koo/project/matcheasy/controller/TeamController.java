@@ -2,6 +2,7 @@ package koo.project.matcheasy.controller;
 
 import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.DaylyDto;
+import koo.project.matcheasy.dto.TaskDto;
 import koo.project.matcheasy.service.MemberService;
 import koo.project.matcheasy.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class TeamController {
     }
 
 
-    @PostMapping("/dayly/register")
-    public void registerDayly(@RequestBody DaylyDto daylyDto){
-        teamService.registerDayly(daylyDto);
+    @PostMapping("/task/register")
+    public void registerTask(@RequestBody TaskDto taskDto){
+        teamService.registerTask(taskDto);
     }
 }

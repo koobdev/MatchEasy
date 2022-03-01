@@ -3,16 +3,16 @@ package koo.project.matcheasy.service;
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.member.Member;
-import koo.project.matcheasy.domain.team.Dayly;
+import koo.project.matcheasy.domain.team.Task;
 import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.domain.team.TeamPosition;
-import koo.project.matcheasy.dto.DaylyDto;
 import koo.project.matcheasy.dto.OkResponse;
+import koo.project.matcheasy.dto.TaskDto;
 import koo.project.matcheasy.dto.TeamDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
-import koo.project.matcheasy.mapper.DaylyMapper;
+import koo.project.matcheasy.mapper.TaskMapper;
 import koo.project.matcheasy.mapper.TeamMapper;
 import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,8 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-    private final DaylyRepository daylyRepository;
+    private final RecruitPositionRepository recruitPositionRepository;
+    private final TaskRepository taskRepository;
 
 
 
@@ -67,20 +68,23 @@ public class TeamService {
         BoardContent findContent = (BoardContent) acceptedList.get("findContent");
         findContent.updateStatus(1);
 
+
         teamRepository.save(team);
 
-
-        // 3. TeamPosition Entity TODO
+        // 3.
         convertObjectToTeamPositionList(acceptedList.get("positions"))
                 .forEach(position -> {
-                    TeamPosition.builder()
-                            .position(position.getPosition())
+                    log.info("TeamPositions positions :::: {} ", position);
+                    TeamPosition teamPosition = TeamPosition.builder()
+                            .position(position)
                             .build();
+                    log.info("TeamPositions toString :::: {} ", teamPosition.toString());
+                    teamPosition.addTeam(team);
                 });
-
 
         return OkResponse.toResponse("ok","팀 생성을 완료했습니다.");
     }
+
 
 
     /**
@@ -111,6 +115,9 @@ public class TeamService {
 
         // 글 작성자도 팀에 추가
         members.add(findMe);
+        // 글 작성자도 팀 포지션에 추가
+        positions.add(findMe.getPosition());
+
         returnMap.put("members", members);
         returnMap.put("positions", positions);
         return returnMap;
@@ -120,18 +127,34 @@ public class TeamService {
     /**
      * 일일 일정 추가
      */
-    public void registerDayly(DaylyDto daylyDto){
-        Team findTeam = teamRepository.findById(daylyDto.getTeamId());
+    public void registerTask(TaskDto taskDto){
+        Team findTeam = teamRepository.findById(taskDto.getTeamId());
+        log.info("findTeam :::: {} ", findTeam.toString());
 
-        Dayly daylyEntity = DaylyMapper.DAYLY_MAPPER.toEntity(daylyDto);
-//        daylyEntity.addTeam(findTeam);
+        Task taskEntity = TaskMapper.TASK_MAPPER.toEntity(taskDto);
+//        log.info("taskEntity :::: {} ", taskEntity.toString());
 
-        daylyRepository.save(daylyEntity);
+        taskEntity.addTeam(findTeam);
+        taskRepository.save(taskEntity);
     }
 
 
 
+    /**
+     * 팀 검색 (리스트)
+     */
+    public void searchTeam(Long idx) {
+        Team findTeam = teamRepository.findById(idx);
 
+        log.info("findTeam :::: {} ", findTeam.getId());
+        for (Member member : findTeam.getMembers()) {
+            log.info("findTeam's Member :::: {} ", member.getLoginId());
+        }
+
+        for (TeamPosition position : findTeam.getPositions()) {
+            log.info("findTeam's position :::: {} ", position.getPosition());
+        }
+    }
 
 
     // object to list
@@ -145,29 +168,15 @@ public class TeamService {
         return list;
     }
 
-    public List<TeamPosition> convertObjectToTeamPositionList(Object obj) {
-        List<TeamPosition> list = new ArrayList<>();
+    public List<String> convertObjectToTeamPositionList(Object obj) {
+        List<String> list = new ArrayList<>();
         if (obj.getClass().isArray()) {
-            list = Arrays.asList((TeamPosition)obj);
+            list = Arrays.asList((String)obj);
         }else if (obj instanceof Collection) {
-            list = new ArrayList<>((Collection<TeamPosition>)obj);
+            list = new ArrayList<>((Collection<String>)obj);
         }
         return list;
     }
-
-
-    /**
-     * 팀 검색 (리스트)
-     */
-    public void searchTeam(Long idx) {
-        Team findTeam = teamRepository.findById(idx);
-
-        log.info("findTeam :::: {} ", findTeam.getId());
-        for (Member member : findTeam.getMembers()) {
-            log.info("findTeam's Member :::: {} ", member.getLoginId());
-        }
-    }
-
 
 
 }

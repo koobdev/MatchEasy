@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/board")
+@RequestMapping(value = "/board", produces = "application/json; charset=UTF8")
 public class BoardController {
 
     private final BoardService boardService;

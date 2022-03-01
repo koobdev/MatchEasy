@@ -22,14 +22,20 @@ public class Team {
     @Column(name = "TEAM_ID")
     private Long id;
 
-
     @JsonManagedReference
+    @Builder.Default
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
-
-    @OneToMany(mappedBy = "team")
+    @JsonManagedReference
+    @Builder.Default
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<TeamPosition> positions = new ArrayList<>();
+
+    @JsonManagedReference
+    @Builder.Default
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private List<Task> tasks = new ArrayList<>();
 
     private String name;
     private LocalDateTime startdate;
@@ -46,9 +52,5 @@ public class Team {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
     )
     private LocalDateTime moddate;
-
-    @OneToMany(mappedBy = "teamWeekly", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Weekly> weeklyList = new ArrayList<>();
-
 
 }

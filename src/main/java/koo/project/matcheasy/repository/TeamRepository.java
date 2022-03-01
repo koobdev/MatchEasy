@@ -42,4 +42,10 @@ public class TeamRepository {
                 .filter(t -> t.getId().equals(member.getTeam().getId()))
                 .findFirst();
     }
+
+    public Team findByTeamName(String name){
+        return em.createQuery("select t from Team t where t.name=:name", Team.class)
+                .setParameter("name", name)
+                .getSingleResult();
+    }
 }
