@@ -36,7 +36,7 @@
         let xhr = new XMLHttpRequest();
         let token = storage.get("accessToken");
         let userInfos = ['loginId', 'name'];
-        let url = "http://localhost:8080/members/me";
+        let url = "http://localhost:8080/my/me";
 
         xhr.open('GET', url);
         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -48,6 +48,7 @@
                 storage.set('userId', data[userInfos[0]]);
                 storage.set('userName', data[userInfos[1]]);
 
+                console.log(data);
                 // for(key in userInfos){
                 //     userDataInput(userInfos[key], data[userInfos[key]]);
                 // }

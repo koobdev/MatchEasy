@@ -1,0 +1,7 @@
+.uk-card .uk-card-header{
+    border-top: 2px solid;
+    position: relative;
+    transition: box-shadow 0.15s ease-out;
+    border-radius: 3px;
+    border-top-color: #1E87F0;
+}

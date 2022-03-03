@@ -129,10 +129,7 @@ public class TeamService {
      */
     public void registerTask(TaskDto taskDto){
         Team findTeam = teamRepository.findById(taskDto.getTeamId());
-        log.info("findTeam :::: {} ", findTeam.toString());
-
         Task taskEntity = TaskMapper.TASK_MAPPER.toEntity(taskDto);
-//        log.info("taskEntity :::: {} ", taskEntity.toString());
 
         taskEntity.addTeam(findTeam);
         taskRepository.save(taskEntity);
