@@ -54,6 +54,7 @@ public class LoginController {
     @PostMapping("/token/reIssue")
     public ResponseEntity<TokenResponse> tokenReIssued(@ModelAttribute TokenResponse response){
 
+        log.info("tokenResponse accessToken : {}, refreshToken : {}", response.getAccessToken(), response.getRefreshToken());
         TokenResponse tokenResponse = loginService.tokenReIssued(response);
 
         return ResponseEntity

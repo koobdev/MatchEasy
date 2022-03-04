@@ -25,8 +25,4 @@ public class ChatRoomController {
         log.info("# get Chat Room, roomID : " + roomId);
     }
 
-    @GetMapping("/form/chatRoom")
-    public String chatRoomForm(){
-        return "form/chatRoom";
-    }
 }

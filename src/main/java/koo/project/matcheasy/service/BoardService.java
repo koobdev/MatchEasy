@@ -102,10 +102,8 @@ public class BoardService {
      */
     public BoardDto openContent(Long boardDetail){
         BoardContent findContent = boardRepository.findById(boardDetail);
-        log.info(">>>>>>> getContent :: {}", findContent.toString());
 
         BoardDto boardDto = BoardMapper.BOARD_MAPPER.toDto(findContent);
-        log.info(">>>>>>> contentToDto :: {}", boardDto);
 
         return boardDto;
     }

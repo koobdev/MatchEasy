@@ -58,7 +58,7 @@
                 storage.set("refreshToken", refreshToken);
 
                 UIkit.modal.alert('로그인 성공. 환영합니다.').then(function () {
-                    window.location.href = "/main";
+                    window.location.href = "/form/contentList";
                 });
 
             }else if(xhr.readyState == 4 && xhr.status == 400 ||

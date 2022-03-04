@@ -6,6 +6,7 @@ import koo.project.matcheasy.domain.chat.Chat;
 import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,19 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardContent {
-
-//    @Builder
-//    public BoardContent(Long id, String title, String content, Chat chat, Long writerId, LocalDateTime startdate, LocalDateTime enddate, LocalDateTime regdate, LocalDateTime moddate) {
-//        this.id = id;
-//        this.title = title;
-//        this.content = content;
-//        this.chat = chat;
-//        this.writerId = writerId;
-//        this.startdate = startdate;
-//        this.enddate = enddate;
-//        this.regdate = regdate;
-//        this.moddate = moddate;
-//    }
 
     @Id @GeneratedValue
     @Column(name = "CONTENT_ID")

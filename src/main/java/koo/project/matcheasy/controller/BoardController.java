@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.OkResponse;
-import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -36,15 +33,6 @@ public class BoardController {
         return boardService.registerContent(boardDto);
     }
 
-
-    /**
-     * 글 목록 폼
-     */
-    @GetMapping("/listForm")
-    public String boardListForm(){
-        return "/board/list";
-    }
-
     /**
      * 글 목록 get
      */
@@ -57,7 +45,6 @@ public class BoardController {
         return ResponseEntity.ok()
                 .body(objectMapper.writeValueAsString(boardLists));
     }
-
 
     /**
      * 글 열기
