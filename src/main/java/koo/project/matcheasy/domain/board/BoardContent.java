@@ -39,6 +39,8 @@ public class BoardContent {
     private String title;
     private String content;
 
+    @JsonManagedReference
+    @Builder.Default
     @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
     private List<RecruitPosition> positions = new ArrayList<>();
 

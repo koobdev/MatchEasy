@@ -1,5 +1,7 @@
 package koo.project.matcheasy.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.member.Member;
@@ -43,6 +45,7 @@ public class BoardService {
     private final BoardContext boardContext;
     private final ChatRoomService chatRoomService;
     private final ChatRoomRepository chatRoomRepository;
+    private final ObjectMapper objectMapper;
 
 
     /**
@@ -69,7 +72,7 @@ public class BoardService {
     /**
      * 글 작성
      */
-    public BoardDto registerContent(BoardDto boardDto){
+    public ResponseEntity<OkResponse> registerContent(BoardDto boardDto) throws JsonProcessingException {
 
         duplicatedWriter(boardDto);
 
@@ -91,7 +94,7 @@ public class BoardService {
 
         // 게시글 저장
         boardRepository.save(content);
-        return boardDto;
+        return OkResponse.toResponse(objectMapper.writeValueAsString(boardDto),"게시글을 등록하였습니다.");
     }
 
     /**

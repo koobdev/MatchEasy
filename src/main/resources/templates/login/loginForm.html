@@ -57,8 +57,10 @@
                 storage.set("accessToken", accessToken);
                 storage.set("refreshToken", refreshToken);
 
-                window.alert("로그인 성공. 환영합니다.");
-                window.location.href = "/main";
+                UIkit.modal.alert('로그인 성공. 환영합니다.').then(function () {
+                    window.location.href = "/main";
+                });
+
             }else if(xhr.readyState == 4 && xhr.status == 400 ||
                 xhr.readyState == 4 && xhr.status == 404){
 

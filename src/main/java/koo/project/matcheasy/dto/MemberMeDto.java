@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberMeDto {
 
+    private Long id;
     @NotEmpty
     private String loginId;
     @NotEmpty

@@ -1,5 +1,6 @@
 package koo.project.matcheasy.domain.board;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class RecruitPosition {
     @JoinColumn(name = "RECRUIT_MEMBER_ID")
     private Member recruitMember;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CONTENT_ID")
     private BoardContent boardContent;

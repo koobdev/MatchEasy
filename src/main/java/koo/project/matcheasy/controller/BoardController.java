@@ -1,5 +1,7 @@
 package koo.project.matcheasy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.exception.CustomException;
@@ -19,20 +21,19 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/board", produces = "application/json; charset=UTF8")
+@RequestMapping(value = "/board")
 public class BoardController {
 
     private final BoardService boardService;
+    private final ObjectMapper objectMapper;
 
     /**
      * 글 등록
      */
     @PostMapping("/register")
-    public ResponseEntity<BoardDto> register(@Valid @RequestBody BoardDto boardDto){
-        BoardDto response = boardService.registerContent(boardDto);
-
-        return ResponseEntity.ok()
-                .body(response);
+    public ResponseEntity<OkResponse> register(@Valid @RequestBody BoardDto boardDto)
+                throws JsonProcessingException {
+        return boardService.registerContent(boardDto);
     }
 
 
@@ -48,11 +49,13 @@ public class BoardController {
      * 글 목록 get
      */
     @GetMapping("/list")
-    public ResponseEntity<List<BoardDto>> boardList(){
+    public ResponseEntity<String> boardList() throws JsonProcessingException {
         List<BoardDto> boardLists = boardService.boardList();
 
+        log.info(objectMapper.writeValueAsString(boardLists));
+
         return ResponseEntity.ok()
-                .body(boardLists);
+                .body(objectMapper.writeValueAsString(boardLists));
     }
 
 

@@ -72,6 +72,7 @@ public class MemberService {
                 });
 
         return MemberMeDto.builder()
+                .id(member.getId())
                 .loginId(member.getLoginId())
                 .name(member.getName())
                 .age(member.getAge())

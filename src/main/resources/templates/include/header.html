@@ -35,7 +35,7 @@
     function userInfoAndTokenCheck(){
         let xhr = new XMLHttpRequest();
         let token = storage.get("accessToken");
-        let userInfos = ['loginId', 'name'];
+        let userInfos = ['loginId', 'name', 'id'];
         let url = "http://localhost:8080/my/me";
 
         xhr.open('GET', url);
@@ -44,9 +44,10 @@
         xhr.send();
         xhr.onreadystatechange = function () {
             if(xhr.readyState == 4 && xhr.status == 200) {
-                data = xhr.response;
-                storage.set('userId', data[userInfos[0]]);
+                let data = xhr.response;
+                storage.set('userLoginId', data[userInfos[0]]);
                 storage.set('userName', data[userInfos[1]]);
+                storage.set('userId', data[userInfos[2]]);
 
                 console.log(data);
                 // for(key in userInfos){

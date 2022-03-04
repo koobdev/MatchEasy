@@ -6,6 +6,7 @@ import koo.project.matcheasy.domain.chat.ChatRoom;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.*;
 import org.hibernate.validator.internal.engine.PredefinedScopeValidatorContextImpl;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -28,8 +29,10 @@ public class BoardDto {
     private List<RecruitPositionDto> positions;
     private ChatRoom chatRoom;
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime startdate;
     @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime enddate;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
