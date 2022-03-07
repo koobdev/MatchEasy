@@ -957,7 +957,7 @@ a.uk-link-reset,
  */
 .uk-table th {
   padding: 16px 12px;
-  text-align: right;
+  text-align: center;
   vertical-align: center;
   /* 1 */
   font-size: 0.875rem;
@@ -970,6 +970,7 @@ a.uk-link-reset,
 .uk-table td {
   padding: 16px 12px;
   vertical-align: top;
+  text-align: center;
 }
 /*
  * Remove margin from the last-child

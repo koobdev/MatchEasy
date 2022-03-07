@@ -77,24 +77,23 @@
                         <p class="uk-modal-title">게시글 작성하기</p>
                     </div>
                     <div class="uk-modal-body">
-
                         <table class="uk-table uk-text-center">
                             <tr>
-                                <th class="uk-text-center">제목</th>
+                                <th>제목</th>
                                 <td>
                                     <input class="uk-input uk-form-width-xlarge uk-form-small" id="registerTitle"
                                            type="text" placeholder="제목을 입력하세요." />
                                 </td>
                             </tr>
                             <tr>
-                                <th class="uk-text-center">내용</th>
+                                <th>내용</th>
                                 <td>
                                     <textarea class="uk-textarea uk-height-small uk-margin-remove" id="registerContent"
                                               placeholder="내용을 입력하세요." ></textarea>
                                 </td>
                             </tr>
                             <tr>
-                                <th class="uk-text-center">모집 일자</th>
+                                <th>모집 일자</th>
                                 <td>
                                     <div class="uk-form-controls uk-margin-small-top">
                                         <div data-uk-grid>
@@ -115,7 +114,7 @@
                             </tr>
                             <tr><th></th><td></td></tr>
                             <tr>
-                                <th class="uk-text-center">
+                                <th>
                                     모집 포지션<br>
                                     <span class="uk-margin-remove" uk-icon="icon: plus-circle"
                                           onclick="addPositionOption()"></span>
@@ -152,7 +151,6 @@
 </div>
 </body>
 </html>
-<script type="text/javascript" th:src="@{/js/makeList.js}"></script>
 <script>
 
     const startDate = flatpickr("#startDate", {

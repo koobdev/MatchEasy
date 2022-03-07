@@ -33,6 +33,32 @@ function makeBoardContentDiv(content){
     </div>
     `;
 
+    return tbody;
+}
+
+
+function makePositionListDiv(position) {
+    let tbody = "";
+    tbody += `
+            <tr>
+                <td>` + position.position + `</td>
+                <td>` + position.content + `</td>`;
+
+    if(position.status === 0){
+        tbody += `<td><button class="uk-button uk-button-small uk-text-nowrap">지원하기</button></td>`;
+    }else {
+        tbody += `<td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">모집완료</button></td>`;
+    }
+
+    if(position.recruitMessage == null){
+        tbody += `<td> - </td>`;
+    }else {
+        tbody += `<td>` + position.recruitMessage + `</td>`;
+    }
+
+    tbody += `
+            </tr>
+            `;
 
     return tbody;
 }

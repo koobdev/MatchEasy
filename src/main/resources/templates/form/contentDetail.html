@@ -9,46 +9,67 @@
     <div class="uk-container-small uk-align-center">
         <div class="uk-card uk-card-default">
             <div class="uk-card-header uk-text-center">
-                <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom">프로젝트 팀원 모집합니다.(test)</p>
+                <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom" id="title"></p>
                 <div class="uk-margin-large-bottom" data-uk-grid="true">
                     <div class="uk-width-auto">
                         <img src="../../static/image/avatar.svg" alt="" class="uk-border-circle profile-img" />
-                        <span class="uk-text-1_2 uk-text-bold uk-text-right">test 님</span>
+                        <span class="uk-text-1_2 uk-text-bold uk-text-right" id="writer"></span>
                     </div>
                     <div class="uk-width-expand"></div>
                     <div class="uk-width-auto">
-                        <span class="uk-text-1_2 uk-text-center">2022-03-05 ~ 2022-04-01</span>
+                        <span class="uk-text-1_2 uk-text-center" id="date"></span>
                     </div>
                 </div>
                 <div class="uk-margin-large-top" data-uk-grid="true">
                     <div class="uk-width-expand uk-text-left">
                         <span class="uk-margin-small-right" uk-icon="icon: users; ratio: 1.5"></span>
-                        <span class="uk-text-1_2 uk-text-bold ">모집 포지션 : Back-End, Front-End, Dev-Ops, 프로젝트 기획자</span>
+                        <span class="uk-text-1_2 uk-text-bold " id="positions"></span>
                     </div>
                     <div class="uk-width-auto"></div>
                 </div>
             </div>
             <div class="uk-card-body">
-                <span class="uk-text-1_2">
-                    안녕하세요! Team Expoint에서 각 분야별 다양한 모집을 진행하고 있습니다.
+                <span class="uk-text-1_2" id="content">
+<!--                    안녕하세요! Team Expoint에서 각 분야별 다양한 모집을 진행하고 있습니다.-->
 
-                    저희는 자신이 이제껏 갈고 닦았던 실력을 바탕으로 한 번도 경험하지 못했던 경험들을 만들고
+<!--                    저희는 자신이 이제껏 갈고 닦았던 실력을 바탕으로 한 번도 경험하지 못했던 경험들을 만들고-->
 
-                    많은 사람들에게 새로운 경험을 제공하기 위해 Team Expoint를 만들었습니다.
-
-
-                    팀원 모두가 다 같이 배움을 통해 성장하면서 새로운 경험을 사람들에게 제공하고 함께 더 나은 세상을 만들고 싶은 분들을 모집하고 있습니다!
+<!--                    많은 사람들에게 새로운 경험을 제공하기 위해 Team Expoint를 만들었습니다.-->
 
 
-                    아래 주소를 통해 저희 팀에 진행 목표와 미래발전 방향성을 자세하게 적어놓았습니다!
-
-                    다함께 성장하며 세상을 바꾸는 우리 팀과 함께할 용사분이 계신다면 꼭 지원해 주시길 부탁드립니다!
+<!--                    팀원 모두가 다 같이 배움을 통해 성장하면서 새로운 경험을 사람들에게 제공하고 함께 더 나은 세상을 만들고 싶은 분들을 모집하고 있습니다!-->
 
 
-                    글 읽어주셔서 진심으로 감사합니다! 기다리고 있겠습니다!
+<!--                    아래 주소를 통해 저희 팀에 진행 목표와 미래발전 방향성을 자세하게 적어놓았습니다!-->
+
+<!--                    다함께 성장하며 세상을 바꾸는 우리 팀과 함께할 용사분이 계신다면 꼭 지원해 주시길 부탁드립니다!-->
+
+
+<!--                    글 읽어주셔서 진심으로 감사합니다! 기다리고 있겠습니다!-->
                 </span>
             </div>
-            <div class="uk-card-footer">
+            <div class="uk-card-footer"> <!-- PositionList -->
+                <div>
+                    <table class="uk-table uk-table-small uk-table-hover uk-table-divider uk-table-responsive uk-table-middle">
+                        <thead class="uk-text-0_9">
+                            <th class="uk-width-small">모집 포지션</th>
+                            <th class="uk-width-large">설명(간단한 역할 등)</th>
+                            <th class="uk-width-small">지원하기</th>
+                            <th class="uk-width-large">지원자 설명</th>
+                        </thead>
+                        <tbody class="uk-text-0_8" id="positionList">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="uk-card-footer"> <!-- ChatRoom -->
+
+                <div data-uk-grid="true">
+
+                </div>
+
+
+
                 <div class="container">
                     <div class="col-6">
                         <h1>test chat room here</h1>
@@ -78,29 +99,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script type="text/javascript">
 
-    let accessToken = storage.get("accessToken");
-    let detail = storage.get("contentDetail");
-    let url = "http://localhost:8080/board/" + detail;
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    xhr.responseType = 'json';
-    xhr.send();
+    loadContentDetail();
 
-    xhr.onreadystatechange = function () {
-        if(xhr.readyState == 4 && xhr.status == 200) {
-            let data = xhr.response.chatRoom;
-            console.log(data);
-            connectSock(data);
+    function loadContentDetail() {
+        let accessToken = storage.get("accessToken");
+        let detail = storage.get("contentDetail");
+        let url = "http://localhost:8080/board/" + detail;
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                let data = xhr.response;
+                console.log(data);
+                appendDetail(data);
+                connectSock(data);
+            }
+        };
+    }
+
+    /**
+     * 컨텐츠 내용 append
+     */
+    function appendDetail(data) {
+        let title = document.getElementById("title");
+        let content = document.getElementById("content");
+        let writer = document.getElementById("writer");
+        let date = document.getElementById("date");
+        let positions = document.getElementById("positions");
+        let positionList = document.getElementById("positionList");
+
+
+        title.innerText = data.title;
+        content.innerText = data.content;
+        writer.innerText = data.chatRoom.writerName;
+        date.innerText = data.startdate.substr(0, 10) + " ~ " + data.enddate.substr(0, 10);
+        positions.innerText = "모집 포지션 : ";
+        let tbody = "";
+
+        for (const position of data.positions) {
+            positions.innerText += position.position;
+            tbody += makePositionListDiv(position);
         }
-    };
+        positionList.innerHTML = tbody;
+    }
 
 
-
-
+    /**
+     * chatRoom connect
+     */
     function connectSock(data){
-
         let roomId = data.id;
         let username = storage.get("userId");
         let stomp;
@@ -153,33 +205,6 @@
             msg.value = '';
         }
     }
-
-    // let accessToken = storage.get("accessToken");
-    // let url = "http://localhost:8080/board/list";
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', url);
-    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    // xhr.responseType = 'json';
-    // xhr.send();
-    //
-    // xhr.onreadystatechange = function () {
-    //     if(xhr.readyState == 4 && xhr.status == 200) {
-    //         let data = xhr.response;
-    //         console.log(data);
-    //         let boardTable = document.getElementById("boardTable");
-    //         let append = "";
-    //         for(i in data){
-    //             append = "<tr onclick='openDetail(" + data[i].id + ")'>";
-    //             append += "<td>" + data[i].title + "</td>";
-    //             append += "<td>" + data[i].writerId + "</td>";
-    //             append += "<td>" + data[i].content + "</td>";
-    //             append += "<td>" + data[i].regdate + "</td>";
-    //             append += "</tr>";
-    //         }
-    //         boardTable.innerHTML = append;
-    //     }
-    // };
 
 </script>
 </html>

@@ -29,6 +29,7 @@ public class BoardContent {
 
     @JsonManagedReference
     @Builder.Default
+    @ToString.Exclude
     @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
     private List<RecruitPosition> positions = new ArrayList<>();
 

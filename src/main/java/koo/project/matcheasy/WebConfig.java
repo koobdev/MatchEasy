@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
-@EnableWebMvc
+//@EnableWebMvc
 @Configuration
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {

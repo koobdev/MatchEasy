@@ -19,6 +19,7 @@ public class RecruitPositionDto {
     private String position;
     @NotEmpty
     private String content;
+    private String recruitMessage;
     private int status;
 
     private Long positionId;

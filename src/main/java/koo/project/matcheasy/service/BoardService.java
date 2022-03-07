@@ -102,8 +102,10 @@ public class BoardService {
      */
     public BoardDto openContent(Long boardDetail){
         BoardContent findContent = boardRepository.findById(boardDetail);
+//        log.info("content Entity : {} ", findContent.toString());
 
         BoardDto boardDto = BoardMapper.BOARD_MAPPER.toDto(findContent);
+        log.info("content DTO : {}", boardDto.toString());
 
         return boardDto;
     }
@@ -147,7 +149,7 @@ public class BoardService {
      * 2. 지원자가 해당 게시글의 작성자인지 체크 && 저장(지원)
      * @return
      */
-    public ResponseEntity<OkResponse> recruit(Long positionId, HttpServletRequest request){
+    public ResponseEntity<OkResponse> recruit(Long positionId, String recruitMessage, HttpServletRequest request){
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
 
@@ -174,6 +176,7 @@ public class BoardService {
                             .ifPresent(member -> {
                                 r.addRecruitMember(member);
                                 r.updateStatus(1);
+                                r.updateRecruitMessage(recruitMessage);
                             });
                 });
 

@@ -22,8 +22,9 @@ public class RecruitPosition {
     private String content;
     private int status;
     private String rejectMessage;
+    private String recruitMessage;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RECRUIT_MEMBER_ID")
     private Member recruitMember;
 
@@ -46,6 +47,10 @@ public class RecruitPosition {
     // Update Entity
     public void updateStatus(int status){
         this.status = status;
+    }
+
+    public void updateRecruitMessage(String message){
+        this.recruitMessage = message;
     }
 
     public void updateRejectMessage(String message){

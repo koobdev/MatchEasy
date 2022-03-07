@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping(value = "/board")
+@RequestMapping(value = "/board", produces="application/json;charset=utf-8")
 public class BoardController {
 
     private final BoardService boardService;
@@ -62,9 +62,12 @@ public class BoardController {
      * 선택한 포지션에 지원하기
      */
     @PostMapping("/recruit")
-    public ResponseEntity<OkResponse> recruitPosition(@RequestParam("positionId") Long positionId, HttpServletRequest request){
+    public ResponseEntity<OkResponse> recruitPosition(
+            @RequestParam("positionId") Long positionId,
+            @RequestParam("recruitMessage") String recruitMessage,
+            HttpServletRequest request){
 
-        return boardService.recruit(positionId, request);
+        return boardService.recruit(positionId, recruitMessage, request);
     }
 
 
