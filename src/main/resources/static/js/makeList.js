@@ -2,7 +2,7 @@ function makeBoardContentDiv(content){
     let tbody = "";
 
     tbody += `
-    <div class="board-card" onclick="openDetail(`+ content.id +`)">
+    <div class="board-card uk-margin-bottom" onclick="openDetail(`+ content.id +`)">
         <div class="uk-card uk-card-default">
             <div class="uk-card-header">
                 <div class="uk-text-right uk-margin-bottom">`;
@@ -40,18 +40,18 @@ function makeBoardContentDiv(content){
 function makePositionListDiv(position) {
     let tbody = "";
     tbody += `
-            <tr>
+            <tr id="`+ position.id +`">
                 <td>` + position.position + `</td>
                 <td>` + position.content + `</td>`;
 
     if(position.status === 0){
-        tbody += `<td><button class="uk-button uk-button-small uk-text-nowrap">지원하기</button></td>`;
+        tbody += `<td><button class="uk-button-primary uk-button-small uk-text-nowrap" onclick="recruitPosition(this)">지원하기</button></td>`;
     }else {
-        tbody += `<td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">모집완료</button></td>`;
+        tbody += `<td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap" disabled>모집완료</button></td>`;
     }
 
     if(position.recruitMessage == null){
-        tbody += `<td> - </td>`;
+        tbody += `<td><input class="uk-input uk-form-width-xlarge uk-form-small" type="text"/></td>`;
     }else {
         tbody += `<td>` + position.recruitMessage + `</td>`;
     }

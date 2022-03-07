@@ -154,6 +154,10 @@ img[data-src][src*='data:image'] { background: rgba(0,0,0,0.1); }
     font-size: 1.2em !important;
 }
 
+.uk-text-1_5{
+    font-size: 1.5em !important;
+}
+
 .uk-text-2{
     font-size: 2em !important;
 }

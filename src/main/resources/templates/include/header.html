@@ -1,29 +1,57 @@
 <header id="top-head">
-    <div class="uk-container uk-container-expand">
-        <nav class="uk-navbar" data-uk-navbar="mode:click; duration: 250">
-            <div class="uk-navbar-right">
-                <div class="uk-navbar-item uk-padding-remove-left uk-light">
-                    <a class="uk-navbar-toggle uk-padding-remove-left uk-hidden@m"
-                       data-uk-toggle="target:#offcanvas-nav" data-uk-navbar-toggle-icon
-                       href="#">
-                    </a>
-                    <i class="mdi mdi-file-table menu-icon uk-margin-small-right"></i>
-                    <span class="uk-text-white uk-text-1_1">TITLE</span>
-                </div>
-                <ul class="uk-navbar-nav uk-visible@m">
-                </ul>
+    <div class="uk-container uk-container-expand uk-margin-medium-top">
+        <nav class="uk-navbar">
+            <div class="uk-navbar-left uk-visible@m">
+                <span uk-icon="icon: menu; ratio: 2.5" uk-toggle="target: #offcanvas-nav-primary" style="cursor:pointer;"></span>
             </div>
             <div class="uk-navbar-right uk-visible@m">
                 <ul class="uk-iconnav">
-                    <li class="uk-margin-small-right"><a href=""
-                                                         uk-tooltip="title: 알림; pos:bottom;"
-                                                         uk-icon="icon: bell; ratio: 1.5"></a></li>
-                    <li><a href="#" uk-tooltip="title: 로그아웃; pos:bottom;"
-                           uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></a></li>
+                    <li class="uk-margin-small-right"><a uk-tooltip="title: 알림; pos:bottom;" uk-icon="icon: bell; ratio: 1.5"></a></li>
+                    <li><a uk-tooltip="title: 로그아웃; pos:bottom;" uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></a></li>
                 </ul>
             </div>
         </nav>
     </div>
+
+    <div id="offcanvas-nav-primary" uk-offcanvas="overlay: true">
+        <div class="uk-offcanvas-bar uk-flex uk-flex-column">
+            <button class="uk-offcanvas-close" type="button" uk-close></button>
+            <ul class="uk-nav uk-nav-primary uk-nav-center uk-margin-auto-vertical">
+
+                <div class="uk-margin-large-bottom">
+                    <!-- img src, alt -->
+                    <img src="../../static/images/avatar.svg" width="70" height="70" class="uk-margin-small-bottom"/>
+                    <h4 class="uk-text-center uk-margin-remove-vertical text-light" id="userName">
+
+                    </h4>
+
+                    <div class="uk-position-relative uk-text-center uk-display-block">
+                        <span class="uk-text-small uk-text-muted uk-text-center" id="userId">
+
+                        </span>
+                    </div>
+                </div>
+
+                <li class="uk-nav-header uk-text-1 uk-margin-bottom">
+                    MyPage 관리
+                    <span uk-icon="icon: triangle-down; ratio: 0.8"></span>
+                </li>
+                <ul class="uk-text-center">
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;" onclick=""><span uk-icon="icon: file-edit"></span> 게시글 관리</li>
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><span uk-icon="icon: check"></span> 지원자 관리</li>
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><span uk-icon="icon: user"></span> 회원정보 수정</li>
+                </ul>
+                <li class="uk-nav-divider uk-margin-bottom uk-margin-top"></li>
+                <ul class="uk-text-center">
+                    <li class="uk-margin-small-right">
+                        <span uk-tooltip="title: 알림; pos:bottom;" uk-icon="icon: bell; ratio: 1.5"></span>
+                        <span uk-tooltip="title: 로그아웃; pos:bottom;" uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></span>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+
 </header>
 <script>
     window.onload = function(){
@@ -31,10 +59,13 @@
     }
 
     function userInfoAndTokenCheck(){
+        let userName = document.getElementById("userName");
+        let userId = document.getElementById("userId");
+
         let xhr = new XMLHttpRequest();
         let token = storage.get("accessToken");
-        let userInfos = ['loginId', 'name', 'id'];
         let url = "http://localhost:8080/my/me";
+        let userInfos = ['loginId', 'name', 'id'];
 
         xhr.open('GET', url);
         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -48,9 +79,11 @@
                 storage.set('userId', data[userInfos[2]]);
 
                 console.log(data);
-                // for(key in userInfos){
-                //     userDataInput(userInfos[key], data[userInfos[key]]);
-                // }
+
+                userName.innerText = data.name + " 님";
+                userId.innerText = data.loginId;
+
+
             }else if(xhr.readyState == 4 && xhr.status == 401){
                 // 토큰이 유효하지 않을 때
                 reIssueToken();
@@ -98,7 +131,15 @@
 
     // 로그아웃
     function logout(){
-        storage.removeAll();
-        window.location.href = "/login/loginForm.html";
+
+        UIkit.modal.confirm("로그아웃 하시겠습니까?", {
+            labels: {
+                cancel: '취소',
+                ok: '확인'
+            }
+        }).then(function () {
+            storage.removeAll();
+            window.location.href = "/";
+        });
     }
 </script>

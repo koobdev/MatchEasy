@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="/include/head.html">
+    <title>TITLE</title>
+</head>
+<body>
+<div th:include="/include/header.html"></div>
+
+<div class="uk-container-small uk-align-center">
+    <div class="uk-margin-bottom">
+        <span class="uk-margin-small-right" uk-icon="icon: chevron-left; ratio: 3" onclick="backPage()" style="cursor:pointer;"></span>
+    </div>
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header uk-text-center">
+            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom" id="title"></p>
+            <div class="uk-margin-large-bottom" data-uk-grid="true">
+                <div class="uk-width-expand"></div>
+                <div class="uk-width-auto">
+                    <span class="uk-text-1_2 uk-text-center" id="date"></span>
+                </div>
+            </div>
+            <div class="uk-margin-large-top" data-uk-grid="true">
+                <div class="uk-width-expand uk-text-left">
+                    <span class="uk-margin-small-right" uk-icon="icon: happy; ratio: 1.5"></span>
+                    <span class="uk-text-1_2 uk-text-bold " id="positions"></span>
+                </div>
+                <div class="uk-width-auto"></div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+
+        </div>
+        <div class="uk-card-footer">
+
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    function loadContentDetail() {
+        let accessToken = storage.get("accessToken");
+        let detail = storage.get("contentDetail");
+        let url = "http://localhost:8080/board/" + detail;
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                let data = xhr.response;
+                console.log(data);
+                appendDetail(data);
+                connectSock(data);
+            }
+        };
+    }
+
+</script>
+</html>
+
+
