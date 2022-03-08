@@ -102,7 +102,22 @@ public class BoardService {
      */
     public BoardDto openContent(Long boardDetail){
         BoardContent findContent = boardRepository.findById(boardDetail);
-//        log.info("content Entity : {} ", findContent.toString());
+
+        BoardDto boardDto = BoardMapper.BOARD_MAPPER.toDto(findContent);
+        log.info("content DTO : {}", boardDto.toString());
+
+        return boardDto;
+    }
+
+
+    /**
+     * 글 열기 - userId로 찾기
+     */
+    public BoardDto openMyContent(Long userId){
+        BoardContent findContent = boardRepository.findByWriterId(userId)
+                .orElseGet(() -> {
+                    throw new CustomException(CONTENT_NOT_FOUND);
+                });
 
         BoardDto boardDto = BoardMapper.BOARD_MAPPER.toDto(findContent);
         log.info("content DTO : {}", boardDto.toString());

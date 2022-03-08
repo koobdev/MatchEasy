@@ -12,26 +12,84 @@
     </div>
     <div class="uk-card uk-card-default">
         <div class="uk-card-header uk-text-center">
-            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom" id="title"></p>
-            <div class="uk-margin-large-bottom" data-uk-grid="true">
-                <div class="uk-width-expand"></div>
-                <div class="uk-width-auto">
-                    <span class="uk-text-1_2 uk-text-center" id="date"></span>
-                </div>
-            </div>
+            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom">게시글 관리 페이지</p>
             <div class="uk-margin-large-top" data-uk-grid="true">
-                <div class="uk-width-expand uk-text-left">
+                <div class="uk-text-left">
                     <span class="uk-margin-small-right" uk-icon="icon: happy; ratio: 1.5"></span>
-                    <span class="uk-text-1_2 uk-text-bold " id="positions"></span>
+                    <span class="uk-text-1_2 uk-text-bold " >작성한 게시글을 수정, 삭제할 수 있습니다.</span>
                 </div>
-                <div class="uk-width-auto"></div>
             </div>
         </div>
-        <div class="uk-card-body">
-
+        <div class="uk-card-body" id="contentBody">
+            <table class="uk-table uk-text-center">
+                <tr>
+                    <th>제목</th>
+                    <td>
+                        <input class="uk-input uk-form-width-xlarge uk-form-small" id="registerTitle"
+                               type="text" placeholder="제목을 입력하세요." />
+                    </td>
+                </tr>
+                <tr>
+                    <th>내용</th>
+                    <td>
+                        <textarea class="uk-textarea uk-height-small uk-margin-remove" id="registerContent"
+                                  placeholder="내용을 입력하세요." ></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <th>모집 일자</th>
+                    <td>
+                        <div class="uk-form-controls uk-margin-small-top">
+                            <div data-uk-grid>
+                                <div>
+                                    <input class="uk-input uk-form-small" id="startDate"
+                                           name="startDate" type="text" placeholder="시작일자"  />
+                                </div>
+                                <div>
+                                    <span>~</span>
+                                </div>
+                                <div>
+                                    <input class="uk-input uk-form-small" id="endDate"
+                                           name="endDate" type="text" placeholder="종료일자"  />
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr><th></th><td></td></tr>
+                <tr>
+                    <th>모집 포지션<br>
+                        <span class="uk-margin-remove" uk-icon="icon: plus-circle"
+                              onclick="addPositionOption()"></span>
+                        <span class="uk-margin-remove" uk-icon="icon: minus-circle"
+                              onclick="removePositionOption()"></span>
+                    </th>
+                    <td id="positions">
+                        <div data-uk-grid="true">
+                            <div class="uk-width-auto">
+                                <span>포지션 명</span>
+                                <input class="uk-input uk-form-small"
+                                       type="text" placeholder="포지션 명을 입력하세요." />
+                            </div>
+                            <div class="uk-width-expand">
+                                <span>설명 기입</span>
+                                <input class="uk-input uk-form-width-xlarge uk-form-small"
+                                       type="text" placeholder="간단한 역할과 같은 것을 입력하세요." />
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="uk-card-footer">
-
+            <div class="uk-text-right uk-margin-large">
+                <button class="uk-button uk-button-danger uk-button-radius" id="btnEdit"
+                        onClick="editBoardContent()">삭제
+                </button>
+                <button class="uk-button uk-button-primary uk-button-radius" id="btnDelete"
+                        onClick="deleteBoardContent()">수정
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -39,25 +97,122 @@
 
 <script type="text/javascript">
 
-    function loadContentDetail() {
-        let accessToken = storage.get("accessToken");
-        let detail = storage.get("contentDetail");
-        let url = "http://localhost:8080/board/" + detail;
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-        xhr.responseType = 'json';
-        xhr.send();
+    const startDate = flatpickr("#startDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
 
-        xhr.onreadystatechange = function () {
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                let data = xhr.response;
-                console.log(data);
-                appendDetail(data);
-                connectSock(data);
-            }
-        };
+    const endDate = flatpickr("#endDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
+
+
+    let accessToken = storage.get("accessToken");
+    let userId = storage.get("userId");
+    let url = "http://localhost:8080/my/boardContent?userId="+userId;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
+
+    let contentBody = document.getElementById("contentBody");
+    let btnEdit = document.getElementById("btnEdit");
+    let btnDelete = document.getElementById("btnDelete");
+
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response;
+            console.log(data);
+            appendBody(data);
+        }else {
+            UIkit.modal.alert(xhr.response.message).then(function () {
+                contentBody.innerHTML = "작성된 게시글이 없습니다.";
+                btnEdit.disabled = true;
+                btnDelete.disabled = true;
+            });
+        }
+    };
+
+
+    function appendBody(data){
+        let registerTitle = document.getElementById("registerTitle");
+        let registerContent = document.getElementById("registerContent");
+        let startDate = document.getElementById("startDate");
+        let endDate = document.getElementById("endDate");
+
+        registerTitle.value = data.title;
+        registerContent.value = data.content;
+        startDate.value = data.startdate.substr(0, 10);
+        endDate.value = data.enddate.substr(0, 10);
+        startDate.parentNode.children[1].value = data.startdate.substring(0, 4) + "년" + data.startdate.substring(5, 7) + "월" + data.startdate.substring(8, 10) + "일";
+        endDate.parentNode.children[1].value = data.enddate.substring(0, 4) + "년" + data.enddate.substring(5, 7) + "월" + data.enddate.substring(8, 10) + "일";
+
+
+
+    }
+
+    function addPositionOption() {
+        let position = document.getElementById("positions");
+
+        let div = document.createElement('div');
+        div.setAttribute('data-uk-grid', 'true');
+
+
+        let divAuto = document.createElement('div');
+        divAuto.setAttribute('class', 'uk-width-auto');
+
+        let spanAuto = document.createElement('span');
+        let spanAutoText = document.createTextNode('포지션 명');
+        spanAuto.appendChild(spanAutoText);
+
+        let inputAuto = document.createElement('input');
+        inputAuto.setAttribute('class', 'uk-input uk-form-width-xlarge uk-form-small');
+        inputAuto.setAttribute('type', 'text');
+        inputAuto.setAttribute('placeholder', '포지션 명을 입력하세요.');
+
+        divAuto.appendChild(spanAuto);
+        divAuto.appendChild(inputAuto);
+
+
+
+        let divExpand = document.createElement('div');
+        divExpand.setAttribute('class', 'uk-width-expand');
+
+        let spanExpand = document.createElement('span');
+        let spanExpandText = document.createTextNode('설명 기입');
+        spanExpand.appendChild(spanExpandText);
+
+        let inputExpand = document.createElement('input');
+        inputExpand.setAttribute('class', 'uk-input uk-form-small');
+        inputExpand.setAttribute('type', 'text');
+        inputExpand.setAttribute('placeholder', '간단한 역할과 같은 것을 입력하세요.');
+
+        divExpand.appendChild(spanExpand);
+        divExpand.appendChild(inputExpand);
+
+
+        div.appendChild(divAuto);
+        div.appendChild(divExpand);
+        position.appendChild(div);
+    }
+
+    function removePositionOption() {
+        let position = document.getElementById("positions");
+        if(position.childElementCount != 1){
+            position.removeChild(position.lastChild);
+        }else {
+            UIkit.modal.alert('최소 한개 이상의 포지션이 있어야 합니다.').then(function () {
+            });
+        }
+    }
+
+    function backPage(){
+        window.location.href = "/form/contentList";
     }
 
 </script>

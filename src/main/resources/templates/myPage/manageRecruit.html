@@ -12,23 +12,49 @@
     </div>
     <div class="uk-card uk-card-default">
         <div class="uk-card-header uk-text-center">
-            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom" id="title"></p>
-            <div class="uk-margin-large-bottom" data-uk-grid="true">
-                <div class="uk-width-expand"></div>
-                <div class="uk-width-auto">
-                    <span class="uk-text-1_2 uk-text-center" id="date"></span>
-                </div>
-            </div>
+            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom">지원자 관리 페이지</p>
             <div class="uk-margin-large-top" data-uk-grid="true">
-                <div class="uk-width-expand uk-text-left">
+                <div class="uk-text-left">
                     <span class="uk-margin-small-right" uk-icon="icon: happy; ratio: 1.5"></span>
-                    <span class="uk-text-1_2 uk-text-bold " id="positions"></span>
+                    <span class="uk-text-1_2 uk-text-bold " >지원자의 요청을 관리하고 팀을 생성할 수 있습니다.</span>
                 </div>
-                <div class="uk-width-auto"></div>
             </div>
         </div>
         <div class="uk-card-body">
-
+            <table class="uk-table uk-table-hover uk-table-divider uk-table-responsive uk-table-middle">
+                <thead class="uk-text-0_9">
+                    <th class="uk-width-small">모집 포지션</th>
+                    <th class="uk-width-large">설명(간단한 역할 등)</th>
+                    <th class="uk-width-small">지원하기</th>
+                    <th class="uk-width-large">지원자 설명</th>
+                </thead>
+                <tbody class="uk-text-0_8" id="positionList">
+                    <tr>
+                        <td>aaaaa</td>
+                        <td>bbbbb</td>
+                        <td>ccccc</td>
+                        <td>ddddd</td>
+                    </tr>
+                    <tr>
+                        <td>aaaaa</td>
+                        <td>bbbbb</td>
+                        <td>ccccc</td>
+                        <td>ddddd</td>
+                    </tr>
+                    <tr>
+                        <td>aaaaa</td>
+                        <td>bbbbb</td>
+                        <td>ccccc</td>
+                        <td>ddddd</td>
+                    </tr>
+                    <tr>
+                        <td>aaaaa</td>
+                        <td>bbbbb</td>
+                        <td>ccccc</td>
+                        <td>ddddd</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="uk-card-footer">
 
@@ -58,6 +84,10 @@
                 connectSock(data);
             }
         };
+    }
+
+    function backPage(){
+        window.location.href = "/form/contentList";
     }
 
 </script>

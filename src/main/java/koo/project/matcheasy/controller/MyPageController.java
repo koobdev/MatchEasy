@@ -1,6 +1,8 @@
 package koo.project.matcheasy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import koo.project.matcheasy.domain.board.RecruitPosition;
+import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.MemberMeDto;
 import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.dto.TeamDto;
@@ -44,6 +46,18 @@ public class MyPageController {
                 .body(memberMeDto);
     }
 
+
+    /**
+     * 글 목록 get
+     */
+    @GetMapping("/boardContent")
+    public ResponseEntity<BoardDto> myContent(@RequestParam("userId") Long userId){
+        // 게시글
+        BoardDto boardDto = boardService.openMyContent(userId);
+
+        return ResponseEntity.ok()
+                .body(boardDto);
+    }
 
 
     /**

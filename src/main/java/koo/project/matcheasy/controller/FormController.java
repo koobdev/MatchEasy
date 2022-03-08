@@ -14,7 +14,15 @@ public class FormController {
 
     @GetMapping("/chatRoom")
     public String chatRoomForm(){
-        return "/form/chatRoom";
+        return "/chat/chatRoom";
+    }
+
+    /**
+     * 회원가입 폼
+     */
+    @GetMapping("/addMember")
+    public String addMemberForm(){
+        return "/members/addMember";
     }
 
     /**
@@ -30,6 +38,22 @@ public class FormController {
      */
     @GetMapping("/contentDetail")
     public String boardDetailForm(){
-        return "/form/contentDetail";
+        return "/board/contentDetail";
+    }
+
+    /**
+     * 게시글 관리페이지 폼
+     */
+    @GetMapping("/manageBoardContent")
+    public String manageBoardContentForm(){
+        return "/myPage/manageBoardContent";
+    }
+
+    /**
+     * 지원자 관리 폼
+     */
+    @GetMapping("/manageRecruit")
+    public String manageRecruitForm(){
+        return "/myPage/manageRecruit";
     }
 }
