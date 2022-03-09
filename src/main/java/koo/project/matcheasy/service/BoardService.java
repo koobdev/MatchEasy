@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
+import koo.project.matcheasy.domain.board.RequestPosition;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.OkResponse;
@@ -40,6 +41,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final RecruitPositionRepository recruitPositionRepository;
+    private final RequestPositionRepository requestPositionRepository;
     private final AuthorizationExtractor authExtractor;
     private final JwtTokenProvider jwtTokenProvider;
     private final BoardContext boardContext;
@@ -130,31 +132,40 @@ public class BoardService {
     /**
      * 글 수정
      */
-    public void updateContent(BoardDto boardDto, HttpServletRequest request) throws Exception {
+    public ResponseEntity<OkResponse> updateContent(Long id, BoardDto boardDto, HttpServletRequest request) throws Exception {
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
 
-        log.info("RequestToken LoginId ::::::: {}", loginId);
+        duplicatedWriterWithRequest(id, loginId);
 
-        duplicatedWriterWithRequest(boardDto, loginId);
+        log.info("boardDto positions :: {}", boardDto.getPositions());
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
-        boardRepository.save(boardEntity);
+        List<RecruitPosition> positions = new ArrayList<>();
+        for (RecruitPositionDto recruitPosition : boardDto.getPositions()) {
+            RecruitPosition position = RecruitPositionMapper.POSITION_MAPPER.toEntity(recruitPosition);
+            positions.add(position);
+        }
+
+        BoardContent findContent = boardRepository.findById(id);
+        findContent.updateContent(boardDto.getTitle(), boardDto.getContent(), positions);
+
+
+        return OkResponse.toResponse(objectMapper.writeValueAsString(findContent),"게시글을 수정하였습니다.");
     }
 
     /**
      * 글 삭제
      */
-    public void deleteContent(BoardDto boardDto, HttpServletRequest request) throws Exception {
+    public ResponseEntity<OkResponse> deleteContent(Long id, HttpServletRequest request) throws Exception {
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
 
-        log.info("RequestToken LoginId ::::::: {}", loginId);
+        duplicatedWriterWithRequest(id, loginId);
 
-        duplicatedWriterWithRequest(boardDto, loginId);
+        BoardContent findContent = boardRepository.findById(id);
+        boardRepository.delete(findContent);
 
-        BoardContent boardEntity = BoardMapper.BOARD_MAPPER.toEntity(boardDto);
-        boardRepository.delete(boardEntity);
+        return OkResponse.toResponse(objectMapper.writeValueAsString(findContent),"게시글을 삭제하였습니다.");
     }
 
 
@@ -185,14 +196,19 @@ public class BoardService {
                     log.info("Check 2 :::: id : {}, position L {}", r.getId(), r.getPosition());
                     recruitWriterCheck(r.getBoardContent().getWriterId(), loginId);
 
+                    RequestPosition requestPosition = RequestPosition.builder()
+                            .status(0)
+                            .recruitMessage(recruitMessage)
+                            .build();
+                    // 요청한 포지션에 requestPosition을 매핑함
+                    requestPosition.addPosition(r);
+
                     // 1차 캐시에서 가져옴
-                    // position에 member저장 && status 1로 update(지원 상태)
+                    // 지원 요청한 member를 requestPosition에 추가함
                     memberRepository.findByLoginId(loginId)
-                            .ifPresent(member -> {
-                                r.addRecruitMember(member);
-                                r.updateStatus(1);
-                                r.updateRecruitMessage(recruitMessage);
-                            });
+                            .ifPresent(requestPosition::addRecruitMember);
+
+                    requestPositionRepository.save(requestPosition);
                 });
 
         return OkResponse.toResponse("ok","포지션 지원을 완료하였습니다.");
@@ -200,9 +216,9 @@ public class BoardService {
 
     /**
      * 지원자 목록
-     * 내가 작성한 글과 포지션 지원자를 join해서 물고옴
+     * 포지션과 포지션 지원자를 join해서 물고옴
      */
-    public JSONArray recruitList(HttpServletRequest request){
+    public List<RecruitPosition> recruitList(HttpServletRequest request){
         List<RecruitPosition> recruitPositionList = new ArrayList<>();
         String token = authExtractor.extract(request, "Bearer");
         String loginId = jwtTokenProvider.getSubject(token);
@@ -216,48 +232,37 @@ public class BoardService {
 
         boardRepository.findByWriterId(findMember.getId())
                 .ifPresentOrElse(content -> {
-                    for (RecruitPosition position : content.getPositions()) {
-                        if(position.getBoardContent().getId().equals(content.getId())
-                                && position.getStatus() == 1){
-                            recruitPositionList.add(position);
-                        }
-                    }
+
+//                    for (RecruitPosition position : content.getPositions()) {
+//                        if(position.getBoardContent().getId().equals(content.getId())
+//                                && position.getStatus() == 1){
+//                            recruitPositionList.add(position);
+//                        }
+
+                    recruitPositionList.addAll(content.getPositions());
                 }, () -> {
                     throw new CustomException(CONTENT_NOT_FOUND);
                 });
 
-
-        // 지원자 리스트 뽑아서 json 형식으로 리턴
-        JSONArray jsonArray = new JSONArray();
-        for (RecruitPosition position : recruitPositionList) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("positionId" ,position.getId());
-            jsonObject.put("content" ,position.getContent());
-            jsonObject.put("position" ,position.getPosition());
-            jsonObject.put("status" ,position.getStatus());
-
-            JSONObject member = new JSONObject();
-            member.put("id", position.getRecruitMember().getId());
-            member.put("loginId", position.getRecruitMember().getLoginId());
-            member.put("email", position.getRecruitMember().getEmail());
-            member.put("age", position.getRecruitMember().getAge());
-            member.put("name", position.getRecruitMember().getName());
-            member.put("position", position.getRecruitMember().getPosition());
-
-            jsonObject.put("recuritMember" ,member);
-            jsonArray.add(jsonObject);
-        }
-
-        return jsonArray;
+        return recruitPositionList;
     }
 
 
     public ResponseEntity<OkResponse> acceptOrReject(Long idx, int status, String message) {
 
-        recruitPositionRepository.findById(idx)
-                .ifPresent(r -> {
-                    r.updateStatus(status);
-                    r.updateRejectMessage(message);
+        // status == 1 : 수락
+        // status == 2 : 거절 - 거절 메세지를 등록함
+        requestPositionRepository.findById(idx)
+                .ifPresentOrElse(r -> {
+                    if(status == 1){
+                        r.updateStatus(status);
+                        r.getPosition().updateStatus(1);
+                    }else {
+                        r.updateStatus(status);
+                        r.updateRejectMessage(message);
+                    }
+                }, ()-> {
+                    throw new CustomException(CONTENT_NOT_FOUND);
                 });
 
         return OkResponse.toResponse("ok","완료하였습니다.");
@@ -280,8 +285,9 @@ public class BoardService {
      * 중복 작성자 찾기
      * 현재 작성된 글의 작성자와 로그인 정보를 체크
      */
-    private void duplicatedWriterWithRequest(BoardDto boardDto, String name) throws Exception {
-        Member writer = memberRepository.findById(boardDto.getWriterId());
+    private void duplicatedWriterWithRequest(Long boardId, String name){
+        BoardContent findContent = boardRepository.findById(boardId);
+        Member writer = memberRepository.findById(findContent.getWriterId());
 
         if(!name.equals(writer.getLoginId())){
             throw new CustomException(FAIL_MEMBER_AUTHORIZED);

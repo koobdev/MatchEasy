@@ -71,20 +71,20 @@ public class BoardController {
     }
 
 
+    /**
+     * 글 등록
+     */
+    @PutMapping("/update/{id}")
+    public ResponseEntity<OkResponse> update(
+            @Valid @RequestBody BoardDto boardDto, @PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        return boardService.updateContent(id, boardDto, request);
+    }
 
-
-//    @PostMapping("/test/board/update")
-//    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request){
-//        boardService.editContent(boardDto, request);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
-//
-//    @PostMapping("/test/board/update")
-//    public ResponseEntity<BoardDto> update(@Valid @RequestBody BoardDto boardDto, HttpServletRequest request) throws Exception {
-//        boardService.updateContent(boardDto, request);
-//
-//        return ResponseEntity.ok().body(boardDto);
-//    }
+    /**
+     * 글 삭제
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<OkResponse> deleteContent(@PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        return boardService.deleteContent(id, request);
+    }
 }

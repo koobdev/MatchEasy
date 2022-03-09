@@ -1,11 +1,14 @@
 package koo.project.matcheasy.domain.board;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import koo.project.matcheasy.domain.member.Member;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,15 +24,19 @@ public class RecruitPosition {
     private String position;
     private String content;
     private int status;
-    private String rejectMessage;
-    private String recruitMessage;
+//    private String rejectMessage;
+//    private String recruitMessage;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "RECRUIT_MEMBER_ID")
-    private Member recruitMember;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "position")
+    private List<RequestPosition> requestPosition = new ArrayList<>();
+
+//    @OneToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "RECRUIT_MEMBER_ID")
+//    private Member recruitMember;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CONTENT_ID")
     private BoardContent boardContent;
 
@@ -39,9 +46,9 @@ public class RecruitPosition {
         boardContent.getPositions().add(this);
     }
 
-    public void addRecruitMember(Member member){
-        this.recruitMember = member;
-    }
+//    public void addRecruitMember(Member member){
+//        this.recruitMember = member;
+//    }
 
 
     // Update Entity
@@ -49,11 +56,11 @@ public class RecruitPosition {
         this.status = status;
     }
 
-    public void updateRecruitMessage(String message){
-        this.recruitMessage = message;
-    }
-
-    public void updateRejectMessage(String message){
-        this.rejectMessage = message;
-    }
+//    public void updateRecruitMessage(String message){
+//        this.recruitMessage = message;
+//    }
+//
+//    public void updateRejectMessage(String message){
+//        this.rejectMessage = message;
+//    }
 }

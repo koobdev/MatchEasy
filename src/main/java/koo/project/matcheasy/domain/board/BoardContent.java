@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -30,11 +31,11 @@ public class BoardContent {
     @JsonManagedReference
     @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "boardContent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecruitPosition> positions = new ArrayList<>();
 
     @JsonBackReference
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "CHAT_ID")
     private ChatRoom chatRoom;
 
@@ -71,5 +72,18 @@ public class BoardContent {
     // Update status
     public void updateStatus(int status){
         this.status = status;
+    }
+
+    // update Content
+    public void updateContent(String title, String content, List<RecruitPosition> positions){
+        this.title = title;
+        this.content = content;
+
+        if(this.getPositions() != null){
+            this.getPositions().clear();
+        }
+        for (RecruitPosition position : positions) {
+            this.getPositions().add(position);
+        }
     }
 }

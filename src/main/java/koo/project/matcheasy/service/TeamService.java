@@ -100,12 +100,12 @@ public class TeamService {
                     for (RecruitPosition position : content.getPositions()) {
                         if(position.getBoardContent().getId().equals(content.getId())
                                 && position.getStatus() == 2){
-                            Long id = position.getRecruitMember().getId();
-
-                            Member findRecruitMember = memberRepository.findById(id);
-                            members.add(findRecruitMember);
-
-                            positions.add(position.getPosition());
+//                            Long id = position.getRecruitMember().getId();
+//
+//                            Member findRecruitMember = memberRepository.findById(id);
+//                            members.add(findRecruitMember);
+//
+//                            positions.add(position.getPosition());
                         }
                     }
                     returnMap.put("findContent", content);

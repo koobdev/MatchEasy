@@ -83,11 +83,11 @@
         </div>
         <div class="uk-card-footer">
             <div class="uk-text-right uk-margin-large">
-                <button class="uk-button uk-button-danger uk-button-radius" id="btnEdit"
-                        onClick="editBoardContent()">삭제
+                <button class="uk-button uk-button-primary uk-button-radius" id="btnEdit"
+                        onClick="editBoardContent()">수정
                 </button>
-                <button class="uk-button uk-button-primary uk-button-radius" id="btnDelete"
-                        onClick="deleteBoardContent()">수정
+                <button class="uk-button uk-button-danger uk-button-radius" id="btnDelete"
+                        onClick="deleteBoardContent()">삭제
                 </button>
             </div>
         </div>
@@ -128,6 +128,7 @@
         if(xhr.readyState == 4 && xhr.status == 200) {
             let data = xhr.response;
             console.log(data);
+            contentBody.setAttribute("data-contentId", data.id);
             appendBody(data);
         }else {
             UIkit.modal.alert(xhr.response.message).then(function () {
@@ -144,6 +145,7 @@
         let registerContent = document.getElementById("registerContent");
         let startDate = document.getElementById("startDate");
         let endDate = document.getElementById("endDate");
+        let positions = document.getElementById("positions");
 
         registerTitle.value = data.title;
         registerContent.value = data.content;
@@ -152,8 +154,12 @@
         startDate.parentNode.children[1].value = data.startdate.substring(0, 4) + "년" + data.startdate.substring(5, 7) + "월" + data.startdate.substring(8, 10) + "일";
         endDate.parentNode.children[1].value = data.enddate.substring(0, 4) + "년" + data.enddate.substring(5, 7) + "월" + data.enddate.substring(8, 10) + "일";
 
+        let append = "";
 
-
+        for (const position of data.positions) {
+            append += makePositionListDivInManage(position);
+        }
+        positions.innerHTML = append;
     }
 
     function addPositionOption() {
@@ -210,6 +216,96 @@
             });
         }
     }
+
+
+    function editBoardContent() {
+        let contentBody = document.getElementById("contentBody");
+        let userId = storage.get("userId");
+        let title = document.getElementById('registerTitle').value;
+        let content = document.getElementById('registerContent').value;
+        let startDate = document.getElementById('startDate').value;
+        let endDate = document.getElementById('endDate').value;
+        let positionList = [];
+        let url = "http://localhost:8080/board/update/"+contentBody.dataset.contentid;
+
+        let position = document.getElementById("positions");
+        let childLen = position.children.length;
+        for(let i=0; i<childLen; i++){
+            let positionTitle = position.children[i].children[0].children[1].value;
+            let positionContent = position.children[i].children[1].children[1].value;
+            let positionElement = {
+                "position" : positionTitle,
+                "content" : positionContent,
+                "status" : 0
+            };
+            positionList.push(positionElement);
+        }
+
+        let target = {
+            "title" : title,
+            "content" : content,
+            "positions" : positionList,
+            "startdate" : valueToTimeStamp.getDate(startDate),
+            "enddate" : valueToTimeStamp.getDate(endDate),
+            "regdate": "",
+            "moddate": "",
+            "writerId": userId
+        }
+
+        xhr.open('PUT', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send(JSON.stringify(target));
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let data = xhr.response;
+                console.log(data);
+
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageBoardContent";
+                });
+
+            }else if(xhr.readyState === 4 && xhr.status === 401){
+                reIssueToken();
+            }else {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/main";
+                });
+            }
+        }
+    }
+
+
+    function deleteBoardContent() {
+        let url = "http://localhost:8080/board/delete/"+contentBody.dataset.contentid;
+        xhr.open('DELETE', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let data = xhr.response;
+                console.log(data);
+
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageBoardContent";
+                });
+
+            }else if(xhr.readyState === 4 && xhr.status === 401){
+                reIssueToken();
+            }else {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/main";
+                });
+            }
+        }
+    }
+
+
 
     function backPage(){
         window.location.href = "/form/contentList";

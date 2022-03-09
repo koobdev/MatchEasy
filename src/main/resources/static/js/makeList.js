@@ -62,3 +62,49 @@ function makePositionListDiv(position) {
 
     return tbody;
 }
+
+function makeRecruitPositionListDiv(position) {
+    let tbody = "";
+    tbody += `
+            <tr id="`+ position.id +`">
+                <td>` + position.position + `</td>
+                <td>` + position.content + `</td>`;
+
+    if(position.status === 0){
+        tbody += `<td><button class="uk-button-primary uk-button-small uk-text-nowrap" onclick="recruitPosition(this)">지원하기</button></td>`;
+    }else {
+        tbody += `<td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap" disabled>모집완료</button></td>`;
+    }
+
+    if(position.recruitMessage == null){
+        tbody += `<td><input class="uk-input uk-form-width-xlarge uk-form-small" type="text"/></td>`;
+    }else {
+        tbody += `<td>` + position.recruitMessage + `</td>`;
+    }
+
+    tbody += `
+            </tr>
+            `;
+
+    return tbody;
+}
+
+
+function makePositionListDivInManage(position) {
+    let div = "";
+
+    div += `
+    <div data-uk-grid="true">
+        <div class="uk-width-auto">
+            <span>포지션 명</span>
+            <input class="uk-input uk-form-small" type="text" value="` + position.position + `"/>
+        </div>
+        <div class="uk-width-expand">
+            <span>설명 기입</span>
+            <input class="uk-input uk-form-width-xlarge uk-form-small" type="text" value="` + position.content + `"/>
+        </div>
+    </div>
+    `;
+
+    return div;
+}

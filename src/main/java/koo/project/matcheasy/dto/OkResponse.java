@@ -9,6 +9,8 @@ import org.json.simple.JSONArray;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -39,6 +41,19 @@ public class OkResponse {
                         .code("OK")
                         .message(message)
                         .data(jsonArray)
+                        .build()
+                );
+    }
+
+
+    public static ResponseEntity<OkResponse> toListResponse(List<Object> list, String message){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(OkResponse.builder()
+                        .status(200)
+                        .code("OK")
+                        .message(message)
+                        .data(list)
                         .build()
                 );
     }

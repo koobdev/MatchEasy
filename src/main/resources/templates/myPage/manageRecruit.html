@@ -65,26 +65,34 @@
 
 <script type="text/javascript">
 
-    function loadContentDetail() {
-        let accessToken = storage.get("accessToken");
-        let detail = storage.get("contentDetail");
-        let url = "http://localhost:8080/board/" + detail;
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-        xhr.responseType = 'json';
-        xhr.send();
+    let accessToken = storage.get("accessToken");
+    let detail = storage.get("contentDetail");
+    let url = "http://localhost:8080/board/" + detail;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
 
-        xhr.onreadystatechange = function () {
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                let data = xhr.response;
-                console.log(data);
-                appendDetail(data);
-                connectSock(data);
-            }
-        };
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response;
+            console.log(data);
+            appendDetail(data);
+        }
+    };
+
+    function appendDetail(data) {
+        let positionList = document.getElementById("positionList");
+
+        let tbody = "";
+        for (const position of data.positions) {
+            tbody += makePositionListDiv(position);
+        }
+        positionList.innerHTML = tbody;
     }
+
 
     function backPage(){
         window.location.href = "/form/contentList";

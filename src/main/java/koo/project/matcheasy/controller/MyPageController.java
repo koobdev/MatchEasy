@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -67,8 +68,8 @@ public class MyPageController {
     @GetMapping("/recruitList")
     public ResponseEntity<OkResponse> recruitList(HttpServletRequest request){
 
-        JSONArray jsonArray = boardService.recruitList(request);
-        return OkResponse.toJSonResponse(jsonArray, "지원자 목록");
+        List<RecruitPosition> positions = boardService.recruitList(request);
+        return OkResponse.toListResponse(Collections.singletonList(positions), "지원자 목록");
     }
 
 
