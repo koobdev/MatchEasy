@@ -63,30 +63,97 @@ function makePositionListDiv(position) {
     return tbody;
 }
 
+/**
+ * 지원자 관리 페이지
+ */
 function makeRecruitPositionListDiv(position) {
-    let tbody = "";
-    tbody += `
-            <tr id="`+ position.id +`">
-                <td>` + position.position + `</td>
-                <td>` + position.content + `</td>`;
+    let tr = `
+        <tbody class="uk-text-0_8" >
+        <tr id="` + position.id + `" onclick="showSub(` +  position.id + `)" class="uk-background-muted">
+            <td>` + position.position + `</td>
+            <td>` + position.content + `</td>`;
 
     if(position.status === 0){
-        tbody += `<td><button class="uk-button-primary uk-button-small uk-text-nowrap" onclick="recruitPosition(this)">지원하기</button></td>`;
+        tr += `<td>모집중</td>`;
     }else {
-        tbody += `<td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap" disabled>모집완료</button></td>`;
+        tr += `<td class="uk-text-bold">모집완료</td>`;
     }
 
-    if(position.recruitMessage == null){
-        tbody += `<td><input class="uk-input uk-form-width-xlarge uk-form-small" type="text"/></td>`;
-    }else {
-        tbody += `<td>` + position.recruitMessage + `</td>`;
+    tr += ` <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>
+            <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>
+            <td> - </td>
+        </tr>
+        </tbody>
+    `;
+
+    if(position.requestPosition.length !== 0){
+        tr += `
+            <tbody id="sub` + position.id + `" hidden>
+        `;
+        for (let rePo of position.requestPosition) {
+            if(rePo.status === 0){
+                tr += ` 
+                        <tr class="uk-animation-slide-top-small">
+                        <td>` + position.position + `</td>
+                        <td>` + position.content + `</td>
+                        <td>지원요청</td>
+                        <td>` + rePo.recruitMessage + `</td>
+                        <td><button class="uk-button uk-button-small uk-text-nowrap" onclick="showMember(this)"` +
+                            `data-member-loginId="`+ rePo.recruitMember.loginId +`"`+
+                            `data-member-name="`+ rePo.recruitMember.name +`"`+
+                            `data-member-email="`+ rePo.recruitMember.email +`"`+
+                            `data-member-age="`+ rePo.recruitMember.age +`"`+
+                            `data-member-position="`+ rePo.recruitMember.position +`"`+
+                            `data-member-memberSkills='`+ JSON.stringify(rePo.recruitMember.memberSkills) +`'`+
+                            `>보기</button></td>
+                        <td>
+                            <div class="uk-margin-small-bottom">
+                                <button id="` + rePo.id + `" class="uk-button uk-button-primary uk-button-small uk-text-nowrap" onclick="acceptEvent(this)">수락</button>
+                            </div>
+                            <div>
+                                <button id="` + rePo.id + `" class="uk-button uk-button-danger uk-button-small uk-text-nowrap" onclick="rejectEvent(this)">거절</button>
+                            </div>
+                        </td>
+                        </tr>`;
+            }else if(rePo.status === 1){
+                tr += ` 
+                        <tr class="uk-animation-slide-top-small">
+                        <td>` + position.position + `</td>
+                        <td>` + position.content + `</td>
+                        <td>수락</td>
+                        <td>` + rePo.recruitMessage + `</td>
+                        <td><button class="uk-button uk-button-small uk-text-nowrap" onclick="showMember(this)"` +
+                            `data-member-loginId="`+ rePo.recruitMember.loginId +`"`+
+                            `data-member-name="`+ rePo.recruitMember.name +`"`+
+                            `data-member-email="`+ rePo.recruitMember.email +`"`+
+                            `data-member-age="`+ rePo.recruitMember.age +`"`+
+                            `data-member-position="`+ rePo.recruitMember.position +`"`+
+                            `data-member-memberSkills='`+ JSON.stringify(rePo.recruitMember.memberSkills) +`'`+
+                            `>보기</button></td>
+                        <td> - </td>
+                        </tr>`;
+            }else{
+                tr += ` 
+                        <tr class="uk-animation-slide-top-small">
+                        <td>` + position.position + `</td>
+                        <td>` + position.content + `</td>
+                        <td>거절</td>
+                        <td>` + rePo.recruitMessage + `</td>
+                        <td><button class="uk-button uk-button-small uk-text-nowrap" onclick="showMember(this)"` +
+                            `data-member-loginId="`+ rePo.recruitMember.loginId +`"`+
+                            `data-member-name="`+ rePo.recruitMember.name +`"`+
+                            `data-member-email="`+ rePo.recruitMember.email +`"`+
+                            `data-member-age="`+ rePo.recruitMember.age +`"`+
+                            `data-member-position="`+ rePo.recruitMember.position +`"`+
+                            `data-member-memberSkills='`+ JSON.stringify(rePo.recruitMember.memberSkills) +`'`+
+                        `>보기</button></td>
+                        <td> - </td>
+                        </tr>`;
+            }
+        }
+        tr += `</tbody>`;
     }
-
-    tbody += `
-            </tr>
-            `;
-
-    return tbody;
+    return tr;
 }
 
 

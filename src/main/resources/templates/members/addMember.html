@@ -1,72 +1,91 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
+<head th:include="/include/head.html">
+    <title>TITLE</title>
 </head>
 <body>
 
 <div class="container">
-
     <div class="py-5 text-center">
-        <h2>회원 가입</h2>
+        <h2>회원가입</h2>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">로그인 ID</label>
+        <input type="text" id="loginId" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">이름</label>
+        <input type="text" id="name" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">이메일</label>
+        <input type="email" id="email" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">나이</label>
+        <input type="text" id="age" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">선호 포지션</label>
+        <input type="text" id="position" class="form-control">
+    </div>
+    <div class="uk-margin-bottom">
+        <div>
+            <label for="loginId">기술 스택</label>
+            <span class="uk-margin-remove" uk-icon="icon: plus-circle"
+                  onclick="addSkill()"></span>
+            <span class="uk-margin-remove" uk-icon="icon: minus-circle"
+                  onclick="removeSkill()"></span>
+        </div>
+        <div id="memberSkills">
+            <input type="text" class="uk-margin-small-bottom form-control">
+        </div>
     </div>
 
-    <h4 class="mb-3">회원 정보 입력</h4>
+    <hr class="my-4">
 
-    <form action="" th:action th:object="${member}" method="post">
-
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-primary btn-lg" onclick="addMember()" type="button">완료</button>
         </div>
-
-        <div>
-            <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{loginId}"/>
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg" onclick="backPage()" type="button">취소
+            </button>
         </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{password}"/>
-        </div>
-        <div>
-            <label for="name">이름</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{name}"/>
-        </div>
-
-
-        <hr class="my-4">
-
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
-            </div>
-            <div class="col">
-                <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='items.html'"
-                        th:onclick="|location.href='@{/}'|"
-                        type="button">취소
-                </button>
-            </div>
-        </div>
-
-    </form>
-
+    </div>
 </div> <!-- /container -->
 </body>
+<script>
+
+    function addMember(){
+
+    }
+
+    function addSkill() {
+        let memberSkills = document.getElementById("memberSkills");
+
+        let input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('class', 'form-control uk-margin-small-bottom');
+        memberSkills.appendChild(input);
+    }
+
+    function removeSkill() {
+        let memberSkills = document.getElementById("memberSkills");
+        if(memberSkills.childElementCount !== 1){
+            memberSkills.removeChild(memberSkills.lastChild);
+        }else {
+            UIkit.modal.alert('최소 한개 이상의 기술스택이 있어야 합니다.').then(function () {
+            });
+        }
+    }
+
+    function backPage(){
+        window.location.href = "/";
+    }
+</script>
 </html>
