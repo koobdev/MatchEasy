@@ -68,7 +68,7 @@ function makePositionListDiv(position) {
  */
 function makeRecruitPositionListDiv(position) {
     let tr = `
-        <tbody class="uk-text-0_8" >
+        <tbody class="uk-text-0_9" >
         <tr id="` + position.id + `" onclick="showSub(` +  position.id + `)" class="uk-background-muted">
             <td>` + position.position + `</td>
             <td>` + position.content + `</td>`;
@@ -88,7 +88,7 @@ function makeRecruitPositionListDiv(position) {
 
     if(position.requestPosition.length !== 0){
         tr += `
-            <tbody id="sub` + position.id + `" hidden>
+            <tbody id="sub` + position.id + `" class="uk-text-0_8" hidden>
         `;
         for (let rePo of position.requestPosition) {
             if(rePo.status === 0){

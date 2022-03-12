@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="/include/head.html">
+    <title>TITLE</title>
+</head>
+<body>
+<div th:include="/include/header.html"></div>
+
+<div class="uk-container-small uk-align-center">
+    <div class="uk-margin-bottom">
+        <span class="uk-margin-small-right" uk-icon="icon: chevron-left; ratio: 3" onclick="backPage()" style="cursor:pointer;"></span>
+    </div>
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header uk-text-center">
+            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom">팀 관리 페이지</p>
+            <div class="uk-margin-large-top" data-uk-grid="true">
+                <div class="uk-text-left">
+                    <span class="uk-margin-small-right" uk-icon="icon: happy; ratio: 1.5"></span>
+                    <span class="uk-text-1_2 uk-text-bold " >팀 일정 등록 및 정보공유 등의 팀 관리를 할 수 있습니다.</span>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body" id="contentBody">
+
+            <ul class="uk-child-width-expand uk-margin-large-bottom" uk-tab="connect: #component-tab-left; animation: uk-animation-fade">
+                <li class="uk-active">
+                    <a href="#">팀 일정</a>
+                </li>
+                <li>
+                    <a href="#">공지사항</a>
+                </li>
+                <li>
+                    <a href="#">팀 정보 공유</a>
+                </li>
+            </ul>
+            <ul id="component-tab-left" class="uk-switcher">
+                <li>
+                    <div id='calendar'></div>
+                </li>
+                <li>공지사항</li>
+                <li>팀 정보 공유</li>
+            </ul>
+        </div>
+        <div class="uk-card-footer">
+            <div class="uk-text-right uk-margin-large">
+                <button class="uk-button uk-button-primary uk-button-radius" id="btnEdit"
+                        onClick="editBoardContent()">수정
+                </button>
+                <button class="uk-button uk-button-danger uk-button-radius" id="btnDelete"
+                        onClick="deleteBoardContent()">삭제
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="registerTask" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default uk-text-right" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">일정 등록</h2>
+            </div>
+            <div class="uk-modal-body">
+                <table class="uk-table uk-text-center">
+                    <tr>
+                        <th>일정 내용</th>
+                        <td>
+                            <input class="uk-input uk-form-width-xlarge uk-form-small" id="taskGoal"
+                                   type="text" placeholder="일정 내용을 입력하세요." />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>일정 종류</th>
+                        <td>
+                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                                <label><input class="uk-radio" type="radio" id="dayly" checked> 일일 일정</label>
+                                <label><input class="uk-radio" type="radio" id="weekly"> 주간 일정</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>작업 포지션</th>
+                        <td>
+                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                                <label><input class="uk-radio" type="radio" id="be" checked> Back-End</label>
+                                <label><input class="uk-radio" type="radio" id="fe"> Front-End</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="uk-modal-footer uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">취소</button>
+                <button class="uk-button uk-button-primary" type="button" id="taskRegister">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    const startDate = flatpickr("#startDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
+
+    const endDate = flatpickr("#endDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
+
+    let calendar;
+
+
+    // let accessToken = storage.get("accessToken");
+    // let userId = storage.get("userId");
+    // let url = "http://localhost:8080/my/boardContent?userId="+userId;
+    // let xhr = new XMLHttpRequest();
+    // xhr.open('GET', url);
+    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    // xhr.responseType = 'json';
+    // xhr.send();
+    //
+    // let contentBody = document.getElementById("contentBody");
+    // let btnEdit = document.getElementById("btnEdit");
+    // let btnDelete = document.getElementById("btnDelete");
+    //
+    // xhr.onreadystatechange = function () {
+    //     if(xhr.readyState == 4 && xhr.status == 200) {
+    //         let data = xhr.response;
+    //         console.log(data);
+    //         contentBody.setAttribute("data-contentId", data.id);
+    //         appendBody(data);
+    //     }else {
+    //         UIkit.modal.alert(xhr.response.message).then(function () {
+    //             contentBody.innerHTML = "팀이 없습니다.";
+    //             btnEdit.disabled = true;
+    //             btnDelete.disabled = true;
+    //         });
+    //     }
+    // };
+
+    function backPage(){
+        window.location.href = "/form/contentList";
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = ('0' + (today.getMonth() + 1)).slice(-2);
+        let day = ('0' + today.getDate()).slice(-2);
+        let dateString = year + '-' + month  + '-' + day;
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'ko',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            initialDate: dateString,
+            navLinks: true, // can click day/week names to navigate views
+            selectable: true,
+            selectMirror: true,
+
+            select: function(arg) {
+                registerModal(arg);
+            },
+            eventClick: function(arg) {
+                if (confirm('선택한 일정을 삭제하시겠습니까?')) {
+                    arg.event.remove()
+                }
+            },
+            editable: true,
+            dayMaxEvents: true, // allow "more" link when too many events
+            events: [
+                {
+                    title: 'All Day Event',
+                    start: '2020-09-01'
+                },
+                {
+                    title: 'Long Event',
+                    start: '2020-09-07',
+                    end: '2020-09-10'
+                },
+                {
+                    groupId: 999,
+                    title: 'Repeating Event',
+                    start: '2020-09-09T16:00:00'
+                },
+                {
+                    groupId: 999,
+                    title: 'Repeating Event',
+                    start: '2020-09-16T16:00:00'
+                },
+                {
+                    title: 'Conference',
+                    start: '2020-09-11',
+                    end: '2020-09-13'
+                },
+                {
+                    title: 'Meeting',
+                    start: '2020-09-12T10:30:00',
+                    end: '2020-09-12T12:30:00'
+                },
+                {
+                    title: 'Lunch',
+                    start: '2020-09-12T12:00:00'
+                },
+                {
+                    title: 'Meeting',
+                    start: '2020-09-12T14:30:00'
+                },
+                {
+                    title: 'Happy Hour',
+                    start: '2020-09-12T17:30:00'
+                },
+                {
+                    title: 'Dinner',
+                    start: '2020-09-12T20:00:00'
+                },
+                {
+                    title: 'Birthday Party',
+                    start: '2020-09-13T07:00:00'
+                }
+            ]
+        });
+        calendar.render();
+    });
+
+
+
+
+    function registerModal(arg){
+        let registerTask = document.getElementById("registerTask");
+        let taskGoal = document.getElementById("taskGoal");
+        UIkit.modal(registerTask).show();
+
+        console.log(arg.title);
+        console.log(arg.start);
+        console.log(arg.end);
+        console.log(arg.allDay);
+
+
+        document.getElementById("taskRegister").addEventListener('click', () => {
+            calendar.addEvent({
+                title: taskGoal.value,
+                start: arg.start,
+                end: arg.end,
+                allDay: arg.allDay
+            })
+        });
+
+
+    }
+
+
+
+
+
+</script>
+</html>
+
+

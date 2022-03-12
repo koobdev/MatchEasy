@@ -1,7 +1,9 @@
 package koo.project.matcheasy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import koo.project.matcheasy.dto.MemberDto;
 import koo.project.matcheasy.dto.MemberMeDto;
+import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.service.MemberService;
 import koo.project.matcheasy.vo.MemberVo;
 import koo.project.matcheasy.repository.MemberRepository;
@@ -30,14 +32,21 @@ public class MemberController {
 
     @PostMapping("/add")
     public ResponseEntity<MemberDto> save(@Valid @RequestBody MemberDto member){
-
-//        memberRepository.save(member);
-//        return "redirect:/";
-
         MemberDto joinMember = memberService.join(member);
         return ResponseEntity
                 .ok()
                 .body(joinMember);
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<OkResponse> edit(@Valid @RequestBody MemberDto member, @PathVariable("id") Long id) throws JsonProcessingException {
+        return memberService.updateMember(id, member);
+    }
+
+    @PostMapping("/passwordCheck")
+    public ResponseEntity<OkResponse> passwordCheck(
+            @Valid @RequestParam("password") String password, @Valid @RequestParam("id") Long id) {
+        return memberService.passwordCheck(id, password);
     }
 
 }

@@ -25,9 +25,11 @@ public enum ErrorCode {
 //    BadCredentialException
 
 
-    MEMBER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
-    CONTENT_NOT_FOUND(NOT_FOUND, "작성된 게시글을 찾을 수 없습니다"),
+    MEMBER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다."),
+    CONTENT_NOT_FOUND(NOT_FOUND, "작성된 게시글을 찾을 수 없습니다."),
     MEMBER_DUPLICATED(CONFLICT, "이미 가입된 회원입니다."),
+    MEMBER_PASSWORD_MISMATCH(CONFLICT, "현재 비밀번호가 일치하지 않습니다."),
+
     CONTENT_DUPLICATED(CONFLICT, "이미 작성된 게시글이 존재합니다."),
     CHATROOM_DUPLICATED(CONFLICT, "이미 생성된 채팅방이 존재합니다."),
     TEAM_DUPLICATED(CONFLICT, "이미 팀이 존재합니다."),

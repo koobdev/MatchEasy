@@ -56,4 +56,28 @@ public class FormController {
     public String manageRecruitForm(){
         return "/myPage/manageRecruit";
     }
+
+    /**
+     * 나의 지원 관리 폼
+     */
+    @GetMapping("/manageMyRecruit")
+    public String manageMyRecruitForm(){
+        return "/myPage/manageMyRecruit";
+    }
+
+    /**
+     * 회원정보 수정 폼
+     */
+    @GetMapping("/editMember")
+    public String editMemberForm(){
+        return "/members/editMember";
+    }
+
+    /**
+     * 나의 지원 관리 폼
+     */
+    @GetMapping("/manageTeam")
+    public String manageTeamForm(){
+        return "/team/manageTeam";
+    }
 }

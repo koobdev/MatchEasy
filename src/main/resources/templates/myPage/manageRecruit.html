@@ -148,10 +148,56 @@
                     </div>
                 </div>
             </div>
+
+            <div id="registerModal" class="uk-modal-container" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default uk-text-right" type="button" uk-close></button>
+                    <div class="uk-modal-header uk-margin-small">
+                        <p class="uk-modal-title">팀 생성하기</p>
+                    </div>
+                    <div class="uk-modal-body">
+                        <table class="uk-table uk-text-center">
+                            <tr>
+                                <th>팀명 혹은 프로젝트명</th>
+                                <td>
+                                    <input class="uk-input uk-form-width-xlarge uk-form-small" id="registerTitle"
+                                           type="text" placeholder="팀명 혹은 프로젝트명을 입력하세요." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>모집 일자</th>
+                                <td>
+                                    <div class="uk-form-controls uk-margin-small-top">
+                                        <div data-uk-grid>
+                                            <div>
+                                                <input class="uk-input uk-form-small" id="startDate"
+                                                       name="startDate" type="text" placeholder="시작일자"  />
+                                            </div>
+                                            <div>
+                                                <span>~</span>
+                                            </div>
+                                            <div>
+                                                <input class="uk-input uk-form-small" id="endDate"
+                                                       name="endDate" type="text" placeholder="종료일자"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="uk-text-right uk-margin-medium-top">
+                            <button class="uk-button uk-button-primary uk-button-radius"
+                                    onclick="createTeam()">생성
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="uk-card-footer">
             <div class="uk-text-right uk-margin-large">
-                <button class="uk-button uk-button-primary uk-button-radius" onClick="" id="btnCreateTeam">팀 생성하기</button>
+                <button class="uk-button uk-button-primary uk-button-radius" id="btnCreateTeam" onclick="createModal()">팀 생성하기</button>
             </div>
         </div>
     </div>
@@ -159,6 +205,18 @@
 </body>
 
 <script type="text/javascript">
+
+    const startDate = flatpickr("#startDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
+
+    const endDate = flatpickr("#endDate", {
+        altInput: true,
+        altFormat: "Y년 m월 d일",
+        locale: "ko"
+    });
 
     let accessToken = storage.get("accessToken");
     let detail = storage.get("contentDetail");
@@ -174,7 +232,14 @@
         if(xhr.readyState == 4 && xhr.status == 200) {
             let data = xhr.response.data[0];
             console.log(data);
-            appendDetail(data);
+
+            if(storage.get("teamId") == null){
+                appendDetail(data);
+            }else {
+                UIkit.modal.alert("이미 생성된 팀이 있습니다. 팀 페이지로 이동하세요.").then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }
         }
         else {
             UIkit.modal.alert(xhr.response.message).then(function () {
@@ -275,6 +340,49 @@
                 if(xhr.readyState == 4 && xhr.status == 200) {
                     UIkit.modal.alert(xhr.response.message).then(function () {
                         window.location.href = "/form/manageRecruit";
+                    });
+                }
+            };
+        });
+    }
+
+    function createModal(){
+        let modal = document.getElementById("registerModal");
+        UIkit.modal(modal).show();
+    }
+
+    function createTeam(){
+        UIkit.modal.confirm("현재 수락된 인원들로 팀을 생성하시겠습니까?", {
+            labels: {
+                cancel: '취소',
+                ok: '확인'
+            }
+        }).then(function () {
+            let registerTitle = document.getElementById("registerTitle");
+            let startDate = document.getElementById('startDate').value;
+            let endDate = document.getElementById('endDate').value;
+            let accessToken = storage.get("accessToken");
+            let url = "http://localhost:8080/team/createTeam";
+            let xhr = new XMLHttpRequest();
+            let params = {
+                "name" : registerTitle.value,
+                "startdate" : valueToTimeStamp.getDate(startDate),
+                "enddate" : valueToTimeStamp.getDate(endDate),
+            }
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            xhr.responseType = 'json';
+            xhr.send(JSON.stringify(params));
+
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                    });
+                }
+                else {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                        window.location.href = "/form/contentList";
                     });
                 }
             };

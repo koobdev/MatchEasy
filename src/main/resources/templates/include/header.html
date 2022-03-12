@@ -6,8 +6,12 @@
             </div>
             <div class="uk-navbar-right uk-visible@m">
                 <ul class="uk-iconnav">
-                    <li class="uk-margin-small-right"><a uk-tooltip="title: 알림; pos:bottom;" uk-icon="icon: bell; ratio: 1.5"></a></li>
-                    <li><a uk-tooltip="title: 로그아웃; pos:bottom;" uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></a></li>
+                    <li class="uk-margin-small-right">
+                        <a uk-tooltip="title: 홈으로; pos:bottom;" uk-icon="icon: home; ratio: 1.5" onclick="goHome()"></a>
+                    </li>
+                    <li>
+                        <a uk-tooltip="title: 로그아웃; pos:bottom;" uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -31,20 +35,34 @@
                         </span>
                     </div>
                 </div>
+                <li class="uk-nav-divider uk-margin-bottom uk-margin-top"></li>
 
                 <li class="uk-nav-header uk-text-1 uk-margin-bottom">
                     MyPage 관리
                     <span uk-icon="icon: triangle-down; ratio: 0.8"></span>
                 </li>
-                <ul class="uk-text-center">
-                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/manageBoardContent"><span uk-icon="icon: file-edit"></span> 게시글 관리</a></li>
+                <ul class="uk-text-center uk-margin-large-bottom">
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/manageBoardContent"><span uk-icon="icon: file-text"></span> 게시글 관리</a></li>
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/manageMyRecruit"><span uk-icon="icon: file-edit"></span> 나의 지원 관리</a></li>
                     <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/manageRecruit"><span uk-icon="icon: check"></span> 지원자 관리</a></li>
                     <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/editMember"><span uk-icon="icon: user"></span> 회원정보 수정</a></li>
                 </ul>
                 <li class="uk-nav-divider uk-margin-bottom uk-margin-top"></li>
+
+
+                <li class="uk-nav-header uk-text-1 uk-margin-bottom">
+                    Team 관리
+                    <span uk-icon="icon: triangle-down; ratio: 0.8"></span>
+                </li>
+                <ul class="uk-text-center">
+                    <li class="uk-margin-small-bottom" style="cursor:pointer;"><a href="/form/manageTeam"><span uk-icon="icon: users"></span> 나의 팀 관리</a></li>
+                </ul>
+                <li class="uk-nav-divider uk-margin-bottom uk-margin-top"></li>
+
+
                 <ul class="uk-text-center">
                     <li class="uk-margin-small-right">
-                        <span uk-tooltip="title: 알림; pos:bottom;" uk-icon="icon: bell; ratio: 1.5"></span>
+                        <span uk-tooltip="title: 홈으로; pos:bottom;" uk-icon="icon: home; ratio: 1.5" onclick="goHome()"></span>
                         <span uk-tooltip="title: 로그아웃; pos:bottom;" uk-icon="icon: sign-out; ratio: 1.5" onclick="logout()"></span>
                     </li>
                 </ul>
@@ -65,7 +83,7 @@
         let xhr = new XMLHttpRequest();
         let token = storage.get("accessToken");
         let url = "http://localhost:8080/my/me";
-        let userInfos = ['loginId', 'name', 'id'];
+        let userInfos = ['loginId', 'name', 'id', 'teamId'];
 
         xhr.open('GET', url);
         xhr.setRequestHeader('Authorization', 'Bearer ' + token);
@@ -78,6 +96,9 @@
                 storage.set('userName', data[userInfos[1]]);
                 storage.set('userId', data[userInfos[2]]);
 
+                if(data[userInfos[3]] !== 0){
+                    storage.set('teamId', data[userInfos[3]]);
+                }
                 console.log(data);
 
                 userName.innerText = data.name + " 님";
@@ -142,4 +163,10 @@
             window.location.href = "/";
         });
     }
+
+    // 홈으로
+    function goHome(){
+        window.location.href = "/form/contentList";
+    }
+
 </script>

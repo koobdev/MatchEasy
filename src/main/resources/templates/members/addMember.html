@@ -11,27 +11,27 @@
     </div>
     <div class="uk-margin-bottom">
         <label for="loginId">로그인 ID</label>
-        <input type="text" id="loginId" class="form-control">
+        <input type="text" id="loginId" class="form-control" placeholder="로그인 ID를 입력하세요.">
     </div>
     <div class="uk-margin-bottom">
         <label for="password">비밀번호</label>
-        <input type="password" id="password" class="form-control">
+        <input type="password" id="password" class="form-control" placeholder="비밀번호를 입력하세요.">
     </div>
     <div class="uk-margin-bottom">
         <label for="loginId">이름</label>
-        <input type="text" id="name" class="form-control">
+        <input type="text" id="name" class="form-control" placeholder="이름을 입력하세요.">
     </div>
     <div class="uk-margin-bottom">
         <label for="loginId">이메일</label>
-        <input type="email" id="email" class="form-control">
+        <input type="email" id="email" class="form-control" placeholder="이메일 형식에 맞게 입력하세요. ex)user@matchEasy.com">
     </div>
     <div class="uk-margin-bottom">
         <label for="loginId">나이</label>
-        <input type="text" id="age" class="form-control">
+        <input type="text" id="age" class="form-control" placeholder="숫자로 입력하세요.">
     </div>
     <div class="uk-margin-bottom">
         <label for="loginId">선호 포지션</label>
-        <input type="text" id="position" class="form-control">
+        <input type="text" id="position" class="form-control" placeholder="선호 포지션을 입력하세요. ex)백엔드 , Back-End">
     </div>
     <div class="uk-margin-bottom">
         <div>
@@ -42,7 +42,7 @@
                   onclick="removeSkill()"></span>
         </div>
         <div id="memberSkills">
-            <input type="text" class="uk-margin-small-bottom form-control">
+            <input type="text" class="uk-margin-small-bottom form-control" placeholder="기술 스택을 입력하세요. ex)자바, Java">
         </div>
     </div>
 
@@ -57,12 +57,53 @@
             </button>
         </div>
     </div>
-</div> <!-- /container -->
+</div>
 </body>
 <script>
 
     function addMember(){
+        let loginId = document.getElementById("loginId");
+        let password = document.getElementById("password");
+        let name = document.getElementById("name");
+        let email = document.getElementById("email");
+        let age = document.getElementById("age");
+        let position = document.getElementById("position");
+        let memberSkills = document.getElementById("memberSkills");
+        let skillList = [];
+        for (const skills of memberSkills.children) {
+            let memberSkill = {
+                "id" : null,
+                "skill" : skills.value
+            }
+            skillList.push(memberSkill);
+        }
+        let params = {
+            "loginId" : loginId.value,
+            "password" : password.value,
+            "name" : name.value,
+            "email" : email.value,
+            "age" : age.value,
+            "position" : position.value,
+            "memberSkills" : skillList
+        }
 
+        let url = "http://localhost:8080/members/add";
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.responseType = 'json';
+        xhr.send(JSON.stringify(params));
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                UIkit.modal.alert('회원가입이 완료되었습니다.').then(function () {
+                    window.location.href = "/";
+                });
+            }else if(xhr.readyState == 4 && xhr.status == 400 ||
+                xhr.readyState == 4 && xhr.status == 404){
+                window.alert(xhr.response.message);
+            }
+        };
     }
 
     function addSkill() {
@@ -71,6 +112,7 @@
         let input = document.createElement('input');
         input.setAttribute('type', 'text');
         input.setAttribute('class', 'form-control uk-margin-small-bottom');
+        input.setAttribute('placeholder', '기술 스택을 입력하세요. ex)자바, Java');
         memberSkills.appendChild(input);
     }
 

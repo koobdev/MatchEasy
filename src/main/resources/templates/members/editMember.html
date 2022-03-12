@@ -1,72 +1,203 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .container {
-            max-width: 560px;
-        }
-
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-    </style>
+<head th:include="/include/head.html">
+    <title>TITLE</title>
 </head>
 <body>
 
 <div class="container">
-
     <div class="py-5 text-center">
-        <h2>회원 가입</h2>
+        <h2>회원정보 수정</h2>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">로그인 ID</label>
+        <input type="text" id="loginId" class="form-control" placeholder="로그인 ID를 입력하세요." disabled>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="password">비밀번호</label>
+        <div class="input-group mb-3">
+            <input type="password" id="presentPassword" class="form-control" placeholder="현재 비밀번호를 입력하세요.">
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary" type="button" id="btnPasswordCheck" onclick="passwordCheck()">비밀번호 확인</button>
+                <button class="btn btn-outline-primary" type="button" id="btnNewPassword" onclick="isNewPassword()" hidden>새로운 비밀번호 등록</button>
+            </div>
+        </div>
+        <input type="password" id="newPassword" class="form-control" placeholder="새로운 비밀번호를 입력하세요." hidden>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">이름</label>
+        <input type="text" id="name" class="form-control" placeholder="이름을 입력하세요." disabled>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">이메일</label>
+        <input type="email" id="email" class="form-control" placeholder="이메일 형식에 맞게 입력하세요. ex)user@matchEasy.com">
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">나이</label>
+        <input type="text" id="age" class="form-control" placeholder="숫자로 입력하세요." disabled>
+    </div>
+    <div class="uk-margin-bottom">
+        <label for="loginId">선호 포지션</label>
+        <input type="text" id="position" class="form-control" placeholder="선호 포지션을 입력하세요. ex)백엔드 , Back-End">
+    </div>
+    <div class="uk-margin-bottom">
+        <div>
+            <label for="loginId">기술 스택</label>
+            <span class="uk-margin-remove" uk-icon="icon: plus-circle"
+                  onclick="addSkill()"></span>
+            <span class="uk-margin-remove" uk-icon="icon: minus-circle"
+                  onclick="removeSkill()"></span>
+        </div>
+        <div id="memberSkills">
+        </div>
     </div>
 
-    <h4 class="mb-3">회원 정보 입력</h4>
+    <hr class="my-4">
 
-    <form action="" th:action th:object="${member}" method="post">
-
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-primary btn-lg" onclick="editMember()" type="button">완료</button>
         </div>
-
-        <div>
-            <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{loginId}"/>
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg" onclick="backPage()" type="button">취소
+            </button>
         </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{password}"/>
-        </div>
-        <div>
-            <label for="name">이름</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{name}"/>
-        </div>
-
-
-        <hr class="my-4">
-
-        <div class="row">
-            <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
-            </div>
-            <div class="col">
-                <button class="w-100 btn btn-secondary btn-lg" onclick="location.href='items.html'"
-                        th:onclick="|location.href='@{/}'|"
-                        type="button">취소
-                </button>
-            </div>
-        </div>
-
-    </form>
-
+    </div>
 </div> <!-- /container -->
 </body>
+<script>
+    let memberSkills = document.getElementById("memberSkills");
+    let presentPassword = document.getElementById("presentPassword");
+    let newPassword = document.getElementById("newPassword");
+    let btnPasswordCheck = document.getElementById("btnPasswordCheck");
+    let btnNewPassword = document.getElementById("btnNewPassword");
+    let xhr = new XMLHttpRequest();
+    let accessToken = storage.get("accessToken");
+    let url = "http://localhost:8080/my/me";
+    let userInfos = ['loginId', 'email', 'name', 'age', 'position'];
+
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response;
+            console.log(data);
+            for (const userInfo of userInfos) {
+                document.getElementById(userInfo).value = data[userInfo];
+            }
+            for (const skill of data.memberSkills) {
+                let input = document.createElement('input');
+                input.setAttribute('type', 'text');
+                input.setAttribute('class', 'uk-margin-small-bottom form-control')
+                input.value = skill.skill;
+                memberSkills.appendChild(input);
+            }
+        }
+    };
+
+    function passwordCheck(){
+        let userId = storage.get("userId");
+        let url = "http://localhost:8080/members/passwordCheck";
+        let xhr = new XMLHttpRequest();
+        let params = "id="+userId+"&password="+presentPassword.value
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send(params);
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                UIkit.modal.alert('비밀번호가 확인되었습니다.').then(function () {
+                    btnPasswordCheck.hidden = true;
+                    presentPassword.disabled = true;
+                    btnNewPassword.hidden = false;
+                });
+            }else {
+                UIkit.modal.alert('비밀번호가 일치하지 않습니다.').then(function () {
+                });
+            }
+        };
+    }
+
+    function isNewPassword(){
+        newPassword.hidden = false;
+    }
+
+    function editMember(){
+        if(!presentPassword.disabled){
+            UIkit.modal.alert('비밀번호 확인을 해주세요.').then(function () {
+            });
+        }else {
+            console.log(newPassword.value);
+            let loginId = document.getElementById("loginId");
+            let name = document.getElementById("name");
+            let email = document.getElementById("email");
+            let age = document.getElementById("age");
+            let position = document.getElementById("position");
+            let memberSkills = document.getElementById("memberSkills");
+            let skillList = [];
+            for (const skills of memberSkills.children) {
+                let memberSkill = {
+                    "id" : null,
+                    "skill" : skills.value
+                }
+                skillList.push(memberSkill);
+            }
+            let params = {
+                "loginId" : loginId.value,
+                "password" : newPassword.value === "" ? "NP" : newPassword.value,
+                "name" : name.value,
+                "email" : email.value,
+                "age" : age.value,
+                "position" : position.value,
+                "memberSkills" : skillList
+            }
+
+            let userId = storage.get("userId");
+            let url = "http://localhost:8080/members/edit/"+userId;
+            let xhr = new XMLHttpRequest();
+            xhr.open('PUT', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            xhr.responseType = 'json';
+            xhr.send(JSON.stringify(params));
+
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    UIkit.modal.alert('회원정보 수정이 완료되었습니다.').then(function () {
+                        window.location.href = "/form/contentList";
+                    });
+                }else {
+                    window.alert(xhr.response.message);
+                }
+            };
+        }
+    }
+
+    function addSkill() {
+        let memberSkills = document.getElementById("memberSkills");
+        let input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('class', 'form-control uk-margin-small-bottom');
+        input.setAttribute('placeholder', '기술 스택을 입력하세요. ex)자바, Java');
+        memberSkills.appendChild(input);
+    }
+
+    function removeSkill() {
+        let memberSkills = document.getElementById("memberSkills");
+        if(memberSkills.childElementCount !== 1){
+            memberSkills.removeChild(memberSkills.lastChild);
+        }else {
+            UIkit.modal.alert('최소 한개 이상의 기술스택이 있어야 합니다.').then(function () {
+            });
+        }
+    }
+
+    function backPage(){
+        window.location.href = "/form/contentList";
+    }
+</script>
 </html>

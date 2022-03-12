@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="/include/head.html">
+    <title>TITLE</title>
+</head>
+<body>
+<div th:include="/include/header.html"></div>
+
+<div class="uk-container-small uk-align-center">
+    <div class="uk-margin-bottom">
+        <span class="uk-margin-small-right" uk-icon="icon: chevron-left; ratio: 3" onclick="backPage()" style="cursor:pointer;"></span>
+    </div>
+    <div class="uk-card uk-card-default">
+        <div class="uk-card-header uk-text-center">
+            <p class="uk-text-2_5 uk-text-bold uk-margin-large-bottom">나의 지원 관리 페이지</p>
+            <div class="uk-margin-large-top" data-uk-grid="true">
+                <div class="uk-text-left">
+                    <span class="uk-margin-small-right" uk-icon="icon: happy; ratio: 1.5"></span>
+                    <span class="uk-text-1_2 uk-text-bold " >나의 요청목록을 보고 수락 또는 거절 답변을 확인할 수 있습니다.</span>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body" id="contentBody">
+            <table class="uk-table uk-table-hover uk-table-divider uk-table-responsive uk-table-middle" id="positionList">
+                <thead class="uk-text-0_9">
+                <th class="uk-width-small uk-text-nowrap">모집 포지션</th>
+                <th class="uk-width-large uk-text-nowrap">설명(간단한 역할 등)</th>
+                <th class="uk-width-small uk-text-nowrap">지원 상태</th>
+                <th class="uk-width-large uk-text-nowrap">지원자 설명</th>
+                <th class="uk-width-small uk-text-nowrap">지원 프로필</th>
+                <th class="uk-width-small uk-text-nowrap">요청 관리</th>
+                </thead>
+                <!--                    <tbody class="uk-text-0_8" >-->
+                <!--                        <tr id="1" onclick="showSub(1)" class="uk-background-muted">-->
+                <!--                            <td>AAAAAA</td>-->
+                <!--                            <td>BBBBBB</td>-->
+                <!--                            <td>모집중</td>-->
+                <!--                            <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                            <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                            <td>-</td>-->
+                <!--                        </tr>-->
+                <!--                    </tbody>-->
+                <!--                    <tbody id="sub1" hidden>-->
+                <!--                    <tr class="uk-animation-slide-top-small" >-->
+                <!--                        <td>aaaaa</td>-->
+                <!--                        <td>bbbbb</td>-->
+                <!--                        <td>지원중</td>-->
+                <!--                        <td>안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!</td>-->
+                <!--                        <td><button class="uk-button uk-button-small uk-text-nowrap">보기</button></td>-->
+                <!--                        <td>-->
+                <!--                            <div class="uk-margin-small-bottom">-->
+                <!--                                <button class="uk-button uk-button-primary uk-button-small uk-text-nowrap">수락</button>-->
+                <!--                            </div>-->
+                <!--                            <div>-->
+                <!--                                <button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">거절</button>-->
+                <!--                            </div>-->
+                <!--                        </td>-->
+                <!--                    </tr>-->
+                <!--                    <tr class="uk-animation-slide-top-small" >-->
+                <!--                        <td>aaaaa</td>-->
+                <!--                        <td>bbbbb</td>-->
+                <!--                        <td>지원중</td>-->
+                <!--                        <td>안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!안녕하십니까!!!</td>-->
+                <!--                        <td><button class="uk-button uk-button-small uk-text-nowrap">보기</button></td>-->
+                <!--                        <td>-->
+                <!--                            <div class="uk-margin-small-bottom">-->
+                <!--                                <button class="uk-button uk-button-primary uk-button-small uk-text-nowrap">수락</button>-->
+                <!--                            </div>-->
+                <!--                            <div>-->
+                <!--                                <button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">거절</button>-->
+                <!--                            </div>-->
+                <!--                        </td>-->
+                <!--                    </tr>-->
+                <!--                    </tbody>-->
+                <!--                    <tbody>-->
+                <!--                    <tr class="uk-background-muted">-->
+                <!--                        <td>AAAAAA</td>-->
+                <!--                        <td>BBBBBB</td>-->
+                <!--                        <td>모집중</td>-->
+                <!--                        <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                        <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                        <td>-</td>-->
+                <!--                    </tr>-->
+                <!--                    <tr class="uk-animation-slide-top-small" hidden>-->
+                <!--                        <td>aaaaa</td>-->
+                <!--                        <td>bbbbb</td>-->
+                <!--                        <td>지원중</td>-->
+                <!--                        <td>안녕하십니까!!!</td>-->
+                <!--                        <td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">보기</button></td>-->
+                <!--                    </tr>-->
+                <!--                    </tbody>-->
+                <!--                    <tbody>-->
+                <!--                    <tr class="uk-background-muted">-->
+                <!--                        <td>AAAAAA</td>-->
+                <!--                        <td>BBBBBB</td>-->
+                <!--                        <td>모집중</td>-->
+                <!--                        <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                        <td><span uk-icon="icon: triangle-down; ratio: 1.2"></span></td>-->
+                <!--                        <td>-</td>-->
+                <!--                    </tr>-->
+                <!--                    <tr class="uk-animation-slide-top-small" hidden>-->
+                <!--                        <td>aaaaa</td>-->
+                <!--                        <td>bbbbb</td>-->
+                <!--                        <td>지원중</td>-->
+                <!--                        <td>안녕하십니까!!!</td>-->
+                <!--                        <td><button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">보기</button></td>-->
+                <!--                    </tr>-->
+                <!--                    </tbody>-->
+
+            </table>
+
+            <div id="showMemberModal" uk-modal>
+                <div class="uk-modal-dialog">
+                    <button class="uk-modal-close-default uk-text-right" type="button" uk-close></button>
+                    <div class="uk-modal-header">
+                        <h3 class="uk-modal-title">지원자 프로필</h3>
+                    </div>
+                    <div class="uk-modal-body">
+                        <table class="uk-table uk-table-hover uk-table-divider uk-table-responsive uk-table-middle">
+                            <tr>
+                                <th>로그인 ID</th>
+                                <td id="modalLoginId"></td>
+                            </tr>
+                            <tr>
+                                <th>이름</th>
+                                <td id="modalName"></td>
+                            </tr>
+                            <tr>
+                                <th>이메일</th>
+                                <td id="modalEmail"></td>
+                            </tr>
+                            <tr>
+                                <th>나이</th>
+                                <td id="modalAge"></td>
+                            </tr>
+                            <tr>
+                                <th>선호 포지션</th>
+                                <td id="modalPosition"></td>
+                            </tr>
+                            <tr>
+                                <th>기술 스택</th>
+                                <td id="modalSkills"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="uk-modal-footer uk-text-right">
+                        <button class="uk-button uk-button-default uk-modal-close" type="button">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-footer">
+            <div class="uk-text-right uk-margin-large">
+                <button class="uk-button uk-button-primary uk-button-radius" onClick="" id="btnCreateTeam">팀 생성하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+    let accessToken = storage.get("accessToken");
+    let detail = storage.get("contentDetail");
+    let url = "http://localhost:8080/my/recruitList";
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
+
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response.data[0];
+            console.log(data);
+
+            if(storage.get("teamId") == null){
+                appendDetail(data);
+            }else {
+                UIkit.modal.alert("이미 생성된 팀이 있습니다. 팀 페이지로 이동하세요.").then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }
+        }
+        else {
+            UIkit.modal.alert(xhr.response.message).then(function () {
+                document.getElementById("contentBody").innerHTML = "작성된 게시글이 없습니다.";
+                document.getElementById("btnCreateTeam").disabled = true;
+            });
+        }
+    };
+
+    function appendDetail(data) {
+        let positionList = document.getElementById("positionList");
+
+        let tbody = `
+            <thead class="uk-text-0_9">
+                <th class="uk-width-small uk-text-nowrap">모집 포지션</th>
+                <th class="uk-width-large uk-text-nowrap">설명(간단한 역할 등)</th>
+                <th class="uk-width-small uk-text-nowrap">지원 상태</th>
+                <th class="uk-width-large uk-text-nowrap">지원자 설명</th>
+                <th class="uk-width-small uk-text-nowrap">지원 프로필</th>
+                <th class="uk-width-small uk-text-nowrap">요청 관리</th>
+            </thead>
+        `;
+
+        for (const position of data) {
+            tbody += makeRecruitPositionListDiv(position);
+        }
+        positionList.innerHTML = tbody;
+    }
+
+    function showSub(id){
+        let getId = "sub" + id;
+        let parentTr = document.getElementById(id);
+        let showTr = document.getElementById(getId);
+
+        if(showTr.hidden){
+            parentTr.children[3].children[0].innerHTML = '<span uk-icon="icon: triangle-up; ratio: 1.2"></span>';
+            parentTr.children[4].children[0].innerHTML = '<span uk-icon="icon: triangle-up; ratio: 1.2"></span>';
+            showTr.hidden = false;
+        }else {
+            parentTr.children[3].children[0].innerHTML = '<span uk-icon="icon: triangle-down; ratio: 1.2"></span>';
+            parentTr.children[4].children[0].innerHTML = '<span uk-icon="icon: triangle-down; ratio: 1.2"></span>';
+            showTr.hidden = true;
+        }
+    }
+
+    function showMember(btn){
+        let modal = document.getElementById("showMemberModal");
+        UIkit.modal(modal).show();
+
+        document.getElementById("modalLoginId").innerText = btn.dataset.memberLoginid;
+        document.getElementById("modalName").innerText = btn.dataset.memberName;
+        document.getElementById("modalEmail").innerText = btn.dataset.memberEmail;
+        document.getElementById("modalAge").innerText = btn.dataset.memberAge;
+        document.getElementById("modalPosition").innerText = btn.dataset.memberPosition;
+
+        let memberSkills = "";
+        for (const skills of JSON.parse(btn.dataset.memberMemberskills)) {
+            memberSkills += skills.skill + ', ';
+        }
+        document.getElementById("modalSkills").innerText = memberSkills;
+    }
+
+    function acceptEvent(element){
+
+        let accessToken = storage.get("accessToken");
+        let url = "http://localhost:8080/my/acceptOrReject";
+        let params = "idx="+element.id+"&status=1&message=";
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send(params);
+
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageRecruit";
+                });
+            }
+        };
+    }
+
+    function rejectEvent(element){
+
+        UIkit.modal.prompt('거절 메세지를 입력하세요:', '').then(function (rejectMessage) {
+            let accessToken = storage.get("accessToken");
+            let url = "http://localhost:8080/my/acceptOrReject";
+            let params = "idx="+element.id+"&status=2&message="+rejectMessage;
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            xhr.responseType = 'json';
+            xhr.send(params);
+
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                        window.location.href = "/form/manageRecruit";
+                    });
+                }
+            };
+        });
+    }
+
+    function backPage(){
+        window.location.href = "/form/contentList";
+    }
+
+</script>
+</html>
+
+

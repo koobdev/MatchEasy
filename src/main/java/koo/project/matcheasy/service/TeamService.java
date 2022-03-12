@@ -2,6 +2,7 @@ package koo.project.matcheasy.service;
 
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
+import koo.project.matcheasy.domain.board.RequestPosition;
 import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.domain.team.Task;
 import koo.project.matcheasy.domain.team.Team;
@@ -99,13 +100,18 @@ public class TeamService {
                 .ifPresentOrElse(content -> {
                     for (RecruitPosition position : content.getPositions()) {
                         if(position.getBoardContent().getId().equals(content.getId())
-                                && position.getStatus() == 2){
-//                            Long id = position.getRecruitMember().getId();
-//
-//                            Member findRecruitMember = memberRepository.findById(id);
-//                            members.add(findRecruitMember);
-//
-//                            positions.add(position.getPosition());
+                                && position.getStatus() == 1){
+
+                            // RequestPosition에서 수락된 인원을 찾아 members에 넣는다.
+                            for (RequestPosition requestPosition : position.getRequestPosition()) {
+                                if(requestPosition.getStatus() == 1){
+                                    Long id = requestPosition.getRecruitMember().getId();
+                                    Member findRecruitMember = memberRepository.findById(id);
+                                    members.add(findRecruitMember);
+                                }
+                            }
+                            // positions에 글 작성시 구인했던 포지션의 이름을 넣는다.
+                            positions.add(position.getPosition());
                         }
                     }
                     returnMap.put("findContent", content);

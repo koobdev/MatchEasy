@@ -85,14 +85,4 @@ public class MyPageController {
         return boardService.acceptOrReject(idx, status, message);
     }
 
-
-    /**
-     * 팀 구성하기
-     */
-    @PostMapping("/createTeam")
-    public ResponseEntity<OkResponse> createTeam(@Valid @RequestBody TeamDto teamDto, HttpServletRequest request){
-
-        log.info("Controller TeamDTO : {} ", teamDto.toString());
-        return teamService.createTeam(teamDto, request);
-    }
 }

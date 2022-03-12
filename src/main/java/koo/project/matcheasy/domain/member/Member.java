@@ -76,4 +76,31 @@ public class Member {
     public void addRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
     }
+
+    // update Member
+    public void updateMember(String password, String email, String position, List<MemberSkills> memberSkills){
+        this.password = password;
+        this.email = email;
+        this.position = position;
+
+        if(this.memberSkills != null){
+            this.memberSkills.clear();
+        }
+        for (MemberSkills memberSkill : memberSkills) {
+            this.getMemberSkills().add(memberSkill);
+        }
+    }
+
+    // update Member without update password
+    public void updateMemberNotPw(String email, String position, List<MemberSkills> memberSkills){
+        this.email = email;
+        this.position = position;
+
+        if(this.memberSkills != null){
+            this.memberSkills.clear();
+        }
+        for (MemberSkills memberSkill : memberSkills) {
+            this.getMemberSkills().add(memberSkill);
+        }
+    }
 }

@@ -28,5 +28,4 @@ public class TeamDto {
     private LocalDateTime enddate;
     private LocalDateTime regdate;
     private LocalDateTime moddate;
-    private List<MemberDto> members;
 }
