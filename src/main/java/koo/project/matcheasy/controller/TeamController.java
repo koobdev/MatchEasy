@@ -1,5 +1,7 @@
 package koo.project.matcheasy.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.domain.team.Team;
 import koo.project.matcheasy.dto.DaylyDto;
 import koo.project.matcheasy.dto.OkResponse;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,17 +26,7 @@ public class TeamController {
 
     private final MemberService memberService;
     private final TeamService teamService;
-
-    @GetMapping("/{idx}")
-    public void searchTeam(@PathVariable("idx") Long idx){
-        teamService.searchTeam(idx);
-    }
-
-
-    @PostMapping("/task/register")
-    public void registerTask(@RequestBody TaskDto taskDto){
-        teamService.registerTask(taskDto);
-    }
+    private final ObjectMapper objectMapper;
 
     /**
      * 팀 구성하기
@@ -44,4 +37,33 @@ public class TeamController {
         log.info("Controller TeamDTO : {} ", teamDto.toString());
         return teamService.createTeam(teamDto, request);
     }
+
+    /**
+     * 팀 검색
+     */
+    @GetMapping("/{idx}")
+    public ResponseEntity<OkResponse> searchTeam(@PathVariable("idx") Long idx) throws JsonProcessingException {
+        return teamService.searchTeam(idx);
+    }
+
+    /**
+     * 일정 목록 가져오기
+     */
+    @PostMapping("/task/list")
+    public ResponseEntity<String> taskList(@RequestParam("teamId") Long id) throws JsonProcessingException {
+        List<TaskDto> taskList = teamService.getAllTask(id);
+
+        return ResponseEntity.ok()
+                .body(objectMapper.writeValueAsString(taskList));
+    }
+
+    /**
+     * 일정 등록하기
+     */
+    @PostMapping("/task/register")
+    public ResponseEntity<OkResponse> registerTask(@RequestBody TaskDto taskDto) throws JsonProcessingException {
+        return teamService.registerTask(taskDto);
+    }
+
+
 }

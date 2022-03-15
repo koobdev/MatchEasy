@@ -1,5 +1,7 @@
 package koo.project.matcheasy.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.board.RequestPosition;
@@ -40,6 +42,7 @@ public class TeamService {
     private final BoardRepository boardRepository;
     private final RecruitPositionRepository recruitPositionRepository;
     private final TaskRepository taskRepository;
+    private final ObjectMapper objectMapper;
 
 
 
@@ -133,12 +136,28 @@ public class TeamService {
     /**
      * 일일 일정 추가
      */
-    public void registerTask(TaskDto taskDto){
+    public ResponseEntity<OkResponse> registerTask(TaskDto taskDto) throws JsonProcessingException {
         Team findTeam = teamRepository.findById(taskDto.getTeamId());
         Task taskEntity = TaskMapper.TASK_MAPPER.toEntity(taskDto);
 
         taskEntity.addTeam(findTeam);
         taskRepository.save(taskEntity);
+
+        return OkResponse.toResponse(objectMapper.writeValueAsString(taskDto),"일정을 추가하였습니다.");
+    }
+
+    /**
+     * 일정 가져오기
+     */
+    public List<TaskDto> getAllTask(Long id){
+        List<TaskDto> returnList = new ArrayList<>();
+        taskRepository.findByTeamId(id)
+                .forEach(task -> {
+                    TaskDto dto = TaskMapper.TASK_MAPPER.toDto(task);
+                    returnList.add(dto);
+                });
+
+        return returnList;
     }
 
 
@@ -146,7 +165,7 @@ public class TeamService {
     /**
      * 팀 검색 (리스트)
      */
-    public void searchTeam(Long idx) {
+    public ResponseEntity<OkResponse> searchTeam(Long idx) throws JsonProcessingException {
         Team findTeam = teamRepository.findById(idx);
 
         log.info("findTeam :::: {} ", findTeam.getId());
@@ -157,6 +176,8 @@ public class TeamService {
         for (TeamPosition position : findTeam.getPositions()) {
             log.info("findTeam's position :::: {} ", position.getPosition());
         }
+
+        return OkResponse.toResponse(objectMapper.writeValueAsString(findTeam),"팀 데이터");
     }
 
 

@@ -61,14 +61,14 @@
             <div class="uk-modal-body">
                 <table class="uk-table uk-text-center">
                     <tr>
-                        <th>일정 내용</th>
+                        <th class="uk-text-nowrap">일정 내용</th>
                         <td>
                             <input class="uk-input uk-form-width-xlarge uk-form-small" id="taskGoal"
                                    type="text" placeholder="일정 내용을 입력하세요." />
                         </td>
                     </tr>
                     <tr>
-                        <th>일정 종류</th>
+                        <th class="uk-text-nowrap">일정 종류</th>
                         <td>
                             <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                                 <label><input class="uk-radio" type="radio" id="dayly" checked> 일일 일정</label>
@@ -77,7 +77,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>작업 포지션</th>
+                        <th class="uk-text-nowrap">작업 포지션</th>
                         <td>
                             <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
                                 <label><input class="uk-radio" type="radio" id="be" checked> Back-End</label>
@@ -98,6 +98,7 @@
 
 <script type="text/javascript">
 
+    let calendar;
     const startDate = flatpickr("#startDate", {
         altInput: true,
         altFormat: "Y년 m월 d일",
@@ -110,46 +111,35 @@
         locale: "ko"
     });
 
-    let calendar;
 
-
-    // let accessToken = storage.get("accessToken");
-    // let userId = storage.get("userId");
-    // let url = "http://localhost:8080/my/boardContent?userId="+userId;
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', url);
-    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    // xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    // xhr.responseType = 'json';
-    // xhr.send();
-    //
-    // let contentBody = document.getElementById("contentBody");
-    // let btnEdit = document.getElementById("btnEdit");
-    // let btnDelete = document.getElementById("btnDelete");
-    //
-    // xhr.onreadystatechange = function () {
-    //     if(xhr.readyState == 4 && xhr.status == 200) {
-    //         let data = xhr.response;
-    //         console.log(data);
-    //         contentBody.setAttribute("data-contentId", data.id);
-    //         appendBody(data);
-    //     }else {
-    //         UIkit.modal.alert(xhr.response.message).then(function () {
-    //             contentBody.innerHTML = "팀이 없습니다.";
-    //             btnEdit.disabled = true;
-    //             btnDelete.disabled = true;
-    //         });
-    //     }
-    // };
+    let accessToken = storage.get("accessToken");
+    let teamId = storage.get("teamId");
+    let url = "http://localhost:8080/team/"+teamId;
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.responseType = 'json';
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if(xhr.readyState == 4 && xhr.status == 200) {
+            let data = xhr.response.data;
+            console.log(JSON.parse(data));
+            makeCalendar();
+        }else {
+            // UIkit.modal.alert("팀 데이터가 존재하지 않습니다.").then(function () {
+            //     backPage();
+            // });
+        }
+    };
 
     function backPage(){
         window.location.href = "/form/contentList";
     }
 
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
+    function makeCalendar(){
+        let calendarEl = document.getElementById('calendar');
         let today = new Date();
         let year = today.getFullYear();
         let month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -161,7 +151,7 @@
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,listWeek'
             },
             initialDate: dateString,
             navLinks: true, // can click day/week names to navigate views
@@ -182,57 +172,56 @@
                 {
                     title: 'All Day Event',
                     start: '2020-09-01'
-                },
-                {
-                    title: 'Long Event',
-                    start: '2020-09-07',
-                    end: '2020-09-10'
-                },
-                {
-                    groupId: 999,
-                    title: 'Repeating Event',
-                    start: '2020-09-09T16:00:00'
-                },
-                {
-                    groupId: 999,
-                    title: 'Repeating Event',
-                    start: '2020-09-16T16:00:00'
-                },
-                {
-                    title: 'Conference',
-                    start: '2020-09-11',
-                    end: '2020-09-13'
-                },
-                {
-                    title: 'Meeting',
-                    start: '2020-09-12T10:30:00',
-                    end: '2020-09-12T12:30:00'
-                },
-                {
-                    title: 'Lunch',
-                    start: '2020-09-12T12:00:00'
-                },
-                {
-                    title: 'Meeting',
-                    start: '2020-09-12T14:30:00'
-                },
-                {
-                    title: 'Happy Hour',
-                    start: '2020-09-12T17:30:00'
-                },
-                {
-                    title: 'Dinner',
-                    start: '2020-09-12T20:00:00'
-                },
-                {
-                    title: 'Birthday Party',
-                    start: '2020-09-13T07:00:00'
                 }
+                // {
+                //     title: 'Long Event',
+                //     start: '2020-09-07',
+                //     end: '2020-09-10'
+                // },
+                // {
+                //     groupId: 999,
+                //     title: 'Repeating Event',
+                //     start: '2020-09-09T16:00:00'
+                // },
+                // {
+                //     groupId: 999,
+                //     title: 'Repeating Event',
+                //     start: '2020-09-16T16:00:00'
+                // },
+                // {
+                //     title: 'Conference',
+                //     start: '2020-09-11',
+                //     end: '2020-09-13'
+                // },
+                // {
+                //     title: 'Meeting',
+                //     start: '2020-09-12T10:30:00',
+                //     end: '2020-09-12T12:30:00'
+                // },
+                // {
+                //     title: 'Lunch',
+                //     start: '2020-09-12T12:00:00'
+                // },
+                // {
+                //     title: 'Meeting',
+                //     start: '2020-09-12T14:30:00'
+                // },
+                // {
+                //     title: 'Happy Hour',
+                //     start: '2020-09-12T17:30:00'
+                // },
+                // {
+                //     title: 'Dinner',
+                //     start: '2020-09-12T20:00:00'
+                // },
+                // {
+                //     title: 'Birthday Party',
+                //     start: '2020-09-13T07:00:00'
+                // }
             ]
         });
         calendar.render();
-    });
-
+    }
 
 
 
