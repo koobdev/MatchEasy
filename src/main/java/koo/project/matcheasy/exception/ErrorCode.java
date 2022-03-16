@@ -33,6 +33,7 @@ public enum ErrorCode {
     CONTENT_DUPLICATED(CONFLICT, "이미 작성된 게시글이 존재합니다."),
     CHATROOM_DUPLICATED(CONFLICT, "이미 생성된 채팅방이 존재합니다."),
     TEAM_DUPLICATED(CONFLICT, "이미 팀이 존재합니다."),
+    TEAM_LEADER_MISMATCH(CONFLICT, "일정은 오직 팀장만 수정 혹은 삭제할 수 있습니다."),
     FAIL_MEMBER_AUTHORIZED(FORBIDDEN, "게시글은 작성자만 수정이 가능합니다."),
     FAIL_WRITER_AUTHORIZED(FORBIDDEN, "게시글은 작성자는 지원할 수 없습니다."),
 

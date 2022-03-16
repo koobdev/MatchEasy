@@ -1,5 +1,6 @@
 package koo.project.matcheasy.repository;
 
+import koo.project.matcheasy.domain.board.BoardContent;
 import koo.project.matcheasy.domain.team.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -30,5 +31,13 @@ public class TaskRepository {
         return em.createQuery("select t from Task t where t.team=:id", Task.class)
                 .setParameter("id", id)
                 .getResultList();
+    }
+
+    public Task findById(Long id){
+        return em.find(Task.class, id);
+    }
+
+    public void delete(Task task){
+        em.remove(task);
     }
 }

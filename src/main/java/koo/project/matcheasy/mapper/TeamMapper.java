@@ -9,15 +9,11 @@ import org.mapstruct.factory.Mappers;
 
 
 @Mapper
-        (collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-                uses = MemberMapper.class)
+//        (collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED)
 public interface TeamMapper{
 
     TeamMapper TEAM_MAPPER = Mappers.getMapper(TeamMapper.class);
-    MemberMapper membersMapper = Mappers.getMapper(MemberMapper.class);
-//    TeamMemberMapper membersMapper = Mappers.getMapper(TeamMemberMapper.class);
 
-    @Mapping(target = "members", ignore = true)
     Team toEntity(TeamDto dto);
     TeamDto toDto(Team entity);
 }

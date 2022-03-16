@@ -24,32 +24,44 @@
 
             <ul class="uk-child-width-expand uk-margin-large-bottom" uk-tab="connect: #component-tab-left; animation: uk-animation-fade">
                 <li class="uk-active">
-                    <a href="#">팀 일정</a>
+                    <a href="#">팀일정 등록 및 삭제</a>
                 </li>
                 <li>
-                    <a href="#">공지사항</a>
-                </li>
-                <li>
-                    <a href="#">팀 정보 공유</a>
+                    <a href="#">일정 완료설정</a>
                 </li>
             </ul>
             <ul id="component-tab-left" class="uk-switcher">
                 <li>
-                    <div id='calendar'></div>
+                    <div class="uk-flex uk-flex-left uk-margin-bottom">
+                        <div class="uk-margin-right">
+                            <canvas style="background-color: red" width="15" height="15"
+                                    class="uk-padding-remove"></canvas>
+                            <label>완료  </label><br>
+                        </div>
+                        <div>
+                            <canvas style="background-color: blue" width="15" height="15"
+                                    class="uk-padding-remove"></canvas>
+                            <label>진행중</label>
+                        </div>
+                    </div>
+                    <div id="calendar"></div>
                 </li>
-                <li>공지사항</li>
-                <li>팀 정보 공유</li>
+                <li>
+                    <table class="uk-table uk-table-hover uk-table-divider uk-table-responsive uk-table-middle">
+                        <thead class="uk-text-0_9">
+                        <th class="uk-width-small uk-text-nowrap">시작 일자</th>
+                        <th class="uk-width-small uk-text-nowrap">종료 일자</th>
+                        <th class="uk-width-small uk-text-nowrap">참여 포지션</th>
+                        <th class="uk-width-large uk-text-nowrap">일정 설명</th>
+                        <th class="uk-width-small uk-text-nowrap">상태</th>
+                        <th class="uk-width-small uk-text-nowrap">상태 변경</th>
+                        </thead>
+                        <tbody class="uk-text-0_8" id="taskList">
+
+                        </tbody>
+                    </table>
+                </li>
             </ul>
-        </div>
-        <div class="uk-card-footer">
-            <div class="uk-text-right uk-margin-large">
-                <button class="uk-button uk-button-primary uk-button-radius" id="btnEdit"
-                        onClick="editBoardContent()">수정
-                </button>
-                <button class="uk-button uk-button-danger uk-button-radius" id="btnDelete"
-                        onClick="deleteBoardContent()">삭제
-                </button>
-            </div>
         </div>
     </div>
     <div id="registerTask" uk-modal>
@@ -68,28 +80,24 @@
                         </td>
                     </tr>
                     <tr>
-                        <th class="uk-text-nowrap">일정 종류</th>
-                        <td>
-                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label><input class="uk-radio" type="radio" id="dayly" checked> 일일 일정</label>
-                                <label><input class="uk-radio" type="radio" id="weekly"> 주간 일정</label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
                         <th class="uk-text-nowrap">작업 포지션</th>
                         <td>
-                            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                                <label><input class="uk-radio" type="radio" id="be" checked> Back-End</label>
-                                <label><input class="uk-radio" type="radio" id="fe"> Front-End</label>
-                            </div>
+                            <form>
+                                <fieldset class="uk-fieldset">
+                                    <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid" id="positions">
+                                        <label>
+                                            <input class="uk-radio" type="radio" name="radio" id="allPos"> 모든 포지션
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </form>
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="uk-modal-footer uk-text-right">
                 <button class="uk-button uk-button-default uk-modal-close" type="button">취소</button>
-                <button class="uk-button uk-button-primary" type="button" id="taskRegister">저장</button>
+                <button class="uk-button uk-button-primary" type="button" onclick="taskRegister()">저장</button>
             </div>
         </div>
     </div>
@@ -111,6 +119,10 @@
         locale: "ko"
     });
 
+    let startdate;
+    let enddate;
+
+
 
     let accessToken = storage.get("accessToken");
     let teamId = storage.get("teamId");
@@ -123,9 +135,13 @@
     xhr.send();
     xhr.onreadystatechange = function () {
         if(xhr.readyState == 4 && xhr.status == 200) {
-            let data = xhr.response.data;
-            console.log(JSON.parse(data));
-            makeCalendar();
+            let taskList = document.getElementById("taskList");
+            let data = JSON.parse(xhr.response.data);
+            console.log(data);
+            makeRegisterTaskPositions(data); // modal 안에 포지션 표시
+            makeCalendar(data); // calendar 찍기
+            addEvents(data); // calendar 안에 일정(event)찍기
+            taskList.innerHTML += makeTaskList(data); // '일정 완료 설정 '탭 테이블 리스트 찍기
         }else {
             // UIkit.modal.alert("팀 데이터가 존재하지 않습니다.").then(function () {
             //     backPage();
@@ -137,6 +153,18 @@
         window.location.href = "/form/contentList";
     }
 
+
+    function makeRegisterTaskPositions(data) {
+        let positions = document.getElementById("positions");
+        for (const position of data.positions) {
+            let append = `
+                <label class="uk-margin-small-right">
+                    <input class="uk-radio" type="radio" name="radio" id="`+position.id+`">`+position.position+`
+                </label>
+            `;
+            positions.innerHTML += append;
+        }
+    }
 
     function makeCalendar(){
         let calendarEl = document.getElementById('calendar');
@@ -151,10 +179,10 @@
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth,listWeek'
+                right: 'dayGridMonth,timeGridWeek,listMonth,listWeek'
             },
             initialDate: dateString,
-            navLinks: true, // can click day/week names to navigate views
+            navLinks: true,
             selectable: true,
             selectMirror: true,
 
@@ -162,95 +190,155 @@
                 registerModal(arg);
             },
             eventClick: function(arg) {
-                if (confirm('선택한 일정을 삭제하시겠습니까?')) {
-                    arg.event.remove()
+                if(arg.event.backgroundColor !== 'red'){
+                    if (confirm('선택한 일정을 삭제하시겠습니까?')) {
+                        taskRemove(arg.event.id);
+                        arg.event.remove();
+                    }
                 }
             },
             editable: true,
             dayMaxEvents: true, // allow "more" link when too many events
-            events: [
-                {
-                    title: 'All Day Event',
-                    start: '2020-09-01'
-                }
-                // {
-                //     title: 'Long Event',
-                //     start: '2020-09-07',
-                //     end: '2020-09-10'
-                // },
-                // {
-                //     groupId: 999,
-                //     title: 'Repeating Event',
-                //     start: '2020-09-09T16:00:00'
-                // },
-                // {
-                //     groupId: 999,
-                //     title: 'Repeating Event',
-                //     start: '2020-09-16T16:00:00'
-                // },
-                // {
-                //     title: 'Conference',
-                //     start: '2020-09-11',
-                //     end: '2020-09-13'
-                // },
-                // {
-                //     title: 'Meeting',
-                //     start: '2020-09-12T10:30:00',
-                //     end: '2020-09-12T12:30:00'
-                // },
-                // {
-                //     title: 'Lunch',
-                //     start: '2020-09-12T12:00:00'
-                // },
-                // {
-                //     title: 'Meeting',
-                //     start: '2020-09-12T14:30:00'
-                // },
-                // {
-                //     title: 'Happy Hour',
-                //     start: '2020-09-12T17:30:00'
-                // },
-                // {
-                //     title: 'Dinner',
-                //     start: '2020-09-12T20:00:00'
-                // },
-                // {
-                //     title: 'Birthday Party',
-                //     start: '2020-09-13T07:00:00'
-                // }
-            ]
         });
         calendar.render();
     }
 
-
+    function addEvents(data) {
+        for (const task of data.tasks) {
+            if(task.status === 0){ // 진행중
+                calendar.addEvent({
+                    id : task.id,
+                    title: task.goal+'\t'+'|'+'\t'+task.position,
+                    start: task.startdate,
+                    end: task.enddate,
+                });
+            }else { // 완료
+                calendar.addEvent({
+                    id : task.id,
+                    title: task.goal+'\t'+'|'+'\t'+task.position,
+                    start: task.startdate,
+                    end: task.enddate,
+                    backgroundColor : 'red'
+                });
+            }
+        }
+    }
 
     function registerModal(arg){
         let registerTask = document.getElementById("registerTask");
-        let taskGoal = document.getElementById("taskGoal");
         UIkit.modal(registerTask).show();
 
-        console.log(arg.title);
-        console.log(arg.start);
-        console.log(arg.end);
-        console.log(arg.allDay);
+        startdate = arg.startStr+"T00:00:00";
+        enddate = arg.endStr+"T00:00:00";
+    }
 
 
-        document.getElementById("taskRegister").addEventListener('click', () => {
-            calendar.addEvent({
-                title: taskGoal.value,
-                start: arg.start,
-                end: arg.end,
-                allDay: arg.allDay
-            })
-        });
+    function taskRegister() {
+        let taskGoal = document.getElementById("taskGoal");
+        let positions = document.getElementById("positions");
+        let accessToken = storage.get("accessToken");
+        let url = "http://localhost:8080/team/task/register";
+        let xhr = new XMLHttpRequest();
+        let positionId;
+        let positionName;
+        for (const position of positions.children) {
+            console.log("before check::" + position.children[0]);
+            if(position.children[0].checked){
+                console.log("is check::" + position.children[0]);
+                if(position.children[0].id === 'allPos'){
+                    positionId = 0;
+                }else {
+                    positionId = position.children[0].id;
+                }
+                positionName = position.innerText;
+            }
+        }
+        console.log(positionId);
+        console.log(positionName);
+        if(positionId === undefined || positionName === undefined){
+            UIkit.modal.alert("작업 포지션은 필수선택 사항입니다.").then(function () {
+                window.location.href = "/form/manageTeam";
+            });
+        }else {
+            let params = {
+                "goal" : taskGoal.value,
+                "status" : 0,
+                "teamId" : storage.get("teamId"),
+                "positionId" : positionId,
+                "position" : positionName,
+                "startdate" : startdate,
+                "enddate" : enddate
+            }
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            xhr.responseType = 'json';
+            xhr.send(JSON.stringify(params));
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState === 4 && xhr.status === 200) {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                        window.location.href = "/form/manageTeam";
+                    });
+                }else {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                        window.location.href = "/form/manageTeam";
+                    });
+                }
+            };
+        }
+    }
 
+    function taskRemove(id) {
+        let accessToken = storage.get("accessToken");
+        let url = "http://localhost:8080/team/task/delete/"+id;
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('DELETE', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }else if(xhr.readyState === 4 && xhr.status === 401){
+                reIssueToken();
+            }else {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }
+        };
 
     }
 
 
+    function updateStatus(id) {
+        let accessToken = storage.get("accessToken");
+        let url = "http://localhost:8080/team/task/update/"+id;
+        let xhr = new XMLHttpRequest();
 
-
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+        xhr.responseType = 'json';
+        xhr.send();
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200) {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }else if(xhr.readyState === 4 && xhr.status === 401){
+                reIssueToken();
+            }else {
+                UIkit.modal.alert(xhr.response.message).then(function () {
+                    window.location.href = "/form/manageTeam";
+                });
+            }
+        };
+    }
 
 </script>
 </html>

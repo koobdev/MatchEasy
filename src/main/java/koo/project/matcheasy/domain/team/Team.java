@@ -38,6 +38,7 @@ public class Team {
     private List<Task> tasks = new ArrayList<>();
 
     private String name;
+    private Long leaderId;
     private LocalDateTime startdate;
     private LocalDateTime enddate;
 
@@ -52,5 +53,11 @@ public class Team {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
     )
     private LocalDateTime moddate;
+
+
+    // updateLeaderId
+    public void updateLeaderId(Long id){
+        this.leaderId = id;
+    }
 
 }

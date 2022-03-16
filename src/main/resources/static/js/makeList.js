@@ -1,15 +1,19 @@
 function makeBoardContentDiv(content){
     let tbody = "";
 
-    tbody += `
-    <div class="board-card uk-margin-bottom" onclick="openDetail(`+ content.id +`)">
-        <div class="uk-card uk-card-default">
-            <div class="uk-card-header">
-                <div class="uk-text-right uk-margin-bottom">`;
-
     if(content.status === 0){
+        tbody += `
+                <div class="board-card uk-margin-bottom" onclick="openDetail(`+ content.id +`)">
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-header">
+                            <div class="uk-text-right uk-margin-bottom">`;
         tbody += `<button class="uk-button uk-button-small uk-text-nowrap">모집중</button>`;
     }else {
+        tbody += `
+                <div class="board-card uk-margin-bottom">
+                    <div class="uk-card uk-card-default">
+                        <div class="uk-card-header">
+                            <div class="uk-text-right uk-margin-bottom">`;
         tbody += `<button class="uk-button uk-button-danger uk-button-small uk-text-nowrap">모집완료</button>`;
     }
 
@@ -174,4 +178,30 @@ function makePositionListDivInManage(position) {
     `;
 
     return div;
+}
+
+
+function makeTaskList(data) {
+    let append = "";
+    for (const task of data.tasks) {
+        append += `
+            <tr class="uk-background-muted">
+                <td>`+task.startdate.substr(0, 10)+`</td>
+                <td>`+task.enddate.substr(0, 10)+`</td>
+                <td>`+task.position+`</td>
+                <td>`+task.goal+`</td>`;
+
+        if(task.status === 0){
+            append +=` <td>진행중</td>
+                        <td>
+                            <button class="uk-button uk-button-primary uk-button-small uk-text-nowrap" onclick="updateStatus(`+task.id+`)">일정 완료</button>
+                        </td>
+                </tr>`;
+        }else {
+            append +=` <td>완료</td>
+                       <td>-</td>
+                </tr>`;
+        }
+    }
+    return append;
 }

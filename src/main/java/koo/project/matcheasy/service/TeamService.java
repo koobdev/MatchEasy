@@ -12,11 +12,13 @@ import koo.project.matcheasy.domain.team.TeamPosition;
 import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.dto.TaskDto;
 import koo.project.matcheasy.dto.TeamDto;
+import koo.project.matcheasy.dto.TeamSearchDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.mapper.TaskMapper;
 import koo.project.matcheasy.mapper.TeamMapper;
+import koo.project.matcheasy.mapper.TeamSearchMapper;
 import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +50,7 @@ public class TeamService {
 
     /**
      * 팀 생성하기
-     *  1. 수락된 지원자들로 구성된 팀 생성하기
+     *  1. 수락된 지원자들로 구성된 팀 생성하기 && 팀장 id넣기
      *  2. 게시물 상태를 모집 완료(status : 1)로 변경 하기
      *  3. 팀원 포지션 테이블 생성 및 데이터 삽입
      */
@@ -67,6 +69,8 @@ public class TeamService {
         Map<String, Object> acceptedList = getAcceptedList(findMe);
         convertObjectToMemberList(acceptedList.get("members"))
                 .forEach(member -> member.addTeam(team));
+
+        team.updateLeaderId(findMe.getId());
 
         // 2.
         BoardContent findContent = (BoardContent) acceptedList.get("findContent");
@@ -160,24 +164,58 @@ public class TeamService {
         return returnList;
     }
 
+    /**
+     * 일정 수정하기 (상태 업데이트)
+     */
+    public ResponseEntity<OkResponse> updateTask(Long id, HttpServletRequest request) throws JsonProcessingException {
+        String token = authExtractor.extract(request, "Bearer");
+        String loginId = jwtTokenProvider.getSubject(token);
 
+        checkTeamLeader(loginId, id);
+
+        Task findTask = taskRepository.findById(id);
+        findTask.updateStatus(1);
+
+        return OkResponse.toResponse(objectMapper.writeValueAsString(findTask),"선택한 일정을 완료처리하였습니다.");
+    }
+
+    /**
+     * 일정 삭제하기
+     */
+    public ResponseEntity<OkResponse> deleteTask(Long id, HttpServletRequest request) throws JsonProcessingException {
+        String token = authExtractor.extract(request, "Bearer");
+        String loginId = jwtTokenProvider.getSubject(token);
+
+        checkTeamLeader(loginId, id);
+
+        Task findTask = taskRepository.findById(id);
+        taskRepository.delete(findTask);
+
+        return OkResponse.toResponse(objectMapper.writeValueAsString(findTask),"일정을 삭제하였습니다.");
+    }
 
     /**
      * 팀 검색 (리스트)
      */
     public ResponseEntity<OkResponse> searchTeam(Long idx) throws JsonProcessingException {
         Team findTeam = teamRepository.findById(idx);
+        TeamSearchDto teamSearchDto = TeamSearchMapper.TEAM_SEARCH_MAPPER.toDto(findTeam);
 
-        log.info("findTeam :::: {} ", findTeam.getId());
-        for (Member member : findTeam.getMembers()) {
-            log.info("findTeam's Member :::: {} ", member.getLoginId());
-        }
+        return OkResponse.toResponse(objectMapper.writeValueAsString(teamSearchDto),"팀 데이터");
+    }
 
-        for (TeamPosition position : findTeam.getPositions()) {
-            log.info("findTeam's position :::: {} ", position.getPosition());
-        }
 
-        return OkResponse.toResponse(objectMapper.writeValueAsString(findTeam),"팀 데이터");
+    // 팀장 체크
+    private void checkTeamLeader(String loginId, Long id) {
+        Task findTask = taskRepository.findById(id);
+        memberRepository.findByLoginId(loginId)
+                .ifPresentOrElse(member -> {
+                    if(!member.getId().equals(findTask.getTeam().getLeaderId())){
+                        throw new CustomException(TEAM_LEADER_MISMATCH);
+                    }
+                }, ()->{
+                    throw new CustomException(MEMBER_NOT_FOUND);
+                });
     }
 
 
@@ -201,6 +239,7 @@ public class TeamService {
         }
         return list;
     }
+
 
 
 }

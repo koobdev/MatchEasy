@@ -65,5 +65,19 @@ public class TeamController {
         return teamService.registerTask(taskDto);
     }
 
+    /**
+     * 일정 수정하기
+     */
+    @GetMapping("/task/update/{id}")
+    public ResponseEntity<OkResponse> updateTask(@PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        return teamService.updateTask(id, request);
+    }
 
+    /**
+     * 일정 삭제하기
+     */
+    @DeleteMapping("/task/delete/{id}")
+    public ResponseEntity<OkResponse> deleteTask(@PathVariable("id") Long id, HttpServletRequest request) throws Exception {
+        return teamService.deleteTask(id, request);
+    }
 }

@@ -304,23 +304,30 @@
 
     function acceptEvent(element){
 
-        let accessToken = storage.get("accessToken");
-        let url = "http://localhost:8080/my/acceptOrReject";
-        let params = "idx="+element.id+"&status=1&message=";
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', url);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-        xhr.responseType = 'json';
-        xhr.send(params);
-
-        xhr.onreadystatechange = function () {
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                UIkit.modal.alert(xhr.response.message).then(function () {
-                    window.location.href = "/form/manageRecruit";
-                });
+        UIkit.modal.confirm("수락하시겠습니까?", {
+            labels: {
+                cancel: '취소',
+                ok: '확인'
             }
-        };
+        }).then(function () {
+            let accessToken = storage.get("accessToken");
+            let url = "http://localhost:8080/my/acceptOrReject";
+            let params = "idx="+element.id+"&status=1&message=";
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+            xhr.responseType = 'json';
+            xhr.send(params);
+
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 && xhr.status == 200) {
+                    UIkit.modal.alert(xhr.response.message).then(function () {
+                        window.location.href = "/form/manageRecruit";
+                    });
+                }
+            };
+        });
     }
 
     function rejectEvent(element){
