@@ -205,3 +205,46 @@ function makeTaskList(data) {
     }
     return append;
 }
+
+
+function makeRecruitList(data) {
+    let tr = "";
+    tr += `
+            <tr>
+                <td>`+data.position.position+`</td>
+                <td>`+data.position.content+`</td>`;
+
+    if(data.boardStatus === 0){
+        tr += `<td>모집중</td>
+                       <td>
+                            <button class="uk-button uk-button-small uk-text-nowrap" onclick="openDetail(`+data.boardId+`)">게시글 바로가기</button>
+                       </td>
+                `;
+    }else {
+        tr += `<td>모집완료</td>
+                       <td>-</td>
+                `;
+    }
+
+    tr += `
+                <td>`+data.recruitMessage+`</td>`;
+
+    if(data.status === 0){
+        tr += `
+                    <td>요청대기</td>
+                    </tr>
+                `;
+    }else if(data.status === 1) {
+        tr += `
+                    <td>수락</td>
+                    </tr>
+                `;
+    }else {
+        tr += `
+                    <td>거절</td>
+                    </tr>
+                `;
+    }
+
+    return tr;
+}

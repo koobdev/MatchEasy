@@ -190,8 +190,8 @@
     loadContentDetail();
 
     function loadContentDetail() {
-        let accessToken = storage.get("accessToken");
         let detail = storage.get("contentDetail");
+        let accessToken = storage.get("accessToken");
         let url = "http://localhost:8080/board/" + detail;
         let xhr = new XMLHttpRequest();
         xhr.open('GET', url);
@@ -203,6 +203,12 @@
         xhr.onreadystatechange = function () {
             if(xhr.readyState == 4 && xhr.status == 200) {
                 let data = xhr.response;
+
+                if(data.status === 1){
+                    UIkit.modal.alert("이미 모집이 완료된 게시글 입니다.").then(function () {
+                        window.location.href = "/form/contentList";
+                    });
+                }
                 console.log(data);
                 appendDetail(data);
                 connectSock(data);

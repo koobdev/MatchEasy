@@ -2,10 +2,8 @@ package koo.project.matcheasy.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import koo.project.matcheasy.domain.board.RecruitPosition;
-import koo.project.matcheasy.dto.BoardDto;
-import koo.project.matcheasy.dto.MemberMeDto;
-import koo.project.matcheasy.dto.OkResponse;
-import koo.project.matcheasy.dto.TeamDto;
+import koo.project.matcheasy.domain.board.RequestPosition;
+import koo.project.matcheasy.dto.*;
 import koo.project.matcheasy.service.BoardService;
 import koo.project.matcheasy.service.MemberService;
 import koo.project.matcheasy.service.TeamService;
@@ -70,6 +68,17 @@ public class MyPageController {
 
         List<RecruitPosition> positions = boardService.recruitList(request);
         return OkResponse.toListResponse(Collections.singletonList(positions), "지원자 목록");
+    }
+
+    /**
+     * 나의 지원 목록
+     * 내가 지원한 포지션(RequestPosition)과 모집 포지션(RecruitPosition)에 물리는 BoardContent까지 join
+     */
+    @GetMapping("/myRecruitList/{id}")
+    public ResponseEntity<OkResponse> myRecruitList(@PathVariable("id") Long id){
+
+        List<RequestPositionDto> requestPosition = boardService.myRecruitList(id);
+        return OkResponse.toListResponse(Collections.singletonList(requestPosition), "나의 지원 목록");
     }
 
 

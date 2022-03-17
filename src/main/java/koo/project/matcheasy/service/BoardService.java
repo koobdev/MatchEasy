@@ -9,12 +9,14 @@ import koo.project.matcheasy.domain.member.Member;
 import koo.project.matcheasy.dto.BoardDto;
 import koo.project.matcheasy.dto.OkResponse;
 import koo.project.matcheasy.dto.RecruitPositionDto;
+import koo.project.matcheasy.dto.RequestPositionDto;
 import koo.project.matcheasy.exception.CustomException;
 import koo.project.matcheasy.interceptor.AuthorizationExtractor;
 import koo.project.matcheasy.jwt.JwtTokenProvider;
 import koo.project.matcheasy.mapper.BoardContext;
 import koo.project.matcheasy.mapper.BoardMapper;
 import koo.project.matcheasy.mapper.RecruitPositionMapper;
+import koo.project.matcheasy.mapper.RequestPositionMapper;
 import koo.project.matcheasy.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static koo.project.matcheasy.exception.ErrorCode.*;
 
@@ -232,19 +235,33 @@ public class BoardService {
 
         boardRepository.findByWriterId(findMember.getId())
                 .ifPresentOrElse(content -> {
-
-//                    for (RecruitPosition position : content.getPositions()) {
-//                        if(position.getBoardContent().getId().equals(content.getId())
-//                                && position.getStatus() == 1){
-//                            recruitPositionList.add(position);
-//                        }
-
                     recruitPositionList.addAll(content.getPositions());
                 }, () -> {
                     throw new CustomException(CONTENT_NOT_FOUND);
                 });
 
         return recruitPositionList;
+    }
+
+
+    /**
+     * 나의 지원 목록
+     * 내가 지원한 포지션(RequestPosition)과 모집 포지션(RecruitPosition)에 물리는 BoardContent까지 join
+     */
+    public List<RequestPositionDto> myRecruitList(Long id){
+
+        List<RequestPositionDto> list = new ArrayList<>();
+        requestPositionRepository.findByMemberId(id)
+                .forEach(r -> {
+                    Long boardId = r.getPosition().getBoardContent().getId();
+                    int status = r.getPosition().getBoardContent().getStatus();
+
+                    RequestPositionDto requestPositionDto = RequestPositionMapper.REQUEST_POSITION_MAPPER.toDto(r);
+                    requestPositionDto.updateBoardDto(boardId, status);
+                    list.add(requestPositionDto);
+                });
+
+        return list;
     }
 
 

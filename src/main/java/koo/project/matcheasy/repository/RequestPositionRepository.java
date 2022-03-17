@@ -1,6 +1,5 @@
 package koo.project.matcheasy.repository;
 
-import koo.project.matcheasy.domain.board.RecruitPosition;
 import koo.project.matcheasy.domain.board.RequestPosition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -32,6 +31,12 @@ public class RequestPositionRepository {
 
     public List<RequestPosition> findAll(){
         return em.createQuery("select r from RequestPosition r", RequestPosition.class)
+                .getResultList();
+    }
+
+    public List<RequestPosition> findByMemberId(Long id){
+        return em.createQuery("select m from RequestPosition m where m.recruitMember.id=:id", RequestPosition.class)
+                .setParameter("id", id)
                 .getResultList();
     }
 }
