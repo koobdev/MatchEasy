@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 
 <div class="uk-container-small uk-align-center">
     <div class="uk-margin-bottom">
@@ -126,7 +126,7 @@
 
     let accessToken = storage.get("accessToken");
     let userId = storage.get("userId");
-    let url = "http://localhost:8080/my/myRecruitList/"+userId;
+    let url = api + "/my/myRecruitList/"+userId;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/json');

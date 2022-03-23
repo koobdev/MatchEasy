@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
@@ -38,7 +38,7 @@
         let id = document.getElementById('loginId').value;
         let pw = document.getElementById('password').value;
         let params = 'loginId='+id+'&password='+pw;
-        let url = "http://localhost:8080/token/login";
+        let url = api + "/token/login";
 
         let xhr = new XMLHttpRequest();
         xhr.open('POST', url);

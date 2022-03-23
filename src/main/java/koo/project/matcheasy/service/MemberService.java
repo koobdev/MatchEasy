@@ -48,7 +48,6 @@ public class MemberService {
 
         Member memberEntity = MemberMapper.MEMBER_MAPPER.toEntity(member);
 
-        // TODO : memberEntity에 getMemberSKills가 null로 이미 저장되어서 넘어와서 중복 저장됨
         for (MemberSkillsDto memberSkillsDto : member.getMemberSkills()) {
             MemberSkills memberSkillsEntity = MemberSkillsMapper.MEMBER_SKILLS_MAPPER.toEntity(memberSkillsDto);
             memberSkillsEntity.addMember(memberEntity);

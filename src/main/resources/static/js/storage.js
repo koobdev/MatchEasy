@@ -30,3 +30,5 @@ const storage = {
         localStorage.clear();
     }
 };
+
+const api = "http://3.39.105.49:8080";

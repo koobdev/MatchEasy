@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
@@ -73,7 +73,7 @@
     let btnNewPassword = document.getElementById("btnNewPassword");
     let xhr = new XMLHttpRequest();
     let accessToken = storage.get("accessToken");
-    let url = "http://localhost:8080/my/me";
+    let url = api + "/my/me";
     let userInfos = ['loginId', 'email', 'name', 'age', 'position'];
 
     xhr.open('GET', url);
@@ -99,7 +99,7 @@
 
     function passwordCheck(){
         let userId = storage.get("userId");
-        let url = "http://localhost:8080/members/passwordCheck";
+        let url = api + "/members/passwordCheck";
         let xhr = new XMLHttpRequest();
         let params = "id="+userId+"&password="+presentPassword.value
         xhr.open('POST', url);
@@ -157,7 +157,7 @@
             }
 
             let userId = storage.get("userId");
-            let url = "http://localhost:8080/members/edit/"+userId;
+            let url = api + "/members/edit/"+userId;
             let xhr = new XMLHttpRequest();
             xhr.open('PUT', url);
             xhr.setRequestHeader('Content-Type', 'application/json');

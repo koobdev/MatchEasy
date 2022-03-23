@@ -82,7 +82,7 @@
 
         let xhr = new XMLHttpRequest();
         let token = storage.get("accessToken");
-        let url = "http://localhost:8080/my/me";
+        let url = api + "/my/me";
         let userInfos = ['loginId', 'name', 'id', 'teamId'];
 
         xhr.open('GET', url);
@@ -117,7 +117,7 @@
         let xhr = new XMLHttpRequest();
         let accessToken = storage.get("accessToken");
         let refreshToken = storage.get("refreshToken");
-        let url = "http://localhost:8080/token/reIssue";
+        let url = api + "/token/reIssue";
         let param = "accessToken="+accessToken+"&refreshToken="+refreshToken+"&tokenType=Bearer";
 
         xhr.open('POST', url);

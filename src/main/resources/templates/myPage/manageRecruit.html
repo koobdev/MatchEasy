@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 
 <div class="uk-container-small uk-align-center">
     <div class="uk-margin-bottom">
@@ -220,7 +220,7 @@
 
     let accessToken = storage.get("accessToken");
     let detail = storage.get("contentDetail");
-    let url = "http://localhost:8080/my/recruitList";
+    let url = api + "/my/recruitList";
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -311,7 +311,7 @@
             }
         }).then(function () {
             let accessToken = storage.get("accessToken");
-            let url = "http://localhost:8080/my/acceptOrReject";
+            let url = api + "/my/acceptOrReject";
             let params = "idx="+element.id+"&status=1&message=";
             let xhr = new XMLHttpRequest();
             xhr.open('POST', url);
@@ -334,7 +334,7 @@
 
         UIkit.modal.prompt('거절 메세지를 입력하세요:', '').then(function (rejectMessage) {
             let accessToken = storage.get("accessToken");
-            let url = "http://localhost:8080/my/acceptOrReject";
+            let url = api + "/my/acceptOrReject";
             let params = "idx="+element.id+"&status=2&message="+rejectMessage;
             let xhr = new XMLHttpRequest();
             xhr.open('POST', url);
@@ -369,7 +369,7 @@
             let startDate = document.getElementById('startDate').value;
             let endDate = document.getElementById('endDate').value;
             let accessToken = storage.get("accessToken");
-            let url = "http://localhost:8080/team/createTeam";
+            let url = api + "/team/createTeam";
             let xhr = new XMLHttpRequest();
             let params = {
                 "name" : registerTitle.value,

@@ -14,7 +14,7 @@ public class FormController {
 
     @GetMapping("/chatRoom")
     public String chatRoomForm(){
-        return "/chat/chatRoom";
+        return "chat/chatRoom";
     }
 
     /**
@@ -22,7 +22,7 @@ public class FormController {
      */
     @GetMapping("/addMember")
     public String addMemberForm(){
-        return "/members/addMember";
+        return "members/addMember";
     }
 
     /**
@@ -30,7 +30,7 @@ public class FormController {
      */
     @GetMapping("/contentList")
     public String boardListForm(){
-        return "/board/list";
+        return "board/list";
     }
 
     /**
@@ -38,7 +38,7 @@ public class FormController {
      */
     @GetMapping("/contentDetail")
     public String boardDetailForm(){
-        return "/board/contentDetail";
+        return "board/contentDetail";
     }
 
     /**
@@ -46,7 +46,7 @@ public class FormController {
      */
     @GetMapping("/manageBoardContent")
     public String manageBoardContentForm(){
-        return "/myPage/manageBoardContent";
+        return "myPage/manageBoardContent";
     }
 
     /**
@@ -54,7 +54,7 @@ public class FormController {
      */
     @GetMapping("/manageRecruit")
     public String manageRecruitForm(){
-        return "/myPage/manageRecruit";
+        return "myPage/manageRecruit";
     }
 
     /**
@@ -62,7 +62,7 @@ public class FormController {
      */
     @GetMapping("/manageMyRecruit")
     public String manageMyRecruitForm(){
-        return "/myPage/manageMyRecruit";
+        return "myPage/manageMyRecruit";
     }
 
     /**
@@ -70,7 +70,7 @@ public class FormController {
      */
     @GetMapping("/editMember")
     public String editMemberForm(){
-        return "/members/editMember";
+        return "members/editMember";
     }
 
     /**
@@ -78,6 +78,6 @@ public class FormController {
      */
     @GetMapping("/manageTeam")
     public String manageTeamForm(){
-        return "/team/manageTeam";
+        return "team/manageTeam";
     }
 }

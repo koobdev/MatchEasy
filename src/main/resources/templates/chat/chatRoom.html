@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 
 <div class="container">
     <div class="col-6">
@@ -37,7 +37,7 @@
 
     let accessToken = storage.get("accessToken");
     let detail = storage.get("contentDetail");
-    let url = "http://localhost:8080/board/" + detail;
+    let url = api + "/board/" + detail;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

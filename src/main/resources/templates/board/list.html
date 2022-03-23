@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 <div data-uk-height-viewport="expand: true">
     <div class="uk-container uk-container-expand">
         <div class="uk-card-body">
@@ -166,7 +166,7 @@
 
 
     let accessToken = storage.get("accessToken");
-    let url = "http://localhost:8080/board/list";
+    let url = api + "/board/list";
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -260,7 +260,7 @@
         let startDate = document.getElementById('startDate').value;
         let endDate = document.getElementById('endDate').value;
         let positionList = [];
-        let url = "http://localhost:8080/board/register";
+        let url = api + "/board/register";
 
         let position = document.getElementById("positions");
         let childLen = position.children.length;

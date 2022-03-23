@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 
 <div class="uk-container-small uk-align-center">
     <div class="uk-margin-bottom">
@@ -112,7 +112,7 @@
 
     let accessToken = storage.get("accessToken");
     let userId = storage.get("userId");
-    let url = "http://localhost:8080/my/boardContent?userId="+userId;
+    let url = api + "/my/boardContent?userId="+userId;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -226,7 +226,7 @@
         let startDate = document.getElementById('startDate').value;
         let endDate = document.getElementById('endDate').value;
         let positionList = [];
-        let url = "http://localhost:8080/board/update/"+contentBody.dataset.contentid;
+        let url = api + "/board/update/"+contentBody.dataset.contentid;
 
         let position = document.getElementById("positions");
         let childLen = position.children.length;
@@ -279,7 +279,7 @@
 
 
     function deleteBoardContent() {
-        let url = "http://localhost:8080/board/delete/"+contentBody.dataset.contentid;
+        let url = api + "/board/delete/"+contentBody.dataset.contentid;
         xhr.open('DELETE', url);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);

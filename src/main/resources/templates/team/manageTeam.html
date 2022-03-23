@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="/include/head.html">
+<head th:include="include/head.html">
     <title>TITLE</title>
 </head>
 <body>
-<div th:include="/include/header.html"></div>
+<div th:include="include/header.html"></div>
 
 <div class="uk-container-small uk-align-center">
     <div class="uk-margin-bottom">
@@ -132,7 +132,7 @@
 
     let accessToken = storage.get("accessToken");
     let teamId = storage.get("teamId");
-    let url = "http://localhost:8080/team/"+teamId;
+    let url = api + "/team/"+teamId;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -245,7 +245,7 @@
         let taskGoal = document.getElementById("taskGoal");
         let positions = document.getElementById("positions");
         let accessToken = storage.get("accessToken");
-        let url = "http://localhost:8080/team/task/register";
+        let url = api + "/team/task/register";
         let xhr = new XMLHttpRequest();
         let positionId;
         let positionName;
@@ -298,7 +298,7 @@
 
     function taskRemove(id) {
         let accessToken = storage.get("accessToken");
-        let url = "http://localhost:8080/team/task/delete/"+id;
+        let url = api + "/team/task/delete/"+id;
         let xhr = new XMLHttpRequest();
 
         xhr.open('DELETE', url);
@@ -325,7 +325,7 @@
 
     function updateStatus(id) {
         let accessToken = storage.get("accessToken");
-        let url = "http://localhost:8080/team/task/update/"+id;
+        let url = api + "/team/task/update/"+id;
         let xhr = new XMLHttpRequest();
 
         xhr.open('GET', url);

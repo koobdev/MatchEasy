@@ -28,7 +28,7 @@
 <script type="text/javascript">
 
     let detail = storage.get("boardDetail");
-    let url = "http://localhost:8080/board/" + detail;
+    let url = api + "/board/" + detail;
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url);
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
