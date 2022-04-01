@@ -226,7 +226,10 @@ MatchEasy는 '개발자 스터디 모집사이트'입니다.
 * 이번 프로젝트는 RESTful API로 구성하였습니다. 규모가 작은 프로젝트이기 때문에 Spring Template Engine인 Thymeleaf를 사용하는 것으로 처음 설계를 하였습니다. 전반적인 HTTP의 흐름을 공부하면서 서버와 클라이언트의 역할을 명확하게 분리시키고 싶었고 추후 프로젝트의 확장성을 고려하여 SSR이 아닌 BackEnd와 FrontEnd가 구분된 RESTful API 방식의 프로젝트를 제작하게 되었습니다.
 
 
+<br>
 
+## 개선할 점
 
-
-
+* 현재 프로젝트에는 RefreshToken을 데이터베이스에 저장되도록 되어있습니다. 추후에 Redis를 도입하여 RefreshToken을 관리하도록 하겠습니다.
+* Spring Security에 대한 공부가 미흡하여 적용하지 못한 것이 아쉬운 점이었습니다. Spring Security를 통한 인증 및 권한부여에 대해 공부하고 적용하도록 개선하겠습니다.
+* Spring Data JPA를 적용하여 조금은 반복적일 수 있는 Repository단계를 최적화 시키도록 개선하겠습니다. 또 한, 복잡한 쿼리가 없어서 Querydsl와 fetch join을 이용한 조회성능 개선에 신경을 쓰지 못했는데 더 공부하여 추후에 리팩토링을 진행하도록 하겠습니다.
