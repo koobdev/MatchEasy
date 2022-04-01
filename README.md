@@ -1,5 +1,6 @@
 # MatchEasy
-MatchEasy는 '개발자 스터디 모집사이트'입니다.   &     🖥[사이트바로가기](http://www.matcheasy.site)
+MatchEasy는 '개발자 스터디 모집사이트'입니다.
+🖥[사이트바로가기](http://www.matcheasy.site)
 
 <br>
 
