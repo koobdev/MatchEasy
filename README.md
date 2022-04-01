@@ -1,5 +1,5 @@
-# MARKDOWN
-MARKDOWN 정리, 실습 for README.md
+# MatchEasy
+개발자 스터디 모집 
 
 # 1. 제목(글머리) 작성
 # H1 제목  
