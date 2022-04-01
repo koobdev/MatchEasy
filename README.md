@@ -1,7 +1,6 @@
-# MatchEasy
-개발자 스터디 모집 프로젝트
+# MatchEasy 
+개발자 스터디 모집 프로젝트 🖥[사이트바로가기](http://www.matcheasy.site)
 
-<br>
 <br>
 
 ## 프로젝트 개요
